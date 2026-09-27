@@ -3,60 +3,175 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="color-scheme" content="dark light" />
 
-    <title>RAIA | Reflecting Tomorrow — AI Chat Assistant</title>
-    <meta name="description" content="RAIA is a symmetric AI chat assistant with multi-provider support for OpenRouter, OpenAI, Perplexity, Claude, Gemini, and Mistral." />
-    <meta name="keywords" content="AI chat assistant, AI chat, OpenRouter, OpenAI, Perplexity, Claude, Gemini, Mistral, chat interface" />
-    <meta name="robots" content="index, follow" />
+    <!-- ─── Primary SEO ─── -->
+    <title>RAIA — Reflecting Tomorrow | Free Multi-Provider AI Chat Assistant</title>
+    <meta name="description" content="RAIA is a free, symmetric AI chat assistant with multi-provider support for OpenRouter, OpenAI, Perplexity, Claude, Gemini and Mistral. Bring your own API key, chat privately in your browser — no sign-up required." />
+    <meta name="keywords" content="AI chat assistant, free AI chat, OpenRouter, OpenAI, Perplexity, Claude, Anthropic, Gemini, Google AI, Mistral, bring your own key, BYOK, browser AI, RAIA, Reflecting Tomorrow" />
+    <meta name="author" content="Hajir Studio" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="rating" content="general" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <link rel="canonical" href="https://raia-ai.netlify.app/" />
+    <link rel="alternate" hreflang="en" href="https://raia-ai.netlify.app/" />
+    <link rel="alternate" hreflang="x-default" href="https://raia-ai.netlify.app/" />
 
+    <!-- ─── Theme colors ─── -->
+    <meta name="theme-color" content="#05070d" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#eef2f9" media="(prefers-color-scheme: light)" />
+
+    <!-- ─── PWA / mobile ─── -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="RAIA" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content="RAIA" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <!-- ─── Open Graph ─── -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://raia-ai.netlify.app/" />
-    <meta property="og:title" content="RAIA | Reflecting Tomorrow — AI Chat Assistant" />
-    <meta property="og:description" content="A symmetric AI chat assistant with multi-provider support for OpenRouter, OpenAI, Perplexity, Claude, Gemini, and Mistral." />
+    <meta property="og:title" content="RAIA — Reflecting Tomorrow | Free Multi-Provider AI Chat Assistant" />
+    <meta property="og:description" content="A free, symmetric AI chat assistant with multi-provider support for OpenRouter, OpenAI, Perplexity, Claude, Gemini and Mistral. Bring your own API key — private and browser-based." />
     <meta property="og:image" content="https://i.postimg.cc/28bKx4xC/raia2.webp" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="RAIA AI chat interface preview" />
     <meta property="og:site_name" content="RAIA" />
+    <meta property="og:locale" content="en_US" />
 
+    <!-- ─── Twitter ─── -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="RAIA | Reflecting Tomorrow — AI Chat Assistant" />
-    <meta name="twitter:description" content="A symmetric AI chat assistant with multi-provider support for OpenRouter, OpenAI, Perplexity, Claude, Gemini, and Mistral." />
+    <meta name="twitter:site" content="@hajirstudio" />
+    <meta name="twitter:creator" content="@hajirstudio" />
+    <meta name="twitter:title" content="RAIA — Reflecting Tomorrow | Free Multi-Provider AI Chat Assistant" />
+    <meta name="twitter:description" content="Free, symmetric AI chat assistant with OpenRouter, OpenAI, Perplexity, Claude, Gemini and Mistral support. Bring your own API key — no sign-up." />
     <meta name="twitter:image" content="https://i.postimg.cc/28bKx4xC/raia2.webp" />
     <meta name="twitter:image:alt" content="RAIA AI chat interface preview" />
 
+    <!-- ─── Structured data: WebApplication ─── -->
     <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "WebApplication",
-            "name": "RAIA",
-            "alternateName": "Reflecting Tomorrow",
-            "description": "RAIA is a symmetric AI chat assistant with multi-provider support for OpenRouter, OpenAI, Perplexity, Claude, Gemini, and Mistral.",
-            "url": "https://raia-ai.netlify.app/",
-            "applicationCategory": "ChatApplication",
-            "operatingSystem": "All",
-            "browserRequirements": "Requires JavaScript",
-            "offers": {
-                "@type": "Offer",
-                "price": "0",
-                "priceCurrency": "USD"
-            }
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "RAIA",
+        "alternateName": "Reflecting Tomorrow",
+        "description": "RAIA is a free, symmetric AI chat assistant with multi-provider support for OpenRouter, OpenAI, Perplexity, Claude, Gemini and Mistral.",
+        "url": "https://raia-ai.netlify.app/",
+        "applicationCategory": "UtilitiesApplication",
+        "applicationSubCategory": "ChatApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript",
+        "softwareVersion": "1.1.1",
+        "inLanguage": "en",
+        "isAccessibleForFree": true,
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD",
+            "availability": "https://schema.org/InStock"
+        },
+        "featureList": [
+            "Multi-provider AI chat",
+            "Bring your own API key",
+            "Local chat history",
+            "Dark and light themes",
+            "Markdown and code rendering",
+            "Browser-based, no sign-up"
+        ],
+        "author": {
+            "@type": "Organization",
+            "name": "Hajir Studio",
+            "url": "https://buymeacoffee.com/hajirstudio"
+        },
+        "screenshot": "https://i.postimg.cc/28bKx4xC/raia2.webp"
+    }
+    </script>
+
+    <!-- ─── Structured data: WebSite ─── -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "RAIA",
+        "alternateName": "Reflecting Tomorrow",
+        "url": "https://raia-ai.netlify.app/",
+        "inLanguage": "en",
+        "publisher": {
+            "@type": "Organization",
+            "name": "Hajir Studio",
+            "url": "https://buymeacoffee.com/hajirstudio"
         }
+    }
+    </script>
+
+    <!-- ─── Structured data: FAQ ─── -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "Is RAIA free to use?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes. RAIA itself is completely free. You only need an API key from a provider such as OpenRouter, OpenAI, Perplexity, Anthropic, Google or Mistral — many of which offer free tiers."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Which AI providers does RAIA support?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "RAIA supports OpenRouter, OpenAI, Perplexity, Claude (Anthropic), Gemini (Google) and Mistral. You can switch between providers and models at any time."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Is my API key safe with RAIA?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yes. Your API key is stored only in your browser's local storage and is sent directly to the AI provider you choose. RAIA does not proxy, log or transmit your key to any third-party server."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Do I need to create an account?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "No. RAIA works entirely in your browser with no sign-up, no account and no email required."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Does RAIA save my chat history?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Chat history is saved locally in your browser so you can revisit conversations. Nothing is uploaded to RAIA servers because there are none — everything stays on your device."
+                }
+            }
+        ]
+    }
     </script>
 
     <link rel="icon" type="image/webp" href="https://i.postimg.cc/28bKx4xC/raia2.webp" />
-    
+    <link rel="apple-touch-icon" href="https://i.postimg.cc/28bKx4xC/raia2.webp" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://i.postimg.cc" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    
-    <link rel="stylesheet" href="style.css">
-    	
+
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <!-- Icon sprite (Lucide-style, stroke = currentColor) -->
-    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- ═══════════════════════════════════════════
+         SVG ICON SPRITE (all icons — no icon fonts)
+         ═══════════════════════════════════════════ -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
         <defs>
             <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></symbol>
             <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></symbol>
@@ -72,6 +187,7 @@
             <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
             <symbol id="i-crown" viewBox="0 0 24 24"><path d="m2 18 2-11 5 4 3-6 3 6 5-4 2 11Z"/><path d="M2 18h20v3H2z"/></symbol>
             <symbol id="i-send" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></symbol>
+            <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></symbol>
             <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14M19 12l-7 7-7-7"/></symbol>
             <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
             <symbol id="i-lightbulb" viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.3h6c0-1 .4-1.8 1-2.3A7 7 0 0 0 12 2Z"/></symbol>
@@ -86,241 +202,265 @@
             <symbol id="i-alert-triangle" viewBox="0 0 24 24"><path d="m10.29 3.86-8.18 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.89-3.14l-8.18-14a2 2 0 0 0-3.42 0Z"/><path d="M12 9v4M12 17h.01"/></symbol>
             <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></symbol>
             <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14Z"/><path d="M10 11v6M14 11v6"/></symbol>
+            <symbol id="i-coffee" viewBox="0 0 24 24"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><path d="M6 2v3M10 2v3M14 2v3"/></symbol>
+            <symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78Z"/></symbol>
+            <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></symbol>
+            <symbol id="i-zap" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8Z"/></symbol>
         </defs>
     </svg>
 
     <!-- Background layers -->
-<div class="aurora" aria-hidden="true"></div>
-<div class="noise" aria-hidden="true"></div>
-<div class="spotlight" id="spotlight" aria-hidden="true"></div>
-<div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+    <div class="aurora" aria-hidden="true"></div>
+    <div class="noise" aria-hidden="true"></div>
+    <div class="spotlight" id="spotlight" aria-hidden="true"></div>
+    <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
 
-<!-- Header -->
-<header id="header" role="banner">
-    <a class="logo" href="#" aria-label="RAIA — Reflecting Tomorrow">
-        <img class="logo-img" src="https://i.postimg.cc/GmWt2wch/H-blue.webp" alt="RAIA logo" width="38" height="38" loading="eager" decoding="async" />
-        <span class="logo-text">RAIA <small>Reflecting Tomorrow</small></span>
-    </a>
+    <!-- ═══════════ HEADER ═══════════ -->
+    <header id="header" role="banner">
+        <a class="logo" href="#" aria-label="RAIA — Reflecting Tomorrow, home">
+            <img class="logo-img" src="https://i.postimg.cc/GmWt2wch/H-blue.webp" alt="RAIA logo" width="38" height="38" loading="eager" decoding="async" />
+            <span class="logo-text">
+                RAIA
+                <small>Reflecting Tomorrow</small>
+            </span>
+            <span class="version-badge" title="Application version">v1.1.1</span>
+        </a>
 
-    <div class="header-actions">
-        <button class="settings-toggle" id="settingsToggle" aria-label="Open settings" aria-expanded="false">
-            <svg class="icon" aria-hidden="true"><use href="#i-settings"/></svg>
-            <span class="label">Setup API</span>
-        </button>
+        <div class="header-actions">
+            <button class="settings-toggle" id="settingsToggle" aria-label="Open settings" aria-expanded="false" aria-controls="settingsPanel">
+                <svg class="icon" aria-hidden="true"><use href="#i-settings"/></svg>
+                <span class="label">Setup API</span>
+            </button>
 
-        <button class="icon-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle theme"><svg class="icon" aria-hidden="true"><use href="#i-sun"/></svg></button>
-        <button class="icon-btn" id="newChatBtn" aria-label="New chat" title="New chat (Ctrl+N)"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg></button>
-        <button class="icon-btn" id="historyToggle" aria-label="Chat history" title="History (Ctrl+H)"><svg class="icon" aria-hidden="true"><use href="#i-history"/></svg></button>
-    </div>
-</header>
+            <a class="donate-btn" href="https://buymeacoffee.com/hajirstudio" target="_blank" rel="noopener noreferrer" aria-label="Support RAIA — Buy me a coffee" title="Buy me a coffee">
+                <svg class="icon" aria-hidden="true"><use href="#i-coffee"/></svg>
+                <span class="donate-label">Support</span>
+            </a>
 
-<!-- Settings Panel -->
-<div class="settings-panel" id="settingsPanel" role="region" aria-label="Settings">
-    <div class="settings-grid">
-        <div class="field">
-            <label for="provider">Provider</label>
-            <select id="provider"></select>
+            <button class="icon-btn" id="themeToggle" aria-label="Toggle color theme" title="Toggle theme"><svg class="icon" aria-hidden="true"><use href="#i-sun"/></svg></button>
+            <button class="icon-btn" id="newChatBtn" aria-label="Start new chat" title="New chat (Ctrl+N)"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg></button>
+            <button class="icon-btn" id="historyToggle" aria-label="Open chat history" title="History (Ctrl+H)"><svg class="icon" aria-hidden="true"><use href="#i-history"/></svg></button>
         </div>
+    </header>
 
-        <div class="field">
-            <label for="model">
-                Model
-                <span id="modelBadge" class="model-badge"></span>
-            </label>
-            <input
-                id="model"
-                list="modelListData"
-                placeholder="Choose or type a model id…"
-                autocomplete="off"
-                spellcheck="false"
-            />
-            <datalist id="modelListData"></datalist>
-        </div>
+    <!-- ═══════════ SETTINGS PANEL ═══════════ -->
+    <section class="settings-panel" id="settingsPanel" role="region" aria-label="Settings">
+        <div class="settings-grid">
+            <div class="field">
+                <label for="provider">Provider</label>
+                <select id="provider"></select>
+            </div>
 
-        <div class="field">
-            <label for="apiKey">API Key</label>
-            <div class="api-wrap">
+            <div class="field">
+                <label for="model">
+                    Model
+                    <span id="modelBadge" class="model-badge"></span>
+                </label>
                 <input
-                    type="password"
-                    id="apiKey"
-                    placeholder="sk-..."
+                    id="model"
+                    list="modelListData"
+                    placeholder="Choose or type a model id…"
                     autocomplete="off"
                     spellcheck="false"
                 />
-                <button
-                    class="eye"
-                    id="eyeToggle"
-                    aria-label="Show or hide API key"
-                    type="button"
-                ><svg class="icon" aria-hidden="true"><use href="#i-eye"/></svg></button>
+                <datalist id="modelListData"></datalist>
             </div>
-            <div class="hint">
-                <a href="#" target="_blank" id="keyLink" rel="noopener"><span>Get API key</span> <svg class="icon icon-sm" aria-hidden="true"><use href="#i-external-link"/></svg></a>
-                <label class="checkbox-row">
-                    <input type="checkbox" id="rememberKey" checked />
-                    Remember
-                </label>
+
+            <div class="field">
+                <label for="apiKey">API Key</label>
+                <div class="api-wrap">
+                    <input
+                        type="password"
+                        id="apiKey"
+                        placeholder="sk-..."
+                        autocomplete="off"
+                        spellcheck="false"
+                    />
+                    <button
+                        class="eye"
+                        id="eyeToggle"
+                        aria-label="Show or hide API key"
+                        type="button"
+                    ><svg class="icon" aria-hidden="true"><use href="#i-eye"/></svg></button>
+                </div>
+                <div class="hint">
+                    <a href="#" target="_blank" id="keyLink" rel="noopener noreferrer"><span>Get API key</span> <svg class="icon icon-sm" aria-hidden="true"><use href="#i-external-link"/></svg></a>
+                    <label class="checkbox-row">
+                        <input type="checkbox" id="rememberKey" checked />
+                        Remember
+                    </label>
+                </div>
+            </div>
+
+            <div class="field field-actions">
+                <div class="settings-actions">
+                    <button class="btn btn-primary" id="connectBtn" type="button"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-link"/></svg> Connect</button>
+                    <button class="btn btn-secondary" id="testBtn" type="button"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-radio"/></svg> Test</button>
+                    <span class="status-badge" id="statusBadge">
+                        <span class="dot" id="statusDot"></span>
+                        <span id="statusText">Disconnected</span>
+                    </span>
+                </div>
             </div>
         </div>
 
-        <div class="field field-actions">
-            <div class="settings-actions">
-                <button class="btn btn-primary" id="connectBtn" type="button"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-link"/></svg> Connect</button>
-                <button class="btn btn-secondary" id="testBtn" type="button"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-radio"/></svg> Test</button>
-                <span class="status-badge" id="statusBadge">
-                    <span class="dot" id="statusDot"></span>
-                    <span id="statusText">Disconnected</span>
+        <div class="advanced-wrapper">
+            <button
+                class="advanced-toggle"
+                id="advancedToggle"
+                type="button"
+                aria-expanded="false"
+                aria-controls="advancedContent"
+            >
+                Advanced
+                <svg class="icon icon-sm arrow" aria-hidden="true"><use href="#i-chevron-down"/></svg>
+            </button>
+
+            <div class="advanced-content" id="advancedContent">
+                <div class="field">
+                    <label for="customBaseUrl">Custom Base URL (optional)</label>
+                    <input
+                        id="customBaseUrl"
+                        placeholder="Leave empty to use the provider default"
+                        autocomplete="off"
+                        spellcheck="false"
+                    />
+                </div>
+
+                <div class="field">
+                    <label for="proxyUrl">CORS Proxy URL (optional — needed for OpenAI / Perplexity / Mistral)</label>
+                    <input
+                        id="proxyUrl"
+                        placeholder="e.g. https://your-worker.workers.dev"
+                        autocomplete="off"
+                        spellcheck="false"
+                    />
+                </div>
+            </div>
+        </div>
+
+        <div class="slider-row">
+            <div class="slider-group">
+                <label for="tempSlider">Temp</label>
+                <input
+                    type="range"
+                    id="tempSlider"
+                    min="0"
+                    max="2"
+                    step="0.1"
+                    value="0.7"
+                />
+                <span class="slider-value" id="tempDisplay">0.7</span>
+            </div>
+
+            <div class="slider-group">
+                <label for="tokSlider">Max Tok</label>
+                <input
+                    type="range"
+                    id="tokSlider"
+                    min="256"
+                    max="8192"
+                    step="128"
+                    value="1024"
+                />
+                <span class="slider-value" id="tokDisplay">1024</span>
+            </div>
+
+            <button class="btn btn-danger-outline btn-sm" id="resetBtn" type="button"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-rotate-ccw"/></svg> Reset all</button>
+        </div>
+    </section>
+
+    <!-- ═══════════ CHAT ═══════════ -->
+    <main class="chat-container">
+        <div class="messages" id="messages" aria-live="polite" role="log">
+            <div class="welcome" id="welcome">
+                <div class="icon-orb" aria-hidden="true"><svg class="icon icon-xl" aria-hidden="true"><use href="#i-crown"/></svg></div>
+                <h2>RAIA — Reflecting Tomorrow</h2>
+                <p>
+                    Configure your <strong>API key</strong> in Settings, pick a provider and model, then start the conversation.
+                    Symmetric intelligence is ready to assist you.
+                </p>
+
+                <div class="feature-row" aria-hidden="true">
+                    <span class="feature-pill"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-shield"/></svg> Private</span>
+                    <span class="feature-pill"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-zap"/></svg> Fast</span>
+                    <span class="feature-pill"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-sparkle"/></svg> Multi-model</span>
+                </div>
+
+                <div class="suggestion-chips" id="suggestionChips">
+                    <button class="chip" type="button" data-prompt="Explain this concept to me like I'm new to it: ">
+                        <svg class="icon icon-sm" aria-hidden="true"><use href="#i-lightbulb"/></svg> Explain a concept
+                    </button>
+                    <button class="chip" type="button" data-prompt="Help me write and refine: ">
+                        <svg class="icon icon-sm" aria-hidden="true"><use href="#i-pencil"/></svg> Write something
+                    </button>
+                    <button class="chip" type="button" data-prompt="Review and improve this code:
+
+">
+                        <svg class="icon icon-sm" aria-hidden="true"><use href="#i-puzzle"/></svg> Review code
+                    </button>
+                    <button class="chip" type="button" data-prompt="Give me a plan for: ">
+                        <svg class="icon icon-sm" aria-hidden="true"><use href="#i-map"/></svg> Make a plan
+                    </button>
+                </div>
+
+                <a class="support-link" href="https://buymeacoffee.com/hajirstudio" target="_blank" rel="noopener noreferrer">
+                    <svg class="icon icon-sm" aria-hidden="true"><use href="#i-coffee"/></svg>
+                    Enjoying RAIA? Buy me a coffee
+                </a>
+            </div>
+        </div>
+
+        <button class="jump-bottom" id="jumpBottom" type="button">
+            <svg class="icon icon-sm" aria-hidden="true"><use href="#i-arrow-down"/></svg> New messages
+        </button>
+
+        <div class="input-area">
+            <div class="quick-row" id="quickRow" hidden></div>
+
+            <form class="input-form" id="chatForm" role="form">
+                <textarea
+                    id="prompt"
+                    rows="1"
+                    placeholder="Type a message… (Enter to send, Shift+Enter for new line)"
+                    aria-label="Message"
+                ></textarea>
+                <button type="submit" class="send-btn" id="sendBtn" aria-label="Send message">
+                    <span id="sendIcon"><svg class="icon" aria-hidden="true"><use href="#i-send"/></svg></span>
+                </button>
+            </form>
+
+            <div class="input-meta">
+                <span id="charCount">0 characters</span>
+                <span class="shortcut-hint">
+                    <span class="kbd">Enter</span> to send ·
+                    <span class="kbd">Shift+Enter</span> new line ·
+                    <span class="kbd">Ctrl K</span> focus
                 </span>
             </div>
         </div>
-    </div>
+    </main>
 
-    <div class="advanced-wrapper">
-        <button
-            class="advanced-toggle"
-            id="advancedToggle"
-            type="button"
-            aria-expanded="false"
-        >
-            Advanced
-            <svg class="icon icon-sm arrow" aria-hidden="true"><use href="#i-chevron-down"/></svg>
-        </button>
+    <!-- ═══════════ HISTORY DRAWER ═══════════ -->
+    <div class="drawer-overlay" id="historyOverlay"></div>
 
-        <div class="advanced-content" id="advancedContent">
-            <div class="field">
-                <label for="customBaseUrl">Custom Base URL (optional)</label>
-                <input
-                    id="customBaseUrl"
-                    placeholder="Leave empty to use the provider default"
-                    autocomplete="off"
-                    spellcheck="false"
-                />
-            </div>
-
-            <div class="field">
-                <label for="proxyUrl">CORS Proxy URL (optional — needed for OpenAI / Perplexity / Mistral)</label>
-                <input
-                    id="proxyUrl"
-                    placeholder="e.g. https://your-worker.workers.dev"
-                    autocomplete="off"
-                    spellcheck="false"
-                />
+    <aside class="history-drawer" id="historyDrawer" role="dialog" aria-modal="true" aria-label="Chat history">
+        <div class="drawer-header">
+            <h3><svg class="icon icon-sm" aria-hidden="true"><use href="#i-history"/></svg> Chat History</h3>
+            <div class="drawer-header-actions">
+                <button class="btn btn-primary btn-sm" id="newChatDrawerBtn"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-plus"/></svg> New Chat</button>
+                <button class="icon-btn" id="closeHistoryBtn" aria-label="Close history"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></button>
             </div>
         </div>
-    </div>
 
-    <div class="slider-row">
-        <div class="slider-group">
-            <label for="tempSlider">Temp</label>
-            <input
-                type="range"
-                id="tempSlider"
-                min="0"
-                max="2"
-                step="0.1"
-                value="0.7"
-            />
-            <span class="slider-value" id="tempDisplay">0.7</span>
+        <div class="drawer-body">
+            <ul class="history-list" id="chatHistoryList"></ul>
         </div>
+    </aside>
 
-        <div class="slider-group">
-            <label for="tokSlider">Max Tok</label>
-            <input
-                type="range"
-                id="tokSlider"
-                min="256"
-                max="8192"
-                step="128"
-                value="1024"
-            />
-            <span class="slider-value" id="tokDisplay">1024</span>
-        </div>
+    <!-- ═══════════ TOASTS ═══════════ -->
+    <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
 
-        <button class="btn btn-danger-outline btn-sm" id="resetBtn" type="button"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-rotate-ccw"/></svg> Reset all</button>
-    </div>
-</div>
-
-<!-- Chat Container -->
-<div class="chat-container">
-    <div class="messages" id="messages" aria-live="polite" role="log">
-        <div class="welcome" id="welcome">
-            <div class="icon-orb" aria-hidden="true"><svg class="icon icon-xl" aria-hidden="true"><use href="#i-crown"/></svg></div>
-            <h2>RAIA — Reflecting Tomorrow</h2>
-            <p>
-                Configure your <strong>API key</strong> in Settings, pick a provider and model, then start the conversation.
-                Symmetric intelligence is ready to assist you.
-            </p>
-
-            <div class="suggestion-chips" id="suggestionChips">
-                <button class="chip" type="button" data-prompt="Explain this concept to me like I'm new to it: ">
-                    <svg class="icon icon-sm" aria-hidden="true"><use href="#i-lightbulb"/></svg> Explain a concept
-                </button>
-                <button class="chip" type="button" data-prompt="Help me write and refine: ">
-                    <svg class="icon icon-sm" aria-hidden="true"><use href="#i-pencil"/></svg> Write something
-                </button>
-                <button class="chip" type="button" data-prompt="Review and improve this code:
-
-">
-                    <svg class="icon icon-sm" aria-hidden="true"><use href="#i-puzzle"/></svg> Review code
-                </button>
-                <button class="chip" type="button" data-prompt="Give me a plan for: ">
-                    <svg class="icon icon-sm" aria-hidden="true"><use href="#i-map"/></svg> Make a plan
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <button class="jump-bottom" id="jumpBottom" type="button">
-        <svg class="icon icon-sm" aria-hidden="true"><use href="#i-arrow-down"/></svg> New messages
-    </button>
-
-    <div class="input-area">
-        <div class="quick-row" id="quickRow" hidden></div>
-
-        <form class="input-form" id="chatForm" role="form">
-            <textarea
-                id="prompt"
-                rows="1"
-                placeholder="Type a message… (Enter to send, Shift+Enter for new line)"
-                aria-label="Message"
-            ></textarea>
-            <button type="submit" class="send-btn" id="sendBtn" aria-label="Send message">
-                <span id="sendIcon"><svg class="icon" aria-hidden="true"><use href="#i-send"/></svg></span>
-            </button>
-        </form>
-
-        <div class="input-meta">
-            <span id="charCount">0 characters</span>
-            <span>
-                <span class="kbd">Enter</span> to send ·
-                <span class="kbd">Shift+Enter</span> new line ·
-                <span class="kbd">Ctrl K</span> focus
-            </span>
-        </div>
-    </div>
-</div>
-
-<!-- History Drawer -->
-<div class="drawer-overlay" id="historyOverlay"></div>
-
-<aside class="history-drawer" id="historyDrawer" role="dialog" aria-label="Chat history">
-    <div class="drawer-header">
-        <h3><svg class="icon icon-sm" aria-hidden="true"><use href="#i-history"/></svg> Chat History</h3>
-        <div class="drawer-header-actions">
-            <button class="btn btn-primary btn-sm" id="newChatDrawerBtn"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-plus"/></svg> New Chat</button>
-            <button class="icon-btn" id="closeHistoryBtn" aria-label="Close history"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></button>
-        </div>
-    </div>
-
-    <div class="drawer-body">
-        <ul class="history-list" id="chatHistoryList"></ul>
-    </div>
-</aside>
-
-<!-- Toasts -->
-<div class="toasts" id="toasts" role="status" aria-live="polite"></div>
-
-<script src="script.js"></script>
-	
+    <script src="script.js"></script>
 </body>
 </html>
