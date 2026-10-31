@@ -4,13 +4,13 @@
 
 # RAIA — Reflecting Tomorrow
 
-<a href="https://raia-ai.netlify.app/">
+<a href="https://hajir.is-a.dev/raia-ai/">
   <img src="https://readme-typing-svg.demolab.com?font=Outfit&weight=600&size=22&pause=1000&color=4C8BF5&center=true&vCenter=true&width=600&lines=A+symmetric+AI+chat+assistant;Multi-provider+support;Running+entirely+in+your+browser;No+server,+no+tracking,+no+telemetry" alt="Typing SVG" />
 </a>
 
 <br />
 
-<a href="https://raia-ai.netlify.app/">
+<a href="https://hajir.is-a.dev/raia-ai/">
   <img src="https://img.shields.io/badge/Live_Demo-raia.is--a.bot-4C8BF5?style=for-the-badge&logo=netlify&logoColor=white" alt="Live Demo" />
 </a>
 <a href="https://buymeacoffee.com/hajirstudio">
@@ -123,7 +123,6 @@ This release focuses on reliability, rendering quality, and mobile polish.
 | **Responsive redesign** | Layout uses `100dvh` with internal scroll for a proper chat-app feel on all viewports. Tested from 320px to 1920px with no horizontal overflow. |
 | **Mobile keyboard fix** | `interactive-widget=resizes-content` in the viewport meta keeps the input visible when the virtual keyboard opens. |
 | **Accessibility improvements** | `role="log"` and `aria-live="polite"` on the message list, descriptive labels on all controls, focus-visible outlines. |
-| **Domain migration** | Production domain is now `raia.is-a.bot`. All canonical URLs, Open Graph tags, JSON-LD, and OpenRouter `HTTP-Referer` headers point to the new domain. A `_redirects` file 301-redirects from the old Netlify URL. |
 
 <details>
 <summary><strong>Click to view previous releases (v1.2.0 and v1.1.1)</strong></summary>
@@ -216,7 +215,7 @@ This release focuses on reliability, rendering quality, and mobile polish.
 RAIA is a single-page application with no build step.
 
 ### Use the hosted version
-**[raia-ai.netlify.app](https://raia-ai.netlify.app/)**
+**[hajir.is-a.dev/raia-ai](https://hajir.is-a.dev/raia-ai/)**
 
 ### Run locally
 Download the source files and open `index.html` in your browser. An internet connection is required for the vendor libraries (marked.js, DOMPurify, KaTeX) loaded from CDN.
@@ -409,7 +408,6 @@ The application consists of six files.
 ├── style.css       # all styles, themes, and responsive rules
 ├── i18n.js         # lightweight i18n module (id and en translations)
 ├── script.js       # provider logic, chat state, markdown + KaTeX pipeline
-├── netlify.toml    # Netlify build and redirect configuration (optional)
 └── README.md
 ```
 
@@ -469,19 +467,7 @@ Typography Google Fonts — Inter, Outfit, JetBrains Mono
 
 Deployment
 
-RAIA is a static site with no build step. The recommended host is Netlify.
-
-Deploy to Netlify
-
-1. Connect the repository to Netlify.
-2. Build command: (leave empty).
-3. Publish directory: . (root).
-4. Add the custom domain raia.is-a.bot under Domain settings.
-5. Netlify provisions SSL via Let's Encrypt automatically.
-
-Security headers (optional)
-
-The included netlify.toml sets recommended security headers and scopes the production domain via environment variables. Adjust as needed for your own deployment.
+RAIA is a static site with no build step.
 
 ---
 
@@ -500,9 +486,7 @@ v1.2.1
 · Redesigned layout with 100dvh and internal scroll.
 · Fixed mobile keyboard overlay with interactive-widget=resizes-content.
 · Improved accessibility with role="log" and localized ARIA labels.
-· Migrated production domain to raia.is-a.bot.
-· Added _redirects for legacy Netlify domain redirect.
-· Added netlify.toml with security headers.
+· Migrated production domain to hajir.is-a.dev/raia-ai.
 
 v1.2.0
 
