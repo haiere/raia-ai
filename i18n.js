@@ -1,380 +1,294 @@
-/* ═══════════════════════════════════════════════
-   RAIA — Reflecting Tomorrow  ·  v1.2.1
-   i18n.js — Lightweight internationalization
-   Supports: Bahasa Indonesia (id) & English (en)
-   ═══════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════
+   RAIA · Reflecting Tomorrow · v1.2.2
+   i18n.js: Bahasa Indonesia (id) dan English (en)
+   ═══════════════════════════════════════════════════════ */
 
 (function () {
     'use strict';
 
-    const STORAGE_KEY = 'raia_language';
-    const SUPPORTED_LANGUAGES = ['id', 'en'];
+    const STORAGE_KEY = 'raia_lang';
+    const DEFAULT_LANG = 'id';
+    const LANGUAGES = ['id', 'en'];
 
-    const translations = {
+    const dict = {
         id: {
-            /* ─── App ─── */
-            pageTitle: 'Raia AI — Asisten AI Percakapan',
-            appName: 'Raia AI',
+            pageTitle: 'Raia AI: Reflecting Tomorrow',
             appTagline: 'Reflecting Tomorrow',
             versionTitle: 'Versi aplikasi',
 
-            /* ─── Header ─── */
-            settingsOpen: 'Atur API',
-            settingsClose: 'Tutup',
-            settingsAria: 'Buka pengaturan',
-            support: 'Dukung',
-            supportTitle: 'Dukung Raia AI — traktir kopi',
-            toggleTheme: 'Ganti tema warna',
-            newChat: 'Percakapan baru',
-            newChatTitle: 'Percakapan baru (Ctrl+N)',
-            history: 'Riwayat',
-            historyTitle: 'Buka riwayat percakapan (Ctrl+H)',
+            navChat: 'Chat',
+            navSetting: 'Pengaturan',
+            navHistory: 'Riwayat',
+            newChat: 'Chat baru',
+            newChatTitle: 'Mulai chat baru (Ctrl+N)',
+            historyTitle: 'Buka riwayat chat',
             closeHistory: 'Tutup riwayat',
-            clearChat: 'Hapus chat',
-            clearChatTitle: 'Hapus seluruh percakapan ini',
+            themeToggle: 'Ganti tema',
+            support: 'Dukung',
+            supportTitle: 'Traktir kopi untuk Hajir',
+            skipLink: 'Lewati ke konten',
 
-            /* ─── Settings ─── */
-            settingsRegion: 'Pengaturan',
-            language: 'Bahasa',
-            provider: 'Provider',
-            model: 'Model',
-            modelCustom: '(khusus)',
-            chooseModel: 'Pilih atau ketik id model…',
-            apiKey: 'API Key',
-            apiKeyPlaceholder: 'sk-...',
-            showHideKey: 'Tampilkan atau sembunyikan API key',
-            rememberKey: 'Ingat',
-            getApiKey: 'Dapatkan API key',
-            connect: 'Hubungkan',
-            testConnection: 'Tes',
-            statusConnected: 'Terhubung',
-            statusDisconnected: 'Belum terhubung',
-            online: 'Online',
-            offline: 'Offline',
-            advanced: 'Lanjutan',
-            customBaseUrl: 'Custom Base URL (opsional)',
-            customBaseUrlPlaceholder: 'Kosongkan untuk memakai bawaan provider',
-            defaultPrefix: 'Bawaan:',
-            proxyUrl: 'CORS Proxy URL (opsional — diperlukan untuk OpenAI / Perplexity / Mistral)',
-            proxyUrlPlaceholder: 'mis. https://worker-kamu.workers.dev',
-            temp: 'Temp',
-            maxTokens: 'Maks Token',
-            resetAll: 'Reset semua',
-            resetConfirm: 'Reset seluruh riwayat chat dan konfigurasi? Tindakan ini tidak bisa dibatalkan.',
-
-            /* ─── Welcome / empty state ─── */
-            welcomeTitle: 'Raia AI — Reflecting Tomorrow',
-            welcomeDesc1: 'Isi',
-            welcomeDescKey: 'API key',
-            welcomeDesc2: 'di Pengaturan, pilih provider dan model, lalu mulai ngobrol. Raia siap membantu.',
-            featurePrivate: 'Privat',
-            featureFast: 'Cepat',
-            featureMulti: 'Multi-model',
+            welcomeTitle: 'Halo, ada yang bisa dibantu?',
+            welcomeDesc: 'Raia terhubung ke beberapa penyedia AI memakai API key milikmu sendiri. Chat tersimpan hanya di browser ini.',
             chipExplain: 'Jelaskan konsep',
-            chipWrite: 'Tulis sesuatu',
-            chipReview: 'Review kode',
+            chipWrite: 'Bantu menulis',
+            chipCode: 'Tinjau kode',
             chipPlan: 'Buat rencana',
-            coffeePrompt: 'Raia membantu? Traktir kopi, yuk',
+            promptExplain: 'Jelaskan konsep ini dengan bahasa sederhana: ',
+            promptWrite: 'Bantu saya menulis dan merapikan teks berikut: ',
+            promptCode: 'Tinjau dan perbaiki kode ini:\n\n',
+            promptPlan: 'Buatkan rencana langkah demi langkah untuk: ',
 
-            /* ─── Input ─── */
-            typeMessage: 'Tulis pesan… (Enter untuk kirim, Shift+Enter untuk baris baru)',
-            messageLabel: 'Pesan',
-            send: 'Kirim',
+            inputLabel: 'Pesan',
+            inputPlaceholder: 'Tulis pesan kamu...',
             sendLabel: 'Kirim pesan',
-            sendingLabel: 'Sedang mengirim pesan',
-            stopGenerating: 'Hentikan',
-            stopLabel: 'Hentikan generasi',
+            stopLabel: 'Hentikan jawaban',
+            inputHint: 'Enter untuk kirim, Shift+Enter untuk baris baru',
             charCount: '{n} karakter',
-            hintSend: 'untuk kirim',
-            hintNewline: 'baris baru',
-            hintFocus: 'fokus',
             jumpBottom: 'Pesan baru',
 
-            /* ─── Chat ─── */
-            typingLabel: 'Raia sedang mengetik',
-            thinking: 'Sedang berpikir…',
+            noKeyBanner: 'API key belum diisi. Tambahkan dulu di pengaturan supaya Raia bisa menjawab.',
+            goSetting: 'Buka pengaturan',
+
+            toastEmpty: 'Tulis pesan dulu ya.',
+            toastNoKey: 'Isi API key di pengaturan dulu.',
+            toastCopied: 'Tersalin ke papan klip.',
+            toastCopyFailed: 'Gagal menyalin. Coba salin secara manual.',
+            toastSaved: 'Pengaturan tersimpan.',
+            toastReset: 'Pengaturan dikembalikan ke awal.',
+            toastDeleted: 'Chat dihapus.',
+            toastStopped: 'Jawaban dihentikan.',
+            toastOnline: 'Koneksi internet kembali.',
+            toastOffline: 'Internet terputus.',
+
+            setTitle: 'Pengaturan',
+            setDesc: 'Atur penyedia, model, dan API key kamu. Semua disimpan di browser ini.',
+            language: 'Bahasa',
+            provider: 'Penyedia',
+            model: 'Model',
+            modelPlaceholder: 'Pilih atau ketik ID model',
+            modelCustom: '(kustom)',
+            apiKey: 'API key',
+            apiKeyPlaceholder: 'Tempel API key kamu',
+            showKey: 'Tampilkan key',
+            hideKey: 'Sembunyikan key',
+            getKey: 'Ambil API key',
+            rememberKey: 'Ingat key di browser ini',
+            keyNote: 'Key hanya dikirim ke penyedia yang kamu pilih.',
+            connect: 'Simpan',
+            test: 'Tes koneksi',
+            testing: 'Mengetes...',
+            statusOn: 'Terhubung',
+            statusOff: 'Belum terhubung',
+            pingOk: 'Koneksi ke {provider} berhasil.',
+            pingFail: 'Koneksi gagal: {msg}',
+            advanced: 'Lanjutan',
+            baseUrl: 'Base URL kustom (opsional)',
+            baseUrlPlaceholder: 'Kosongkan untuk memakai default penyedia',
+            proxy: 'Proxy CORS (opsional)',
+            proxyPlaceholder: 'Contoh: https://worker-kamu.workers.dev',
+            temp: 'Kreativitas',
+            maxTok: 'Panjang jawaban maks',
+            resetAll: 'Reset semua',
+
+            you: 'Kamu',
+            assistant: 'Raia',
+            typing: 'Raia sedang menulis',
             copy: 'Salin',
-            copied: 'Tersalin',
-            regenerate: 'Buat ulang',
-            retry: 'Coba lagi',
-            emptyChat: 'Belum ada pesan.',
-            emptyResponse: '(Respons kosong)',
+            copyCode: 'Salin kode',
+            codeCopied: 'Kode tersalin',
+            regenerate: 'Ulangi',
 
-            /* ─── Toasts & dialogs ─── */
-            toastCopied: 'Tersalin ke clipboard',
-            toastCopyFailed: 'Tidak bisa menyalin — salin manual, ya',
-            toastStopped: 'Dithentikan',
-            toastKeyEmpty: 'API key tidak boleh kosong',
-            toastEnterKeyFirst: 'Isi API key dulu, ya',
-            toastConnectedSaved: 'Tersambung & tersimpan',
-            toastKeyApplied: 'API key dipakai — silakan mulai chat!',
-            toastRememberOn: 'API key akan diingat di perangkat ini',
-            toastRememberOff: 'API key hanya disimpan untuk sesi ini',
-            corsWarning: '{provider} memblokir panggilan langsung dari browser (CORS). Isi CORS Proxy URL di bagian Lanjutan, atau pindah ke OpenRouter.',
-            pingSuccess: 'Koneksi ke {provider} berhasil',
-            pingFailed: 'Tes gagal: ',
-            pinging: 'Mengetes…',
-            toastNewChat: 'Percakapan baru dimulai',
-            toastNewChatCreated: 'Percakapan baru dibuat',
-            toastChatDeleted: 'Percakapan dihapus',
-            toastChatCleared: 'Chat dihapus',
-            toastAllReset: 'Semuanya sudah direset',
-            toastOffline: 'Koneksi internet terputus',
-            toastOnline: 'Koneksi internet kembali',
-            deleteChatConfirm: 'Hapus percakapan ini?',
+            historyHeading: 'Riwayat',
+            historyEmpty: 'Belum ada riwayat chat.',
+            untitled: 'Chat tanpa judul',
             deleteChat: 'Hapus chat',
-            newChatDrawer: 'Percakapan Baru',
-            historyEmpty: 'Belum ada riwayat percakapan.',
-            historyEmptyHint: 'Mulai chat untuk membuat percakapan baru.',
-            confirmClear: 'Hapus seluruh percakapan ini?',
-            cancel: 'Batal',
-            confirm: 'Konfirmasi',
-            errorGeneric: 'Terjadi kesalahan. Coba lagi, ya.',
-            timedOut: 'Permintaan memakan waktu terlalu lama dan sudah dihentikan. Coba lagi, ya.',
-            mathRenderError: 'Gagal menampilkan rumus',
+            clearAllHistory: 'Hapus semua riwayat',
+            confirmClearAll: 'Yakin ingin menghapus semua riwayat chat? Tindakan ini tidak bisa dibatalkan.',
+            confirmReset: 'Kembalikan semua pengaturan ke awal? API key juga akan dihapus. Riwayat chat tetap tersimpan.',
 
-            /* ─── Error states (rendered as chat messages) ─── */
-            errNotConnectedTitle: 'Belum terhubung',
-            errNotConnectedBody: 'Pastikan API key sudah diisi, lalu klik **Hubungkan** di panel Pengaturan.',
-            errInvalidKeyTitle: 'API key tidak valid',
-            errInvalidKeyBody: 'Cek key-mu, pastikan tidak ada spasi berlebih, dan key itu punya akses ke **{model}**.',
-            errRateLimitTitle: 'Rate limit / kuota habis',
-            errRateLimitBody: 'Coba beberapa saat lagi, atau cek dashboard provider-mu.',
-            errModelNotFoundTitle: 'Model tidak ditemukan',
-            errModelNotFoundBody: 'Pastikan **{model}** adalah model yang valid dan masih tersedia di **{provider}**.',
-            errConnectionTitle: 'Koneksi gagal',
-            errProviderTitle: 'Error dari {provider}'
+            errNoKeyTitle: 'API key belum diisi',
+            errNoKeyBody: 'Buka pengaturan, masukkan API key {provider}, lalu tekan Simpan.',
+            errAuthTitle: 'API key tidak diterima',
+            errAuthBody: 'Periksa kembali key kamu di {provider}. Pastikan key masih aktif.',
+            errRateTitle: 'Batas permintaan tercapai',
+            errRateBody: 'Tunggu sebentar lalu coba lagi, atau cek kuota akun kamu.',
+            errModelTitle: 'Model tidak ditemukan',
+            errModelBody: 'Model {model} tidak tersedia di {provider}. Pilih model lain di pengaturan.',
+            errNetTitle: 'Koneksi bermasalah',
+            errNetBody: 'Periksa internet kamu lalu coba lagi. Jika memakai proxy, pastikan proxy aktif.',
+            errCorsBody: 'Browser memblokir permintaan ke {provider}. Isi Proxy CORS di pengaturan lanjutan.',
+            errTimeoutBody: 'Permintaan terlalu lama. Coba lagi atau pilih model yang lebih ringan.',
+            errGenericTitle: 'Ada kendala',
+            errGenericBody: 'Permintaan belum berhasil. Coba lagi sebentar lagi.',
+            emptyReply: '(Jawaban kosong)'
         },
 
         en: {
-            /* ─── App ─── */
-            pageTitle: 'Raia AI — AI Chat Assistant',
-            appName: 'Raia AI',
+            pageTitle: 'Raia AI: Reflecting Tomorrow',
             appTagline: 'Reflecting Tomorrow',
-            versionTitle: 'Application version',
+            versionTitle: 'App version',
 
-            /* ─── Header ─── */
-            settingsOpen: 'Setup API',
-            settingsClose: 'Close',
-            settingsAria: 'Open settings',
-            support: 'Support',
-            supportTitle: 'Support Raia AI — buy me a coffee',
-            toggleTheme: 'Toggle color theme',
+            navChat: 'Chat',
+            navSetting: 'Settings',
+            navHistory: 'History',
             newChat: 'New chat',
-            newChatTitle: 'New chat (Ctrl+N)',
-            history: 'History',
-            historyTitle: 'Open chat history (Ctrl+H)',
+            newChatTitle: 'Start a new chat (Ctrl+N)',
+            historyTitle: 'Open chat history',
             closeHistory: 'Close history',
-            clearChat: 'Clear chat',
-            clearChatTitle: 'Clear entire conversation',
+            themeToggle: 'Toggle theme',
+            support: 'Support',
+            supportTitle: 'Buy Hajir a coffee',
+            skipLink: 'Skip to content',
 
-            /* ─── Settings ─── */
-            settingsRegion: 'Settings',
+            welcomeTitle: 'Hi, how can I help?',
+            welcomeDesc: 'Raia connects to several AI providers with your own API key. Chats are stored only in this browser.',
+            chipExplain: 'Explain a concept',
+            chipWrite: 'Help me write',
+            chipCode: 'Review code',
+            chipPlan: 'Make a plan',
+            promptExplain: 'Explain this concept in simple terms: ',
+            promptWrite: 'Help me write and polish this text: ',
+            promptCode: 'Review and fix this code:\n\n',
+            promptPlan: 'Give me a step-by-step plan for: ',
+
+            inputLabel: 'Message',
+            inputPlaceholder: 'Type your message...',
+            sendLabel: 'Send message',
+            stopLabel: 'Stop answer',
+            inputHint: 'Enter to send, Shift+Enter for a new line',
+            charCount: '{n} characters',
+            jumpBottom: 'New messages',
+
+            noKeyBanner: 'No API key yet. Add one in settings so Raia can reply.',
+            goSetting: 'Open settings',
+
+            toastEmpty: 'Write a message first.',
+            toastNoKey: 'Add your API key in settings first.',
+            toastCopied: 'Copied to clipboard.',
+            toastCopyFailed: 'Copy failed. Try copying it manually.',
+            toastSaved: 'Settings saved.',
+            toastReset: 'Settings were reset.',
+            toastDeleted: 'Chat deleted.',
+            toastStopped: 'Answer stopped.',
+            toastOnline: 'Back online.',
+            toastOffline: 'Internet connection lost.',
+
+            setTitle: 'Settings',
+            setDesc: 'Choose a provider, a model, and your API key. Everything is saved in this browser.',
             language: 'Language',
             provider: 'Provider',
             model: 'Model',
+            modelPlaceholder: 'Choose or type a model ID',
             modelCustom: '(custom)',
-            chooseModel: 'Choose or type a model id…',
-            apiKey: 'API Key',
-            apiKeyPlaceholder: 'sk-...',
-            showHideKey: 'Show or hide API key',
-            rememberKey: 'Remember',
-            getApiKey: 'Get API key',
-            connect: 'Connect',
-            testConnection: 'Test',
-            statusConnected: 'Connected',
-            statusDisconnected: 'Disconnected',
-            online: 'Online',
-            offline: 'Offline',
+            apiKey: 'API key',
+            apiKeyPlaceholder: 'Paste your API key',
+            showKey: 'Show key',
+            hideKey: 'Hide key',
+            getKey: 'Get an API key',
+            rememberKey: 'Remember key in this browser',
+            keyNote: 'The key is sent only to the provider you choose.',
+            connect: 'Save',
+            test: 'Test connection',
+            testing: 'Testing...',
+            statusOn: 'Connected',
+            statusOff: 'Not connected',
+            pingOk: 'Connected to {provider}.',
+            pingFail: 'Connection failed: {msg}',
             advanced: 'Advanced',
-            customBaseUrl: 'Custom Base URL (optional)',
-            customBaseUrlPlaceholder: 'Leave empty to use the provider default',
-            defaultPrefix: 'Default:',
-            proxyUrl: 'CORS Proxy URL (optional — needed for OpenAI / Perplexity / Mistral)',
-            proxyUrlPlaceholder: 'e.g. https://your-worker.workers.dev',
-            temp: 'Temp',
-            maxTokens: 'Max Tok',
+            baseUrl: 'Custom base URL (optional)',
+            baseUrlPlaceholder: 'Leave empty to use the provider default',
+            proxy: 'CORS proxy (optional)',
+            proxyPlaceholder: 'For example: https://your-worker.workers.dev',
+            temp: 'Creativity',
+            maxTok: 'Max answer length',
             resetAll: 'Reset all',
-            resetConfirm: 'Reset all chat history and configuration? This cannot be undone.',
 
-            /* ─── Welcome / empty state ─── */
-            welcomeTitle: 'Raia AI — Reflecting Tomorrow',
-            welcomeDesc1: 'Configure your',
-            welcomeDescKey: 'API key',
-            welcomeDesc2: 'in Settings, pick a provider and model, then start the conversation. Raia is ready to help.',
-            featurePrivate: 'Private',
-            featureFast: 'Fast',
-            featureMulti: 'Multi-model',
-            chipExplain: 'Explain a concept',
-            chipWrite: 'Write something',
-            chipReview: 'Review code',
-            chipPlan: 'Make a plan',
-            coffeePrompt: 'Enjoying Raia? Buy me a coffee',
-
-            /* ─── Input ─── */
-            typeMessage: 'Type a message… (Enter to send, Shift+Enter for new line)',
-            messageLabel: 'Message',
-            send: 'Send',
-            sendLabel: 'Send message',
-            sendingLabel: 'Sending message',
-            stopGenerating: 'Stop',
-            stopLabel: 'Stop generation',
-            charCount: '{n} character(s)',
-            hintSend: 'to send',
-            hintNewline: 'new line',
-            hintFocus: 'focus',
-            jumpBottom: 'New messages',
-
-            /* ─── Chat ─── */
-            typingLabel: 'Raia is typing',
-            thinking: 'Thinking…',
+            you: 'You',
+            assistant: 'Raia',
+            typing: 'Raia is writing',
             copy: 'Copy',
-            copied: 'Copied',
-            regenerate: 'Regenerate',
-            retry: 'Retry',
-            emptyChat: 'No messages yet.',
-            emptyResponse: '(Empty response)',
+            copyCode: 'Copy code',
+            codeCopied: 'Code copied',
+            regenerate: 'Retry',
 
-            /* ─── Toasts & dialogs ─── */
-            toastCopied: 'Copied to clipboard',
-            toastCopyFailed: 'Could not copy — please copy manually',
-            toastStopped: 'Generation stopped',
-            toastKeyEmpty: 'API key cannot be empty',
-            toastEnterKeyFirst: 'Enter an API key first',
-            toastConnectedSaved: 'Connected & saved',
-            toastKeyApplied: 'API key applied — you can now chat!',
-            toastRememberOn: 'API key will be remembered on this device',
-            toastRememberOff: 'API key will only be kept for this session',
-            corsWarning: '{provider} blocks direct browser requests (CORS). Set a CORS Proxy URL under Advanced, or switch to OpenRouter.',
-            pingSuccess: 'Ping successful to {provider}',
-            pingFailed: 'Ping failed: ',
-            pinging: 'Pinging…',
-            toastNewChat: 'New chat started',
-            toastNewChatCreated: 'New chat created',
-            toastChatDeleted: 'Chat deleted',
-            toastChatCleared: 'Chat cleared',
-            toastAllReset: 'Everything has been reset',
-            toastOffline: 'Internet connection lost',
-            toastOnline: 'Back online',
-            deleteChatConfirm: 'Delete this conversation?',
+            historyHeading: 'History',
+            historyEmpty: 'No chat history yet.',
+            untitled: 'Untitled chat',
             deleteChat: 'Delete chat',
-            newChatDrawer: 'New Chat',
-            historyEmpty: 'No conversation history yet.',
-            historyEmptyHint: 'Start a chat to create a conversation.',
-            confirmClear: 'Clear this entire conversation?',
-            cancel: 'Cancel',
-            confirm: 'Confirm',
-            errorGeneric: 'Something went wrong. Please try again.',
-            timedOut: 'The request took too long and was stopped. Please try again.',
-            mathRenderError: 'Failed to render formula',
+            clearAllHistory: 'Clear all history',
+            confirmClearAll: 'Delete all chat history? This cannot be undone.',
+            confirmReset: 'Reset all settings to the defaults? Your API key will be removed. Chat history is kept.',
 
-            /* ─── Error states (rendered as chat messages) ─── */
-            errNotConnectedTitle: 'Not connected',
-            errNotConnectedBody: 'Make sure your API key is filled in, then click **Connect** in the Settings panel.',
-            errInvalidKeyTitle: 'Invalid API key',
-            errInvalidKeyBody: 'Check your key, make sure there are no extra spaces, and that it has access to **{model}**.',
-            errRateLimitTitle: 'Rate limit / quota exceeded',
-            errRateLimitBody: 'Try again in a moment, or check your provider dashboard.',
-            errModelNotFoundTitle: 'Model not found',
-            errModelNotFoundBody: 'Make sure **{model}** is a valid, currently available model for **{provider}**.',
-            errConnectionTitle: 'Connection failed',
-            errProviderTitle: 'Error from {provider}'
+            errNoKeyTitle: 'No API key yet',
+            errNoKeyBody: 'Open settings, paste your {provider} API key, then press Save.',
+            errAuthTitle: 'API key not accepted',
+            errAuthBody: 'Check your key on {provider}. Make sure it is still active.',
+            errRateTitle: 'Request limit reached',
+            errRateBody: 'Wait a moment and try again, or check your account quota.',
+            errModelTitle: 'Model not found',
+            errModelBody: 'The model {model} is not available on {provider}. Pick another one in settings.',
+            errNetTitle: 'Connection problem',
+            errNetBody: 'Check your internet and try again. If you use a proxy, make sure it is running.',
+            errCorsBody: 'The browser blocked the request to {provider}. Add a CORS proxy in advanced settings.',
+            errTimeoutBody: 'The request took too long. Try again or pick a lighter model.',
+            errGenericTitle: 'Something went wrong',
+            errGenericBody: 'The request did not go through. Please try again in a moment.',
+            emptyReply: '(Empty answer)'
         }
     };
 
-    let currentLanguage = detectInitialLanguage();
-    const listeners = [];
+    let current = DEFAULT_LANG;
 
-    function detectInitialLanguage() {
+    function detectLang() {
         try {
             const saved = localStorage.getItem(STORAGE_KEY);
-            if (saved && SUPPORTED_LANGUAGES.indexOf(saved) !== -1) return saved;
-        } catch (_) { /* storage unavailable — fall through */ }
-
-        const nav = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
-        if (nav.indexOf('id') === 0) return 'id';
-        return 'en';
+            if (LANGUAGES.includes(saved)) return saved;
+        } catch (_) { /* storage can be blocked */ }
+        const nav = (navigator.language || '').toLowerCase();
+        return nav.startsWith('en') ? 'en' : DEFAULT_LANG;
     }
 
-    function getCurrentLanguage() {
-        return currentLanguage;
+    function t(key, vars) {
+        const table = dict[current] || dict[DEFAULT_LANG];
+        const str = table[key] !== undefined ? table[key] : (dict.en[key] !== undefined ? dict.en[key] : key);
+        if (!vars) return str;
+        return str.replace(/\{(\w+)\}/g, (match, name) =>
+            Object.prototype.hasOwnProperty.call(vars, name) ? String(vars[name]) : match
+        );
     }
 
-    function setLanguage(language) {
-        if (SUPPORTED_LANGUAGES.indexOf(language) === -1) language = 'en';
-        if (language === currentLanguage) {
-            applyTranslations();
-            return;
-        }
-        currentLanguage = language;
-        try {
-            localStorage.setItem(STORAGE_KEY, language);
-        } catch (_) { /* ignore */ }
-        document.documentElement.lang = language;
-        applyTranslations();
-        listeners.forEach(function (cb) {
-            try { cb(language); } catch (_) { /* listener errors must not break i18n */ }
+    function apply(root) {
+        const scope = root || document;
+        scope.querySelectorAll('[data-i18n]').forEach((el) => {
+            el.textContent = t(el.dataset.i18n);
         });
-    }
-
-    function translate(key, fallback) {
-        const dict = translations[currentLanguage] || {};
-        if (Object.prototype.hasOwnProperty.call(dict, key) && dict[key] != null) {
-            return dict[key];
-        }
-        const en = translations.en || {};
-        if (Object.prototype.hasOwnProperty.call(en, key) && en[key] != null) {
-            return en[key];
-        }
-        if (fallback !== undefined && fallback !== null) return fallback;
-        return key;
-    }
-
-    function t(key, fallback) {
-        return translate(key, fallback);
-    }
-
-    function applyTranslations() {
-        document.documentElement.lang = currentLanguage;
-
-        document.querySelectorAll('[data-i18n]').forEach(function (el) {
-            const key = el.getAttribute('data-i18n');
-            if (!key) return;
-            el.textContent = translate(key);
+        scope.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
+            el.setAttribute('placeholder', t(el.dataset.i18nPlaceholder));
         });
-
-        document.querySelectorAll('[data-i18n-placeholder]').forEach(function (el) {
-            const key = el.getAttribute('data-i18n-placeholder');
-            if (!key) return;
-            el.setAttribute('placeholder', translate(key));
+        scope.querySelectorAll('[data-i18n-aria-label]').forEach((el) => {
+            el.setAttribute('aria-label', t(el.dataset.i18nAriaLabel));
         });
-
-        document.querySelectorAll('[data-i18n-title]').forEach(function (el) {
-            const key = el.getAttribute('data-i18n-title');
-            if (!key) return;
-            el.setAttribute('title', translate(key));
+        scope.querySelectorAll('[data-i18n-title]').forEach((el) => {
+            el.setAttribute('title', t(el.dataset.i18nTitle));
         });
-
-        document.querySelectorAll('[data-i18n-aria-label]').forEach(function (el) {
-            const key = el.getAttribute('data-i18n-aria-label');
-            if (!key) return;
-            el.setAttribute('aria-label', translate(key));
-        });
+        document.documentElement.lang = current;
+        document.title = t('pageTitle');
     }
 
-    function onLanguageChange(callback) {
-        if (typeof callback === 'function') listeners.push(callback);
+    function setLang(lang) {
+        if (!LANGUAGES.includes(lang) || lang === current) return;
+        current = lang;
+        try { localStorage.setItem(STORAGE_KEY, lang); } catch (_) { /* ignore */ }
+        apply();
+        window.dispatchEvent(new CustomEvent('raia:langchange', { detail: lang }));
     }
 
-    document.documentElement.lang = currentLanguage;
+    function getLang() {
+        return current;
+    }
 
-    window.I18N = {
-        t: t,
-        translate: translate,
-        setLanguage: setLanguage,
-        getCurrentLanguage: getCurrentLanguage,
-        applyTranslations: applyTranslations,
-        onLanguageChange: onLanguageChange,
-        languages: SUPPORTED_LANGUAGES.slice()
-    };
-})(); 
+    current = detectLang();
+
+    window.I18N = { t, apply, setLang, getLang, languages: LANGUAGES.slice() };
+})();

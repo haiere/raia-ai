@@ -2,16 +2,16 @@
 
 <img src="https://i.postimg.cc/28bKx4xC/raia2.webp" alt="Raia AI logo" width="120" />
 
-# RAIA — Reflecting Tomorrow
+# RAIA: Reflecting Tomorrow
 
 <a href="https://hajir.is-a.dev/raia-ai/">
-  <img src="https://readme-typing-svg.demolab.com?font=Outfit&weight=600&size=22&pause=1000&color=4C8BF5&center=true&vCenter=true&width=600&lines=A+symmetric+AI+chat+assistant;Multi-provider+support;Running+entirely+in+your+browser;No+server,+no+tracking,+no+telemetry" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.demolab.com?font=DM+Sans&weight=600&size=22&pause=1000&color=3B82F6&center=true&vCenter=true&width=600&lines=A+multi-provider+AI+chat+client;Bring+your+own+API+key;Running+entirely+in+your+browser;No+server,+no+tracking,+no+telemetry" alt="Typing SVG" />
 </a>
 
 <br />
 
 <a href="https://hajir.is-a.dev/raia-ai/">
-  <img src="https://img.shields.io/badge/Live_Demo-raia.is--a.bot-4C8BF5?style=for-the-badge&logo=netlify&logoColor=white" alt="Live Demo" />
+  <img src="https://img.shields.io/badge/Live_Demo-hajir.is--a.dev%2Fraia--ai-3B82F6?style=for-the-badge&logo=netlify&logoColor=white" alt="Live Demo" />
 </a>
 <a href="https://buymeacoffee.com/hajirstudio">
   <img src="https://img.shields.io/badge/Support_the_Project-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black" alt="Buy Me a Coffee" />
@@ -19,7 +19,7 @@
 
 <br />
 
-<img src="https://img.shields.io/badge/Version-v1.2.1-4C8BF5?style=flat-square" alt="Version v1.2.1" />
+<img src="https://img.shields.io/badge/Version-v1.2.2-3B82F6?style=flat-square" alt="Version v1.2.2" />
 <img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" alt="MIT License" />
 <img src="https://img.shields.io/badge/PRs-Welcome-brightgreen?style=flat-square" alt="PRs Welcome" />
 
@@ -28,6 +28,7 @@
 <img src="https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white" alt="HTML5" />
 <img src="https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white" alt="CSS3" />
 <img src="https://img.shields.io/badge/JavaScript-Vanilla-F7DF1E?style=flat-square&logo=javascript&logoColor=black" alt="Vanilla JavaScript" />
+<img src="https://img.shields.io/badge/GSAP-3.12.5-88CE02?style=flat-square&logo=greensock&logoColor=white" alt="GSAP 3.12.5" />
 <img src="https://img.shields.io/badge/No_Build_Step-4B0082?style=flat-square" alt="No build step" />
 
 <br />
@@ -36,7 +37,6 @@
 <img src="https://img.shields.io/badge/Storage-Local_Browser-7FD8CB?style=flat-square" alt="Local storage" />
 <img src="https://img.shields.io/badge/i18n-ID_%26_EN-9B59B6?style=flat-square" alt="Bahasa Indonesia and English" />
 <img src="https://img.shields.io/badge/Math-KaTeX-008080?style=flat-square" alt="KaTeX math rendering" />
-<img src="https://img.shields.io/badge/a11y-ARIA_Ready-B4788C?style=flat-square" alt="ARIA ready" />
 
 </div>
 
@@ -45,7 +45,7 @@
 ## Table of Contents
 
 - [Overview](#overview)
-- [What's New in v1.2.1](#whats-new-in-v121)
+- [What's New in v1.2.2](#whats-new-in-v122)
 - [Features](#features)
 - [Requirements](#requirements)
 - [Installation](#installation)
@@ -68,7 +68,7 @@
 
 ## Overview
 
-RAIA is a client-side AI chat interface that connects to multiple large language model providers from a single, unified experience.
+RAIA is a client-side AI chat interface that connects to several large language model providers from one place.
 
 <table>
 <tr>
@@ -88,14 +88,14 @@ RAIA is a client-side AI chat interface that connects to multiple large language
 
 ### What It Gives You
 
-- Unified chat experience
-- Local history storage
-- Model selection
-- Configurable generation parameters
-- Full Markdown and LaTeX math rendering
-- Bilingual interface (Bahasa Indonesia and English)
-- Polished glassmorphic interface
-- Responsive design for desktop and mobile
+- One chat experience for several providers
+- Local chat history
+- Model selection, or any custom model ID
+- Adjustable temperature and answer length
+- Markdown and LaTeX math rendering
+- Interface in Bahasa Indonesia and English
+- Dark and light themes
+- Layout for phones and desktops
 
 </td>
 </tr>
@@ -106,50 +106,55 @@ RAIA is a client-side AI chat interface that connects to multiple large language
 
 ---
 
-## What's New in v1.2.1
+## What's New in v1.2.2
 
-This release focuses on reliability, rendering quality, and mobile polish.
+This release fixes the header layout on phones, moves settings to its own page, and adds motion.
 
 | Change | Details |
 |---|---|
-| **Send button fix** | The send button now uses a `data-disabled` attribute instead of the native `disabled` attribute, so it always receives clicks. Empty input shows a friendly toast instead of silently doing nothing. A single `updateSendButtonState()` function is the only source of truth for the button state. |
-| **Double-submit prevention** | A per-request ID counter prevents stale responses from overwriting newer ones, and `state.loading` guards against duplicate submissions. |
-| **Full Markdown rendering** | Migrated to `marked.js` with GitHub-Flavored Markdown support: headings, lists, tables, task lists, blockquotes, inline code, and fenced code blocks. |
-| **LaTeX math via KaTeX** | Inline (`$...$`, `\(...\)`) and block (`$$...$$`, `\[...\]`) math rendering. Fractions, roots, exponents, integrals, sums, and matrices render cleanly on all screen sizes. |
-| **XSS sanitization** | All assistant output is sanitized with DOMPurify. `style` attributes are scoped to KaTeX elements only via the `uponSanitizeAttribute` hook. |
-| **Code block copy buttons** | Every fenced code block gets a copy button with "Copied" feedback and a localized toast. |
-| **Retry button for errors** | Failed requests render an error message with a Retry button that re-sends the original prompt. |
-| **Clear chat** | A new trash icon in the history drawer clears the current conversation with confirmation. |
-| **Responsive redesign** | Layout uses `100dvh` with internal scroll for a proper chat-app feel on all viewports. Tested from 320px to 1920px with no horizontal overflow. |
-| **Mobile keyboard fix** | `interactive-widget=resizes-content` in the viewport meta keeps the input visible when the virtual keyboard opens. |
-| **Accessibility improvements** | `role="log"` and `aria-live="polite"` on the message list, descriptive labels on all controls, focus-visible outlines. |
+| **Send button** | The send button is a round button beside a pill-shaped message field. It never uses the native `disabled` attribute, so it always responds. An empty message shows a short notice. While a reply is loading, the same button stops the response. |
+| **Routes** | The app uses hash routes: `#/chat` for conversations and `#/setting` for settings. Hash routes work on any static host. |
+| **Settings page** | Settings moved from a collapsible panel to the `#/setting` page, with separate cards for provider, API key, and generation parameters. |
+| **Missing API key** | A friendly notice in the chat explains what to do and links to the settings page. The typed message is kept. |
+| **Code and math** | Fenced code blocks show their language and a copy button. Inline and display math render with KaTeX, so formulas such as `$^{235}\text{U}$` no longer appear as raw text. |
+| **Motion (GSAP)** | Entrance animations for the welcome screen, new messages, the settings page, the history list, and notices. Only `transform` and `opacity` are animated. Motion is skipped when reduced motion is requested. |
+| **Mobile header** | On phones the brand shrinks to fit, and the header keeps 44 px touch targets. The Chat link is reached through the logo, and support moved to the settings page. |
+| **Stop and retry** | A running reply can be stopped. Failed replies show a retry button. |
+| **History** | Up to 30 chats are kept. Each chat can be opened or deleted, and all history can be cleared with confirmation. |
 
 <details>
-<summary><strong>Click to view previous releases (v1.2.0 and v1.1.1)</strong></summary>
+<summary><strong>Previous releases (v1.2.1, v1.2.0, v1.1.1)</strong></summary>
 
 <br />
 
-### v1.2.0
+### v1.2.1
 
 | Change | Details |
 |---|---|
-| **Internationalization (i18n)** | Full bilingual UI via a zero-dependency `i18n.js` module. Language is detected from the browser on first visit, persisted in `localStorage`, and switchable from the settings panel. |
-| **Raia AI personality** | A built-in system prompt gives Raia a distinct personality, sent in the provider-native format (`system` role, `system` parameter, or `systemInstruction`). |
-| **Request timeout** | Chat requests abort after 2 minutes with a localized timeout message. |
-| **Online/offline awareness** | Connection status reacts to browser network events with localized toasts. |
-| **Safer destructive actions** | Deleting a conversation from history asks for confirmation first. |
+| **Send button fix** | The send button used a `data-disabled` attribute so it always received clicks. Empty input showed a friendly toast. |
+| **Double-submit prevention** | A per-request ID and a loading flag stopped duplicate submissions. |
+| **Full Markdown rendering** | Migrated to `marked.js` with GitHub-Flavored Markdown. |
+| **LaTeX math via KaTeX** | Inline and block math rendering. |
+| **XSS sanitization** | Assistant output is sanitized with DOMPurify. |
+| **Code block copy buttons** | Every fenced code block gets a copy button. |
+| **Retry button for errors** | Failed requests can be retried. |
+| **Responsive layout** | Layout uses `100dvh` with internal scroll. |
+| **Mobile keyboard fix** | `interactive-widget=resizes-content` keeps the input visible when the keyboard opens. |
+
+### v1.2.0
+
+- Bilingual interface (Bahasa Indonesia and English) through `i18n.js`.
+- Built-in system prompt for the assistant.
+- Two-minute request timeout.
+- Online and offline status with localized notices.
+- Confirmation before deleting a chat.
 
 ### v1.1.1
 
-| Change | Details |
-|---|---|
-| **Support button** | Non-intrusive Buy Me a Coffee link in the header and welcome screen. |
-| **Enhanced SEO** | Open Graph, Twitter Card, and JSON-LD structured data (`WebApplication`, `WebSite`, `FAQPage`). |
-| **Version badge** | Version pill next to the logo. |
-| **Feature pills** | Private, Fast, and Multi-model indicators on the welcome screen. |
-| **Accessibility** | ARIA labels, roles, and focus-visible states across all interactive elements. |
-| **Responsive** | Breakpoints from 320px up to 1920px and beyond. |
-| **`color-scheme` meta** | Browser UI matches the selected theme. |
+- Support link in the header.
+- Open Graph, Twitter Card, and JSON-LD metadata.
+- Version badge and feature pills.
+- Accessibility labels and focus states.
 
 </details>
 
@@ -163,22 +168,22 @@ This release focuses on reliability, rendering quality, and mobile polish.
 
 ### Providers and Models
 
-- **Multi-provider support** — OpenRouter, OpenAI, Perplexity, Claude, Gemini, and Mistral from a single interface.
-- **Model selection** — Provider-specific model lists or custom model IDs.
-- **Adjustable generation parameters** — Temperature and max token output via sliders.
+- **Multi-provider support:** OpenRouter, OpenAI, Perplexity, Claude, Gemini, and Mistral.
+- **Model selection:** provider-specific model lists, or a custom model ID.
+- **Generation parameters:** temperature (0.0 to 2.0) and maximum answer length (256 to 8192 tokens).
+- **Connection test:** checks the key and model with a short request.
 
 </td>
 <td width="50%" valign="top">
 
 ### Chat Experience
 
-- **Local chat history** — Conversations stored in `localStorage` (up to 50 saved chats).
-- **Markdown rendering** — Headings, lists, tables, blockquotes, inline code, and code blocks with copy buttons.
-- **LaTeX math rendering** — Inline and display math via KaTeX.
-- **Copy and regenerate** — Every assistant message includes copy and regenerate actions.
-- **Retry on error** — Failed requests show a retry button.
-- **Streaming-style typing indicator** — Animated dots with a screen-reader label.
-- **Suggestion chips** — Quick-start prompts for common use cases.
+- **Local chat history:** up to 30 saved chats in `localStorage`.
+- **Markdown rendering:** headings, lists, tables, blockquotes, inline code, and code blocks with copy buttons.
+- **LaTeX math rendering:** inline and display formulas via KaTeX.
+- **Copy and retry:** each assistant reply can be copied. The last reply can be retried.
+- **Stop generation:** a running reply can be stopped at any time.
+- **Suggestion chips:** quick-start prompts for common tasks.
 
 </td>
 </tr>
@@ -187,12 +192,13 @@ This release focuses on reliability, rendering quality, and mobile polish.
 
 ### Interface and Privacy
 
-- **Bilingual UI** — Switch between Bahasa Indonesia and English; the choice is remembered and applied instantly.
-- **Dark and light theme** — Manual toggle or follow system preference; the logo swaps to match.
-- **Online and offline status** — The connection badge reflects real browser network state.
-- **Keyboard shortcuts** — Send with `Enter`, new line with `Shift+Enter`, focus with `Ctrl+K`, new chat with `Ctrl+N`, history with `Ctrl+H`.
-- **No tracking, no telemetry** — The application does not collect any usage data.
-- **Donation support** — Optional, non-intrusive Buy Me a Coffee link in the header and welcome screen.
+- **Bilingual UI:** switch between Bahasa Indonesia and English. The choice is remembered.
+- **Dark and light theme:** toggled from the header. Dark is the default.
+- **Motion:** GSAP animations for key moments, disabled when reduced motion is requested.
+- **Online and offline status:** notices reflect the browser's network state.
+- **Keyboard shortcuts:** send, new line, focus, new chat, and history.
+- **No tracking, no telemetry:** the application does not collect usage data.
+- **Optional support link:** a Buy Me a Coffee link in the header and on the settings page.
 
 </td>
 </tr>
@@ -204,24 +210,27 @@ This release focuses on reliability, rendering quality, and mobile polish.
 
 | Requirement | Details |
 |---|---|
-| **Browser** | A modern web browser with JavaScript enabled — Chrome, Firefox, Edge, Safari, or similar. |
-| **API Key** | An API key for at least one supported provider. |
-| **Installation** | The page is a single HTML file and requires no installation. |
+| **Browser** | A modern browser with JavaScript enabled, such as Chrome, Firefox, Edge, or Safari. |
+| **API key** | An API key for at least one supported provider. |
+| **Installation** | No installation. The app is a static page made of four files. |
 
 ---
 
 ## Installation
 
-RAIA is a single-page application with no build step.
+RAIA is a static web app with no build step.
 
 ### Use the hosted version
+
 **[hajir.is-a.dev/raia-ai](https://hajir.is-a.dev/raia-ai/)**
 
 ### Run locally
-Download the source files and open `index.html` in your browser. An internet connection is required for the vendor libraries (marked.js, DOMPurify, KaTeX) loaded from CDN.
+
+Download the source files into one folder and open `index.html` in your browser. An internet connection is needed for the vendor libraries (marked.js, DOMPurify, KaTeX, GSAP, and Google Fonts), which load from CDN.
 
 ### Self-host
-Place the files on any static web server. All styles, icons, and logic are self-contained except for the vendor libraries loaded from jsDelivr.
+
+Place the files on any static web server. Styles, icons, and application logic are included in the project. The vendor libraries load from jsDelivr and Google Fonts.
 
 ---
 
@@ -229,19 +238,27 @@ Place the files on any static web server. All styles, icons, and logic are self-
 
 | Step | Action |
 |:-:|---|
-| 1 | **Configure a provider** — Click **Setup API** in the header to open the settings panel. |
-| 2 | **Pick your language** — Bahasa Indonesia or English (detected automatically on first visit). |
-| 3 | **Select a provider** — OpenRouter, OpenAI, Perplexity, Claude, Gemini, or Mistral. |
-| 4 | **Enter your API key** — Paste your key in the API Key field. You can choose to remember it locally. |
-| 5 | **Select a model** — Choose from the provider's list or type a custom model ID. |
-| 6 | **Connect** — Click **Connect**. The status badge shows **Connected**. |
-| 7 | **Start chatting** — Type a message and press `Enter` to send. |
-| 8 | **Adjust parameters** — Temperature and max tokens sliders. |
-| 9 | **Access history** — Click the history icon or press `Ctrl+H` to view, load, or delete conversations. |
+| 1 | **Open settings.** Select **Pengaturan** (Settings) in the header, or go to `#/setting`. |
+| 2 | **Pick a language.** Bahasa Indonesia or English. The app detects the browser language on the first visit. |
+| 3 | **Select a provider.** OpenRouter, OpenAI, Perplexity, Claude, Gemini, or Mistral. |
+| 4 | **Enter your API key.** Paste it into the API key field. Choose whether to remember it in this browser. |
+| 5 | **Select a model.** Choose from the list, or type a custom model ID. |
+| 6 | **Save and test.** Select **Simpan** (Save). The status shows **Terhubung** (Connected). Select **Tes koneksi** (Test connection) to check the setup. |
+| 7 | **Start chatting.** Go to `#/chat`, type a message, and press `Enter`. |
+| 8 | **Open history.** Select the history icon or press `Ctrl+H` to open, load, or delete a chat. |
+
+If no API key is saved, the chat page shows a notice with a link to settings. The typed message stays in the box.
+
+### Routes
+
+| Route | Page |
+|---|---|
+| `#/chat` | Conversations. This is the default page. |
+| `#/setting` | Language, provider, model, API key, and generation settings. |
 
 ### Supported Providers and Example Models
 
-| Provider | Default models (examples) |
+| Provider | Models (examples) |
 |---|---|
 | OpenRouter | `anthropic/claude-sonnet-5`, `openai/gpt-5.6`, `google/gemini-3.5-flash`, `meta-llama/llama-4-maverick`, `mistralai/mistral-large-3`, `deepseek/deepseek-v4` |
 | OpenAI | `gpt-5.6`, `gpt-5.6-terra`, `gpt-5.6-luna`, `gpt-4o`, `gpt-4o-mini` |
@@ -251,24 +268,25 @@ Place the files on any static web server. All styles, icons, and logic are self-
 | Mistral | `mistral-large-latest`, `mistral-small-latest`, `magistral-medium-latest`, `codestral-latest` |
 
 > [!TIP]
-> Custom model IDs are supported. Just type the ID into the model input field.
+> Custom model IDs are supported. Type the ID into the model field.
 
 ---
 
 ## Configuration
 
-### Settings Panel
+### Settings Page (`#/setting`)
 
 | Setting | Description |
 |---|---|
-| **Language** | Switch the interface between Bahasa Indonesia and English. |
-| **Provider** | Select the AI provider. |
-| **Model** | Text input with datalist support for provider-specific models. |
-| **API Key** | Password input with visibility toggle and optional persistence. |
-| **Custom Base URL** | Override the default API endpoint for the selected provider. |
-| **CORS Proxy URL** | Required for providers that block direct browser requests — OpenAI, Perplexity, Mistral. |
-| **Temperature** | Slider from `0.0` to `2.0` (step `0.1`). Default: `0.7`. |
-| **Max Tokens** | Slider from `256` to `8192` (step `128`). Default: `1024`. |
+| **Language** | Bahasa Indonesia or English. |
+| **Provider** | The AI provider to use. |
+| **Model** | A text field with suggestions for the selected provider. |
+| **API key** | Password field with a show and hide toggle, and an option to remember the key. |
+| **Custom base URL** | Overrides the default endpoint. Found under Advanced. |
+| **CORS proxy URL** | Used for providers that block direct browser requests: OpenAI, Perplexity, and Mistral. Found under Advanced. |
+| **Creativity (temperature)** | Slider from `0.0` to `2.0`, step `0.1`. Default `0.7`. Claude accepts up to `1.0`, and Mistral up to `1.5`. |
+| **Maximum answer length** | Slider from `256` to `8192`, step `128`. Default `1024`. |
+| **Reset all** | Restores the default settings and removes the saved API key. Chat history is kept. |
 
 ### Advanced Options
 
@@ -276,23 +294,23 @@ Place the files on any static web server. All styles, icons, and logic are self-
 <tr>
 <td width="50%" valign="top">
 
-**Custom Base URL**
+**Custom base URL**
 
-Enter a custom endpoint if you are using a gateway, self-hosted model, or local service.
+Enter a custom endpoint for a gateway, a self-hosted model, or a local service.
 
 </td>
 <td width="50%" valign="top">
 
-**CORS Proxy URL**
+**CORS proxy URL**
 
-Enter a proxy endpoint for providers that block direct browser calls. The proxy should forward the request and the `X-Target-Url` header.
+Enter a proxy for providers that block direct browser calls. The proxy receives the request and the target address in the `X-Target-Url` header.
 
 </td>
 </tr>
 </table>
 
 > [!IMPORTANT]
-> **Why a proxy?** Browsers enforce the same-origin policy via CORS. OpenRouter, Claude, and Gemini allow direct browser requests. OpenAI, Perplexity, and Mistral do not. You will need a small proxy (for example, a Cloudflare Worker) to relay those requests.
+> **Why a proxy?** Browsers enforce the same-origin policy through CORS. OpenRouter, Claude, and Gemini accept direct browser requests. OpenAI, Perplexity, and Mistral do not. A small proxy, such as a Cloudflare Worker, can relay those requests.
 
 ---
 
@@ -300,41 +318,41 @@ Enter a proxy endpoint for providers that block direct browser calls. The proxy 
 
 | Shortcut | Action |
 |---|---|
-| `Enter` | Send message |
-| `Shift + Enter` | New line in message |
-| `Ctrl + K` | Focus message input |
-| `Ctrl + N` | Start new chat |
-| `Ctrl + H` | Toggle chat history drawer |
-| `Ctrl + Enter` | Submit message (alternative) |
-| `Escape` | Close settings panel or history drawer |
+| `Enter` | Send the message |
+| `Shift + Enter` | New line in the message |
+| `Ctrl + K` | Focus the message field and open chat |
+| `Ctrl + N` | Start a new chat |
+| `Ctrl + H` | Open the history drawer |
+| `Escape` | Close the history drawer |
+
+On a Mac, use `Cmd` in place of `Ctrl`.
 
 ---
 
 ## Privacy and Security
 
-RAIA keeps everything on your device.
+RAIA keeps your data on your device.
 
-- All API keys are stored locally in your browser's `localStorage` if you choose to remember them.
-- Conversation history is stored locally and never sent to any third party.
+- The API key is stored in `localStorage` when you choose to remember it. Otherwise it is kept in `sessionStorage` and cleared when the browser session ends.
+- Chat history is stored in `localStorage` and is never sent to a third party.
 - No analytics, tracking, or telemetry is collected.
-- The application does not use cookies or external services beyond the AI provider APIs and the vendor library CDN.
-- All requests go **directly from your browser** to the provider you select.
-- All assistant output is sanitized with DOMPurify before being inserted into the DOM to prevent XSS.
+- The app uses no cookies and no external services besides the provider APIs and the vendor libraries from CDN.
+- Requests go **directly from your browser** to the provider you select.
+- Assistant output is sanitized with DOMPurify before it is added to the page. Links in replies open in a new tab with `noopener noreferrer`.
 
 ---
 
 ## Accessibility
 
-RAIA is built with accessibility in mind.
-
 | Area | Implementation |
 |---|---|
-| **Interactive controls** | All controls have descriptive `aria-label` attributes, localized with the active language. |
-| **Keyboard navigation** | Focus-visible outlines throughout; `Escape` closes panels and drawers. |
-| **Motion and color** | Respects `prefers-reduced-motion` and `prefers-color-scheme`. |
-| **Live regions** | `aria-live="polite"` and `role="log"` on the message list, plus `aria-live` toasts. |
-| **Screen readers** | Typing indicator includes a visually hidden status label. |
-| **Semantics** | HTML landmarks — `header`, `main`, `aside`, `role="banner"`, `role="region"`. |
+| **Labels** | Interactive controls have descriptive labels, translated with the active language. |
+| **Keyboard** | Focus outlines are visible on all controls. `Escape` closes the history drawer. |
+| **Motion** | GSAP animations and CSS transitions are skipped when `prefers-reduced-motion` is set. |
+| **Contrast** | Text and controls use the dark and light theme tokens. Higher contrast is applied when `prefers-contrast: more` is set. |
+| **Live regions** | The message list uses `role="log"` and `aria-live="polite"`. Notices use `role="status"`. |
+| **Screen readers** | The typing indicator includes a text label. Visually hidden labels are used where a visible label is not needed. |
+| **Landmarks** | `header`, `main`, and `aside` elements, with a skip link to the content. |
 
 ---
 
@@ -342,41 +360,41 @@ RAIA is built with accessibility in mind.
 
 | Problem | Solution |
 |---|---|
-| **Send button appears greyed out** | The button is styled as inactive when the input is empty. Type a non-empty message to activate it, or click to see the empty-input toast. |
-| **Connection fails** | Verify your API key is correct and that the selected model is available for your provider. |
-| **CORS errors (OpenAI, Perplexity, Mistral)** | These providers block direct browser requests. Set a **CORS Proxy URL** in the advanced settings, or switch to OpenRouter. |
-| **Model not found** | Ensure the model ID is spelled correctly and supported by the chosen provider. |
-| **Rate limit errors (429)** | You may have exceeded your provider's rate limit. Wait a moment and try again. |
-| **Invalid API key (401)** | Check your key — no extra spaces — and confirm it has access to the selected model. |
-| **Request times out** | The request is stopped after 2 minutes. Check your connection or proxy, then try again. |
-| **Math not rendering** | Ensure the KaTeX CDN (`cdn.jsdelivr.net`) is reachable. Blocked CDNs fall back to a plain-text representation. |
-| **Code blocks not highlighted** | Currently only copy buttons are provided. Syntax highlighting is on the roadmap. |
-| **History not saving** | Check that your browser allows `localStorage` and that you are not in private or incognito mode. |
-| **Language keeps resetting** | Your browser may be blocking `localStorage` in private mode. Otherwise, language is remembered between visits. |
-| **Network error** | Often a CORS issue. Try the proxy workaround or switch to a provider that allows direct browser requests. |
+| **Send button looks dimmed** | The button is dimmed while the message field is empty. It still responds. Select it to see a notice. |
+| **Notice says no API key** | Open settings, enter your key, and select **Simpan** (Save). |
+| **Connection fails** | Check the API key and confirm the model is available for your account. |
+| **CORS error (OpenAI, Perplexity, Mistral)** | Set a **CORS proxy URL** under Advanced settings, or use OpenRouter. |
+| **Model not found** | Check the model ID spelling and that the provider supports it. |
+| **Rate limit error (429)** | You have reached the provider's limit. Wait and try again. |
+| **Invalid key (401 or 403)** | Check the key for extra spaces, and confirm it can access the selected model. |
+| **Request takes too long** | Requests stop after two minutes. Check the connection or proxy, then try again. |
+| **Math does not render** | Check that `cdn.jsdelivr.net` is reachable. If KaTeX cannot load, the formula appears as plain text. |
+| **Animations are missing** | GSAP loads from jsDelivr. If it is blocked, the page still works without motion. |
+| **History is not saved** | Check that the browser allows `localStorage`, and that you are not in private mode. |
+| **Language resets** | Private mode can block `localStorage`. In normal mode, the language is remembered. |
 
 ---
 
 ## Roadmap
 
-Future improvements may include:
+Possible future improvements:
 
 <table>
 <tr>
 <td width="50%" valign="top">
 
-- Streaming responses (token-by-token output)
-- User-editable system prompt
+- Streaming responses, token by token
+- A user-editable system prompt
 - Export and import of chat history (JSON, Markdown)
 - Syntax highlighting for code blocks
 
 </td>
 <td width="50%" valign="top">
 
-- Additional provider integrations (Groq, Together, Cohere)
+- More provider integrations
 - Response caching and offline support
 - More interface languages
-- Virtualized message list for very long conversations
+- A virtualized message list for very long chats
 
 </td>
 </tr>
@@ -386,42 +404,41 @@ Future improvements may include:
 
 ## Contributing
 
-Contributions are welcome. Areas for improvement include:
+Contributions are welcome. Useful areas include:
 
-- Support for additional AI providers.
-- Enhanced markdown rendering with syntax highlighting.
-- New translations for the i18n module (`i18n.js`).
-- Performance optimizations.
-- Documentation improvements.
+- Support for more AI providers.
+- Syntax highlighting in code blocks.
+- New translations in `i18n.js`.
+- Performance and accessibility improvements.
+- Documentation.
 
-Please fork the repository and submit a pull request with a clear description of your changes.
+Fork the repository and open a pull request with a clear description of the change.
 
 ---
 
 ## Development Setup
 
-The application consists of six files.
+The application has four source files.
 
 ```text
 .
-├── index.html      # markup, SVG icon sprite, vendor library includes
-├── style.css       # all styles, themes, and responsive rules
-├── i18n.js         # lightweight i18n module (id and en translations)
-├── script.js       # provider logic, chat state, markdown + KaTeX pipeline
+├── index.html   Markup, SVG icon sprite, routes, and vendor script tags
+├── style.css    Design tokens, layout, themes, and responsive rules
+├── i18n.js      Translations for Bahasa Indonesia (id) and English (en)
+├── script.js    Routing, providers, chat state, and the Markdown and KaTeX pipeline
 └── README.md
 ```
 
-Local Development
+### Local development
 
 1. Edit the files directly.
-2. Test by opening index.html in a browser.
-3. No build tools or compilation steps are required.
+2. Open `index.html` in a browser to test.
+3. No build tools are needed.
 
-[!WARNING]
-Load order matters. 
-i18n.js must load before script.js. The vendor libraries (marked, DOMPurify, katex) must load before script.js as well. index.html already includes the scripts in the correct order.
+> [!WARNING]
+> **Load order matters.** `marked`, `DOMPurify`, and `katex` must load before `script.js`. `gsap` must also load before `script.js`. `i18n.js` must load before `script.js`. `index.html` already includes the scripts in this order.
 
-Local Hosting
+### Local hosting
 
 <table>
 <tr>
@@ -446,74 +463,90 @@ npx serve
 </tr>
 </table>
 
-Then open http://localhost:8080 in your browser.
+Then open `http://localhost:8080` in your browser.
 
 ---
 
-Tech Stack
+## Tech Stack
 
-Layer Used
-Logic Vanilla JavaScript — no frameworks
-Styling CSS custom properties with full dark and light theme tokens
-Icons Inline SVG sprite — Lucide-style stroke icons
-Markdown marked via jsDelivr CDN
-Sanitization DOMPurify via jsDelivr CDN
-Math Rendering KaTeX via jsDelivr CDN
-i18n i18n.js — zero-dependency translation module (id and en)
-Storage localStorage for settings, language, API keys, and chat history
-Typography Google Fonts — Inter, Outfit, JetBrains Mono
-
----
-
-Deployment
-
-RAIA is a static site with no build step.
+| Layer | Used |
+|---|---|
+| Logic | Vanilla JavaScript, no framework |
+| Routing | Hash routes (`#/chat`, `#/setting`) |
+| Styling | CSS custom properties with dark and light theme tokens |
+| Icons | Inline SVG sprite with stroke icons |
+| Motion | GSAP 3.12.5 from jsDelivr |
+| Markdown | marked 12.0.0 from jsDelivr |
+| Sanitization | DOMPurify 3.0.8 from jsDelivr |
+| Math | KaTeX 0.16.9 from jsDelivr |
+| i18n | `i18n.js`, with no dependencies (id and en) |
+| Storage | `localStorage` for settings, language, theme, API key, and history. `sessionStorage` when the key is not remembered. |
+| Typography | Google Fonts: Syne (headings), DM Sans (body), JetBrains Mono (code) |
 
 ---
 
-Changelog
+## Deployment
 
-v1.2.1
-
-· Fixed send button interaction (data-attribute based, always clickable).
-· Prevented double submit with a per-request ID counter.
-· Added full Markdown rendering via marked.js with GFM support.
-· Added LaTeX math rendering via KaTeX (inline and block).
-· Added XSS sanitization with scoped style attributes via DOMPurify.
-· Added copy buttons to code blocks.
-· Added retry button to error messages.
-· Added clear chat action with confirmation.
-· Redesigned layout with 100dvh and internal scroll.
-· Fixed mobile keyboard overlay with interactive-widget=resizes-content.
-· Improved accessibility with role="log" and localized ARIA labels.
-· Migrated production domain to hajir.is-a.dev/raia-ai.
-
-v1.2.0
-
-· Added internationalization (Bahasa Indonesia and English).
-· Added Raia AI system prompt.
-· Added 2-minute request timeout.
-· Added online and offline awareness.
-· Added confirmation for destructive history actions.
-
-v1.1.1
-
-· Added support button in header and welcome screen.
-· Added Open Graph, Twitter Card, and JSON-LD structured data.
-· Added version badge.
-· Added feature pills (Private, Fast, Multi-model).
-· Improved accessibility across all interactive elements.
-· Improved responsive breakpoints from 320px to 1920px.
+RAIA is a static site with no build step. Upload the four source files and this README to any static host.
 
 ---
 
-License
+## Changelog
 
-RAIA is released under the MIT License. See the LICENSE file for full details.
+### v1.2.2 (November 13, 2026)
+
+- Fixed the mobile header, where the brand and navigation overlapped.
+- Added hash routes `#/chat` and `#/setting`.
+- Moved settings to their own page.
+- Redesigned the message field as a pill with a separate round send button.
+- Fixed the send button so it always responds.
+- Added a friendly notice with a link to settings when no API key is saved.
+- Added KaTeX rendering for inline and display math, and copyable code blocks.
+- Added GSAP animations, skipped when reduced motion is requested.
+- Replaced the built-in system prompt with a neutral assistant prompt.
+- Reduced history to 30 saved chats, with per-chat delete and a clear-all action.
+
+### v1.2.1
+
+- Fixed the send button interaction.
+- Prevented double submission.
+- Added full Markdown rendering through marked.js with GFM support.
+- Added LaTeX math rendering through KaTeX.
+- Added XSS sanitization through DOMPurify.
+- Added copy buttons to code blocks.
+- Added a retry button to error messages.
+- Added a clear-chat action with confirmation.
+- Redesigned the layout with `100dvh` and internal scrolling.
+- Fixed the mobile keyboard overlay with `interactive-widget=resizes-content`.
+- Improved accessibility with `role="log"` and localized labels.
+- Moved the production domain to `hajir.is-a.dev/raia-ai`.
+
+### v1.2.0
+
+- Added internationalization (Bahasa Indonesia and English).
+- Added a built-in system prompt.
+- Added a two-minute request timeout.
+- Added online and offline awareness.
+- Added confirmation for destructive history actions.
+
+### v1.1.1
+
+- Added the support button in the header.
+- Added Open Graph, Twitter Card, and JSON-LD metadata.
+- Added the version badge.
+- Added feature pills.
+- Improved accessibility across interactive elements.
+- Improved responsive breakpoints.
 
 ---
 
-Author and Support
+## License
+
+RAIA is released under the MIT License. See the `LICENSE` file for details.
+
+---
+
+## Author and Support
 
 <div align="center">
 
@@ -521,10 +554,11 @@ Developed and maintained by Haiere and HajirStudio.
 
 <br />
 
-Channel Purpose
-Bug reports and feature requests Please use the project issue tracker
-Questions Contact via the repository
-Support the project Buy me a coffee
+| Channel | Purpose |
+|---|---|
+| Bug reports and feature requests | Use the project issue tracker |
+| Questions | Contact through the repository |
+| Support the project | Buy me a coffee |
 
 <br />
 
@@ -535,7 +569,7 @@ Support the project Buy me a coffee
 <br />
 <br />
 
-<sub>Your support keeps RAIA free, ad-free, and privacy-focused. Thank you.</sub>
+<sub>Your support helps keep RAIA free, ad-free, and focused on privacy.</sub>
 
 </div>
 
@@ -543,6 +577,6 @@ Support the project Buy me a coffee
 
 <div align="center">
 <sub>
-Last updated: October 2026 · RAIA v1.2.1
+Last updated: November 13, 2026 · RAIA v1.2.2
 </sub>
 </div>

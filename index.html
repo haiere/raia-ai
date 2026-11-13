@@ -1,45 +1,35 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="id" data-theme="dark">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
     <meta name="color-scheme" content="dark light" />
 
-    <title>Raia AI — Reflecting Tomorrow | Free Multi-Provider AI Chat Assistant</title>
-    <meta name="description" content="Raia AI is a free, multi-provider AI chat assistant with OpenRouter, OpenAI, Perplexity, Claude, Gemini and Mistral. Bring your own API key — private, browser-based, no sign-up." />
-    <meta name="keywords" content="AI chat assistant, free AI chat, OpenRouter, OpenAI, Perplexity, Claude, Gemini, Mistral, BYOK, browser AI, Raia AI, KaTeX" />
+    <title>Raia AI: Reflecting Tomorrow | Multi-Provider AI Chat</title>
+    <meta name="description" content="Raia AI is a free, browser-based chat client for OpenRouter, OpenAI, Perplexity, Claude, Gemini and Mistral. Bring your own API key. No sign-up." />
+    <meta name="keywords" content="AI chat, OpenRouter, OpenAI, Perplexity, Claude, Gemini, Mistral, BYOK, browser AI, Raia AI, KaTeX" />
     <meta name="author" content="Hajir Studio" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <link rel="canonical" href="https://hajir.is-a.dev/raia-ai/" />
-    <link rel="alternate" hreflang="en" href="https://hajir.is-a.dev/raia-ai/" />
-    <link rel="alternate" hreflang="id" href="https://hajir.is-a.dev/raia-ai/" />
-    <link rel="alternate" hreflang="x-default" href="https://hajir.is-a.dev/raia-ai/" />
 
-    <meta name="theme-color" content="#05070d" media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#eef2f9" media="(prefers-color-scheme: light)" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="Raia AI" />
-    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="theme-color" content="#020617" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f1f5f9" media="(prefers-color-scheme: light)" />
     <meta name="application-name" content="Raia AI" />
 
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://hajir.is-a.dev/raia-ai/" />
-    <meta property="og:title" content="Raia AI — Reflecting Tomorrow | Free Multi-Provider AI Chat" />
-    <meta property="og:description" content="Free, symmetric AI chat assistant with multi-provider support. Bring your own API key." />
+    <meta property="og:title" content="Raia AI: Reflecting Tomorrow" />
+    <meta property="og:description" content="Free, browser-based AI chat with multiple providers. Bring your own API key." />
     <meta property="og:image" content="https://i.postimg.cc/28bKx4xC/raia2.webp" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
     <meta property="og:site_name" content="Raia AI" />
-    <meta property="og:locale" content="en_US" />
-    <meta property="og:locale:alternate" content="id_ID" />
+    <meta property="og:locale" content="id_ID" />
+    <meta property="og:locale:alternate" content="en_US" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@hajirstudio" />
-    <meta name="twitter:creator" content="@hajirstudio" />
-    <meta name="twitter:title" content="Raia AI — Reflecting Tomorrow" />
-    <meta name="twitter:description" content="Free, symmetric AI chat assistant. Bring your own API key." />
+    <meta name="twitter:title" content="Raia AI: Reflecting Tomorrow" />
+    <meta name="twitter:description" content="Free, browser-based AI chat. Bring your own API key." />
     <meta name="twitter:image" content="https://i.postimg.cc/28bKx4xC/raia2.webp" />
 
     <script type="application/ld+json">
@@ -52,8 +42,9 @@
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "All",
         "browserRequirements": "Requires JavaScript",
-        "softwareVersion": "1.2.1",
-        "inLanguage": ["en", "id"],
+        "softwareVersion": "1.2.2",
+        "dateModified": "2026-11-13",
+        "inLanguage": ["id", "en"],
         "isAccessibleForFree": true,
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
         "author": { "@type": "Organization", "name": "Hajir Studio" }
@@ -65,15 +56,14 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preconnect" href="https://i.postimg.cc" crossorigin />
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous" />
 
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <!-- ═══ SVG ICON SPRITE ═══ -->
+    <!-- SVG icon sprite (Feather-style, stroke based) -->
     <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
         <defs>
             <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></symbol>
@@ -84,256 +74,312 @@
             <symbol id="i-eye" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/><circle cx="12" cy="12" r="3"/></symbol>
             <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a21.6 21.6 0 0 1 5.06-6.06M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a21.6 21.6 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><path d="M1 1l22 22"/></symbol>
             <symbol id="i-external-link" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></symbol>
-            <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol>
             <symbol id="i-radio" viewBox="0 0 24 24"><circle cx="12" cy="12" r="2"/><path d="M4.93 19.07a10 10 0 0 1 0-14.14M7.76 16.24a6 6 0 0 1 0-8.48M16.24 7.76a6 6 0 0 1 0 8.48M19.07 4.93a10 10 0 0 1 0 14.14"/></symbol>
             <symbol id="i-rotate-ccw" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 2.64-6.36L3 8"/><path d="M3 3v5h5"/></symbol>
             <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
-            <symbol id="i-crown" viewBox="0 0 24 24"><path d="m2 18 2-11 5 4 3-6 3 6 5-4 2 11Z"/><path d="M2 18h20v3H2z"/></symbol>
+            <symbol id="i-coffee" viewBox="0 0 24 24"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><path d="M6 2v3M10 2v3M14 2v3"/></symbol>
             <symbol id="i-send" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></symbol>
+            <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></symbol>
             <symbol id="i-arrow-down" viewBox="0 0 24 24"><path d="M12 5v14M19 12l-7 7-7-7"/></symbol>
             <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
             <symbol id="i-lightbulb" viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.3h6c0-1 .4-1.8 1-2.3A7 7 0 0 0 12 2Z"/></symbol>
             <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></symbol>
-            <symbol id="i-puzzle" viewBox="0 0 24 24"><path d="M19.44 12.9a1.5 1.5 0 0 1 0-2.6l1.06-.62a1 1 0 0 0 .37-1.37l-1.5-2.6a1 1 0 0 0-1.37-.37l-1.06.6a1.5 1.5 0 0 1-2.25-1.3V3.5a1 1 0 0 0-1-1h-3a1 1 0 0 0-1 1v1.14a1.5 1.5 0 0 1-2.25 1.3l-1.06-.61a1 1 0 0 0-1.37.37l-1.5 2.6a1 1 0 0 0 .37 1.37l1.06.61a1.5 1.5 0 0 1 0 2.6l-1.06.61a1 1 0 0 0-.37 1.37l1.5 2.6a1 1 0 0 0 1.37.37l1.06-.6a1.5 1.5 0 0 1 2.25 1.3V19.5a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1.14a1.5 1.5 0 0 1 2.25-1.3l1.06.61a1 1 0 0 0 1.37-.37l1.5-2.6a1 1 0 0 0-.37-1.37Z"/></symbol>
+            <symbol id="i-code" viewBox="0 0 24 24"><path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/></symbol>
             <symbol id="i-map" viewBox="0 0 24 24"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2Z"/><path d="M9 4v14M15 6v14"/></symbol>
             <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
             <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
             <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 1-15.3 6.4M3 12a9 9 0 0 1 15.3-6.4"/><path d="M21 3v6h-6M3 21v-6h6"/></symbol>
-            <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18"/><circle cx="12" cy="12" r="2.5"/></symbol>
-            <symbol id="i-message-circle" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-8.94 8.35 8.5 8.5 0 0 1-4.14-.9L3 20l1.06-4.06A8.38 8.38 0 0 1 3 11.5 8.38 8.38 0 0 1 11.94 3a8.38 8.38 0 0 1 9 8.5Z"/></symbol>
-            <symbol id="i-alert-triangle" viewBox="0 0 24 24"><path d="m10.29 3.86-8.18 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.89-3.14l-8.18-14a2 2 0 0 0-3.42 0Z"/><path d="M12 9v4M12 17h.01"/></symbol>
-            <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></symbol>
             <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14Z"/><path d="M10 11v6M14 11v6"/></symbol>
-            <symbol id="i-coffee" viewBox="0 0 24 24"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><path d="M6 2v3M10 2v3M14 2v3"/></symbol>
             <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></symbol>
             <symbol id="i-zap" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8Z"/></symbol>
             <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10Z"/></symbol>
+            <symbol id="i-alert" viewBox="0 0 24 24"><path d="m10.29 3.86-8.18 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.89-3.14l-8.18-14a2 2 0 0 0-3.42 0Z"/><path d="M12 9v4M12 17h.01"/></symbol>
+            <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></symbol>
+            <symbol id="i-key" viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/></symbol>
+            <symbol id="i-message" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-8.94 8.35 8.5 8.5 0 0 1-4.14-.9L3 20l1.06-4.06A8.38 8.38 0 0 1 3 11.5 8.38 8.38 0 0 1 11.94 3a8.38 8.38 0 0 1 9 8.5Z"/></symbol>
         </defs>
     </svg>
 
-    <div class="aurora" aria-hidden="true"></div>
-    <div class="noise" aria-hidden="true"></div>
-    <div class="spotlight" id="spotlight" aria-hidden="true"></div>
-    <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+    <a class="skip-link" href="#main" data-i18n="skipLink">Lewati ke konten</a>
 
     <!-- ═══ HEADER ═══ -->
-    <header id="header" role="banner">
-        <a class="logo" href="#" aria-label="Raia AI home">
-            <img class="logo-img" src="https://i.postimg.cc/GmWt2wch/H-blue.webp" alt="Raia AI logo" width="38" height="38" loading="eager" decoding="async" />
-            <span class="logo-text">
-                RAIA
-                <small data-i18n="appTagline">Reflecting Tomorrow</small>
+    <header class="app-header">
+        <a class="brand" href="#/chat" aria-label="Raia AI">
+            <img class="brand-logo" src="https://i.postimg.cc/GmWt2wch/H-blue.webp" alt="" width="36" height="36" decoding="async" />
+            <span class="brand-text">
+                <span class="brand-name">RAIA</span>
+                <span class="brand-tagline" data-i18n="appTagline">Reflecting Tomorrow</span>
             </span>
-            <span class="version-badge" title="Application version" data-i18n-title="versionTitle">v1.2.1</span>
+            <span class="version-badge" data-i18n-title="versionTitle" title="Versi aplikasi">v1.2.2</span>
         </a>
 
-        <div class="header-actions">
-            <button class="settings-toggle" id="settingsToggle" aria-label="Open settings" aria-expanded="false" aria-controls="settingsPanel" type="button">
-                <svg class="icon" aria-hidden="true"><use href="#i-settings"/></svg>
-                <span class="label" data-i18n="settingsOpen">Setup API</span>
-            </button>
-
-            <a class="donate-btn" href="https://buymeacoffee.com/hajirstudio" target="_blank" rel="noopener noreferrer" aria-label="Support Raia AI" data-i18n-title="supportTitle">
-                <svg class="icon" aria-hidden="true"><use href="#i-coffee"/></svg>
-                <span class="donate-label" data-i18n="support">Support</span>
+        <div class="nav">
+            <a class="nav-link" href="#/chat" id="navChat" data-route="chat">
+                <svg class="icon icon-sm" aria-hidden="true"><use href="#i-message"/></svg>
+                <span class="nav-label" data-i18n="navChat">Chat</span>
             </a>
-
-            <button class="icon-btn" id="themeToggle" aria-label="Toggle color theme" data-i18n-aria-label="toggleTheme" type="button"><svg class="icon" aria-hidden="true"><use href="#i-sun"/></svg></button>
-            <button class="icon-btn" id="newChatBtn" aria-label="Start new chat" data-i18n-title="newChatTitle" type="button"><svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg></button>
-            <button class="icon-btn" id="historyToggle" aria-label="Open chat history" data-i18n-title="historyTitle" type="button"><svg class="icon" aria-hidden="true"><use href="#i-history"/></svg></button>
+            <a class="nav-link" href="#/setting" id="navSetting" data-route="setting">
+                <svg class="icon icon-sm" aria-hidden="true"><use href="#i-settings"/></svg>
+                <span class="nav-label" data-i18n="navSetting">Pengaturan</span>
+            </a>
+            <button class="icon-btn" id="historyBtn" type="button" data-i18n-aria-label="historyTitle" data-i18n-title="historyTitle" aria-label="Buka riwayat chat" aria-controls="drawer" aria-expanded="false">
+                <svg class="icon" aria-hidden="true"><use href="#i-history"/></svg>
+            </button>
+            <button class="icon-btn" id="newChatBtn" type="button" data-i18n-aria-label="newChatTitle" data-i18n-title="newChatTitle" aria-label="Mulai chat baru (Ctrl+N)">
+                <svg class="icon" aria-hidden="true"><use href="#i-plus"/></svg>
+            </button>
+            <button class="icon-btn" id="themeToggle" type="button" data-i18n-aria-label="themeToggle" data-i18n-title="themeToggle" aria-label="Ganti tema">
+                <svg class="icon" aria-hidden="true" id="themeIcon"><use href="#i-sun"/></svg>
+            </button>
+            <a class="support-link" href="https://buymeacoffee.com/hajirstudio" target="_blank" rel="noopener noreferrer" data-i18n-aria-label="supportTitle" aria-label="Traktir kopi untuk Hajir">
+                <svg class="icon icon-sm" aria-hidden="true"><use href="#i-coffee"/></svg>
+                <span class="support-label" data-i18n="support">Dukung</span>
+            </a>
         </div>
     </header>
 
-    <!-- ═══ SETTINGS PANEL ═══ -->
-    <section class="settings-panel" id="settingsPanel" role="region" aria-label="Settings" data-i18n-aria-label="settingsRegion">
-        <div class="settings-grid">
-            <div class="field">
-                <label for="languageSelect">
-                    <svg class="icon icon-sm" aria-hidden="true"><use href="#i-globe"/></svg>
-                    <span data-i18n="language">Language</span>
-                </label>
-                <select id="languageSelect" aria-label="Language">
-                    <option value="id">Bahasa Indonesia</option>
-                    <option value="en">English</option>
-                </select>
-            </div>
+    <main class="app-main" id="main" tabindex="-1">
 
-            <div class="field">
-                <label for="provider" data-i18n="provider">Provider</label>
-                <select id="provider"></select>
-            </div>
+        <!-- ═══ CHAT VIEW (#/chat) ═══ -->
+        <section class="view" id="chat" aria-labelledby="welcomeTitle">
+            <div class="chat-scroll" id="chatScroll">
+                <div class="chat-inner">
+                    <div class="welcome" id="welcome">
+                        <h1 class="welcome-title" id="welcomeTitle" data-i18n="welcomeTitle">Halo, ada yang bisa dibantu?</h1>
+                        <p class="welcome-desc" data-i18n="welcomeDesc">Raia terhubung ke beberapa penyedia AI memakai API key milikmu sendiri. Chat tersimpan hanya di browser ini.</p>
 
-            <div class="field">
-                <label for="model">
-                    <span data-i18n="model">Model</span>
-                    <span id="modelBadge" class="model-badge"></span>
-                </label>
-                <input id="model" list="modelListData" placeholder="Choose or type a model id…" autocomplete="off" spellcheck="false" data-i18n-placeholder="chooseModel" />
-                <datalist id="modelListData"></datalist>
-            </div>
+                        <div class="chips" id="chips">
+                            <button class="chip" type="button" data-prompt-key="promptExplain">
+                                <svg class="icon icon-sm" aria-hidden="true"><use href="#i-lightbulb"/></svg>
+                                <span data-i18n="chipExplain">Jelaskan konsep</span>
+                            </button>
+                            <button class="chip" type="button" data-prompt-key="promptWrite">
+                                <svg class="icon icon-sm" aria-hidden="true"><use href="#i-pencil"/></svg>
+                                <span data-i18n="chipWrite">Bantu menulis</span>
+                            </button>
+                            <button class="chip" type="button" data-prompt-key="promptCode">
+                                <svg class="icon icon-sm" aria-hidden="true"><use href="#i-code"/></svg>
+                                <span data-i18n="chipCode">Tinjau kode</span>
+                            </button>
+                            <button class="chip" type="button" data-prompt-key="promptPlan">
+                                <svg class="icon icon-sm" aria-hidden="true"><use href="#i-map"/></svg>
+                                <span data-i18n="chipPlan">Buat rencana</span>
+                            </button>
+                        </div>
+                    </div>
 
-            <div class="field">
-                <label for="apiKey" data-i18n="apiKey">API Key</label>
-                <div class="api-wrap">
-                    <input type="password" id="apiKey" placeholder="sk-..." autocomplete="off" spellcheck="false" data-i18n-placeholder="apiKeyPlaceholder" data-i18n-aria-label="apiKey" />
-                    <button class="eye" id="eyeToggle" aria-label="Show or hide API key" type="button" data-i18n-aria-label="showHideKey"><svg class="icon" aria-hidden="true"><use href="#i-eye"/></svg></button>
-                </div>
-                <div class="hint">
-                    <a href="#" target="_blank" id="keyLink" rel="noopener noreferrer"><span data-i18n="getApiKey">Get API key</span> <svg class="icon icon-sm" aria-hidden="true"><use href="#i-external-link"/></svg></a>
-                    <label class="checkbox-row">
-                        <input type="checkbox" id="rememberKey" checked />
-                        <span data-i18n="rememberKey">Remember</span>
-                    </label>
-                </div>
-            </div>
+                    <div class="notice notice-warn" id="noKeyNotice" role="status" hidden>
+                        <svg class="icon" aria-hidden="true"><use href="#i-key"/></svg>
+                        <div class="notice-body">
+                            <p class="notice-text" data-i18n="noKeyBanner">API key belum diisi. Tambahkan dulu di pengaturan supaya Raia bisa menjawab.</p>
+                            <div class="notice-action">
+                                <a class="btn btn-secondary" href="#/setting" data-i18n="goSetting">Buka pengaturan</a>
+                            </div>
+                        </div>
+                    </div>
 
-            <div class="field field-actions">
-                <div class="settings-actions">
-                    <button class="btn btn-primary" id="connectBtn" type="button"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-link"/></svg> <span data-i18n="connect">Connect</span></button>
-                    <button class="btn btn-secondary" id="testBtn" type="button"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-radio"/></svg> <span data-i18n="testConnection">Test</span></button>
-                    <span class="status-badge" id="statusBadge">
-                        <span class="dot" id="statusDot"></span>
-                        <span id="statusText">Disconnected</span>
-                    </span>
+                    <div class="messages" id="messages" role="log" aria-live="polite" aria-relevant="additions"></div>
                 </div>
             </div>
-        </div>
 
-        <div class="advanced-wrapper">
-            <button class="advanced-toggle" id="advancedToggle" type="button" aria-expanded="false" aria-controls="advancedContent">
-                <span data-i18n="advanced">Advanced</span>
-                <svg class="icon icon-sm arrow" aria-hidden="true"><use href="#i-chevron-down"/></svg>
+            <button class="jump-btn" id="jumpBtn" type="button" hidden>
+                <svg class="icon icon-sm" aria-hidden="true"><use href="#i-arrow-down"/></svg>
+                <span data-i18n="jumpBottom">Pesan baru</span>
             </button>
 
-            <div class="advanced-content" id="advancedContent">
-                <div class="field">
-                    <label for="customBaseUrl" data-i18n="customBaseUrl">Custom Base URL (optional)</label>
-                    <input id="customBaseUrl" placeholder="Leave empty to use the provider default" autocomplete="off" spellcheck="false" data-i18n-placeholder="customBaseUrlPlaceholder" />
+            <div class="dock">
+                <div class="dock-inner">
+                    <form class="composer" id="composer" novalidate>
+                        <label class="pill" for="prompt">
+                            <span class="sr-only" data-i18n="inputLabel">Pesan</span>
+                            <textarea
+                                id="prompt"
+                                rows="1"
+                                placeholder="Tulis pesan kamu..."
+                                data-i18n-placeholder="inputPlaceholder"
+                                autocomplete="off"
+                                spellcheck="true"
+                                enterkeyhint="send"
+                            ></textarea>
+                        </label>
+                        <button class="send-btn" id="sendBtn" type="submit" aria-disabled="true" data-i18n-aria-label="sendLabel" aria-label="Kirim pesan">
+                            <svg class="icon" id="sendIcon" aria-hidden="true"><use href="#i-send"/></svg>
+                        </button>
+                    </form>
+                    <div class="dock-meta">
+                        <span id="charCount">0 karakter</span>
+                        <span class="hint-keys">
+                            <span class="kbd">Enter</span> <span data-i18n="inputHint">untuk kirim, Shift+Enter untuk baris baru</span>
+                        </span>
+                    </div>
                 </div>
+            </div>
+        </section>
 
-                <div class="field">
-                    <label for="proxyUrl" data-i18n="proxyUrl">CORS Proxy URL (optional)</label>
-                    <input id="proxyUrl" placeholder="e.g. https://your-worker.workers.dev" autocomplete="off" spellcheck="false" data-i18n-placeholder="proxyUrlPlaceholder" />
+        <!-- ═══ SETTINGS VIEW (#/setting) ═══ -->
+        <section class="view" id="setting" aria-labelledby="setTitle" hidden>
+            <div class="settings-scroll">
+                <div class="settings-inner">
+                    <header class="settings-head">
+                        <h1 id="setTitle" data-i18n="setTitle">Pengaturan</h1>
+                        <p data-i18n="setDesc">Atur penyedia, model, dan API key kamu. Semua disimpan di browser ini.</p>
+                    </header>
+
+                    <div class="card">
+                        <h2 class="card-title" data-i18n="provider">Penyedia</h2>
+                        <div class="grid-2">
+                            <div class="field">
+                                <label for="langSelect">
+                                    <span data-i18n="language">Bahasa</span>
+                                </label>
+                                <select id="langSelect">
+                                    <option value="id">Bahasa Indonesia</option>
+                                    <option value="en">English</option>
+                                </select>
+                            </div>
+                            <div class="field">
+                                <label for="providerSelect" data-i18n="provider">Penyedia</label>
+                                <select id="providerSelect"></select>
+                            </div>
+                            <div class="field field-wide">
+                                <label for="modelInput">
+                                    <span data-i18n="model">Model</span>
+                                    <span class="status" id="modelBadge" hidden></span>
+                                </label>
+                                <input id="modelInput" list="modelList" type="text" placeholder="Pilih atau ketik ID model" data-i18n-placeholder="modelPlaceholder" autocomplete="off" spellcheck="false" />
+                                <datalist id="modelList"></datalist>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2 class="card-title" data-i18n="apiKey">API key</h2>
+                        <div class="field">
+                            <label for="apiKeyInput" data-i18n="apiKey">API key</label>
+                            <div class="input-wrap">
+                                <input id="apiKeyInput" type="password" placeholder="Tempel API key kamu" data-i18n-placeholder="apiKeyPlaceholder" autocomplete="off" spellcheck="false" />
+                                <button class="icon-btn" id="toggleKeyBtn" type="button" data-i18n-aria-label="showKey" aria-label="Tampilkan key" aria-pressed="false">
+                                    <svg class="icon" aria-hidden="true" id="eyeIcon"><use href="#i-eye"/></svg>
+                                </button>
+                            </div>
+                            <div class="hint">
+                                <a id="keyLink" href="#" target="_blank" rel="noopener noreferrer">
+                                    <span data-i18n="getKey">Ambil API key</span>
+                                    <svg class="icon icon-sm" aria-hidden="true"><use href="#i-external-link"/></svg>
+                                </a>
+                                <label class="checkbox">
+                                    <input type="checkbox" id="rememberKey" checked />
+                                    <span data-i18n="rememberKey">Ingat key di browser ini</span>
+                                </label>
+                            </div>
+                            <p class="hint" data-i18n="keyNote">Key hanya dikirim ke penyedia yang kamu pilih.</p>
+                        </div>
+
+                        <div class="actions">
+                            <button class="btn btn-primary" id="connectBtn" type="button">
+                                <svg class="icon icon-sm" aria-hidden="true"><use href="#i-check"/></svg>
+                                <span data-i18n="connect">Simpan</span>
+                            </button>
+                            <button class="btn btn-secondary" id="testBtn" type="button">
+                                <svg class="icon icon-sm" aria-hidden="true"><use href="#i-radio"/></svg>
+                                <span data-i18n="test">Tes koneksi</span>
+                            </button>
+                            <span class="status" id="statusBadge" data-state="off" role="status">
+                                <span class="status-dot" aria-hidden="true"></span>
+                                <span id="statusText" data-i18n="statusOff">Belum terhubung</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="range-row">
+                            <div class="range-group">
+                                <div class="range-head">
+                                    <label for="tempRange" data-i18n="temp">Kreativitas</label>
+                                    <span class="range-value" id="tempValue">0.7</span>
+                                </div>
+                                <input type="range" id="tempRange" min="0" max="2" step="0.1" value="0.7" />
+                            </div>
+                            <div class="range-group">
+                                <div class="range-head">
+                                    <label for="tokRange" data-i18n="maxTok">Panjang jawaban maks</label>
+                                    <span class="range-value" id="tokValue">1024</span>
+                                </div>
+                                <input type="range" id="tokRange" min="256" max="8192" step="128" value="1024" />
+                            </div>
+                        </div>
+
+                        <details class="advanced" id="advancedDetails">
+                            <summary>
+                                <span data-i18n="advanced">Lanjutan</span>
+                                <svg class="icon icon-sm" aria-hidden="true"><use href="#i-chevron-down"/></svg>
+                            </summary>
+                            <div class="advanced-body">
+                                <div class="field">
+                                    <label for="baseUrlInput" data-i18n="baseUrl">Base URL kustom (opsional)</label>
+                                    <input id="baseUrlInput" type="text" placeholder="Kosongkan untuk memakai default penyedia" data-i18n-placeholder="baseUrlPlaceholder" autocomplete="off" spellcheck="false" />
+                                </div>
+                                <div class="field">
+                                    <label for="proxyInput" data-i18n="proxy">Proxy CORS (opsional)</label>
+                                    <input id="proxyInput" type="text" placeholder="Contoh: https://worker-kamu.workers.dev" data-i18n-placeholder="proxyPlaceholder" autocomplete="off" spellcheck="false" />
+                                </div>
+                            </div>
+                        </details>
+                    </div>
+
+                    <div class="settings-foot">
+                        <button class="btn btn-danger" id="resetBtn" type="button">
+                            <svg class="icon icon-sm" aria-hidden="true"><use href="#i-rotate-ccw"/></svg>
+                            <span data-i18n="resetAll">Reset semua</span>
+                        </button>
+                        <a class="btn btn-secondary" href="https://buymeacoffee.com/hajirstudio" target="_blank" rel="noopener noreferrer">
+                            <svg class="icon icon-sm" aria-hidden="true"><use href="#i-coffee"/></svg>
+                            <span data-i18n="support">Dukung</span>
+                        </a>
+                        <a class="btn btn-secondary" href="#/chat">
+                            <svg class="icon icon-sm" aria-hidden="true"><use href="#i-message"/></svg>
+                            <span data-i18n="navChat">Chat</span>
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <div class="slider-row">
-            <div class="slider-group">
-                <label for="tempSlider" data-i18n="temp">Temp</label>
-                <input type="range" id="tempSlider" min="0" max="2" step="0.1" value="0.7" />
-                <span class="slider-value" id="tempDisplay">0.7</span>
-            </div>
-
-            <div class="slider-group">
-                <label for="tokSlider" data-i18n="maxTokens">Max Tok</label>
-                <input type="range" id="tokSlider" min="256" max="8192" step="128" value="1024" />
-                <span class="slider-value" id="tokDisplay">1024</span>
-            </div>
-
-            <button class="btn btn-danger-outline btn-sm" id="resetBtn" type="button"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-rotate-ccw"/></svg> <span data-i18n="resetAll">Reset all</span></button>
-        </div>
-    </section>
-
-    <!-- ═══ CHAT AREA ═══ -->
-    <main class="chat-container">
-        <div class="messages" id="messages" role="log" aria-live="polite" aria-relevant="additions text">
-            <div class="welcome" id="welcome">
-                <div class="icon-orb" aria-hidden="true"><svg class="icon icon-xl" aria-hidden="true"><use href="#i-crown"/></svg></div>
-                <h2 data-i18n="welcomeTitle">Raia AI — Reflecting Tomorrow</h2>
-                <p>
-                    <span data-i18n="welcomeDesc1">Configure your</span>
-                    <strong data-i18n="welcomeDescKey">API key</strong>
-                    <span data-i18n="welcomeDesc2">in Settings, pick a provider and model, then start the conversation.</span>
-                </p>
-
-                <div class="feature-row" aria-hidden="true">
-                    <span class="feature-pill"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-shield"/></svg> <span data-i18n="featurePrivate">Private</span></span>
-                    <span class="feature-pill"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-zap"/></svg> <span data-i18n="featureFast">Fast</span></span>
-                    <span class="feature-pill"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-sparkle"/></svg> <span data-i18n="featureMulti">Multi-model</span></span>
-                </div>
-
-                <div class="suggestion-chips" id="suggestionChips">
-                    <button class="chip" type="button" data-prompt="Explain this concept to me like I'm new to it: ">
-                        <svg class="icon icon-sm" aria-hidden="true"><use href="#i-lightbulb"/></svg> <span data-i18n="chipExplain">Explain a concept</span>
-                    </button>
-                    <button class="chip" type="button" data-prompt="Help me write and refine: ">
-                        <svg class="icon icon-sm" aria-hidden="true"><use href="#i-pencil"/></svg> <span data-i18n="chipWrite">Write something</span>
-                    </button>
-                    <button class="chip" type="button" data-prompt="Review and improve this code:&#10;&#10;">
-                        <svg class="icon icon-sm" aria-hidden="true"><use href="#i-puzzle"/></svg> <span data-i18n="chipReview">Review code</span>
-                    </button>
-                    <button class="chip" type="button" data-prompt="Give me a plan for: ">
-                        <svg class="icon icon-sm" aria-hidden="true"><use href="#i-map"/></svg> <span data-i18n="chipPlan">Make a plan</span>
-                    </button>
-                </div>
-
-                <a class="support-link" href="https://buymeacoffee.com/hajirstudio" target="_blank" rel="noopener noreferrer">
-                    <svg class="icon icon-sm" aria-hidden="true"><use href="#i-coffee"/></svg>
-                    <span data-i18n="coffeePrompt">Enjoying Raia? Buy me a coffee</span>
-                </a>
-            </div>
-        </div>
-
-        <button class="jump-bottom" id="jumpBottom" type="button" aria-label="Jump to latest">
-            <svg class="icon icon-sm" aria-hidden="true"><use href="#i-arrow-down"/></svg> <span data-i18n="jumpBottom">New messages</span>
-        </button>
-
-        <div class="input-area">
-            <form class="input-form" id="chatForm" novalidate>
-                <textarea
-                    id="prompt"
-                    rows="1"
-                    placeholder="Type a message… (Enter to send, Shift+Enter for new line)"
-                    aria-label="Message"
-                    data-i18n-placeholder="typeMessage"
-                    data-i18n-aria-label="messageLabel"
-                    autocomplete="off"
-                    spellcheck="true"
-                    enterkeyhint="send"
-                ></textarea>
-                <button type="submit" class="send-btn" id="sendBtn" aria-label="Send message" data-i18n-aria-label="sendLabel">
-                    <span id="sendIcon"><svg class="icon" aria-hidden="true"><use href="#i-send"/></svg></span>
-                </button>
-            </form>
-
-            <div class="input-meta">
-                <span id="charCount">0 characters</span>
-                <span class="shortcut-hint">
-                    <span class="kbd">Enter</span> <span data-i18n="hintSend">to send</span> ·
-                    <span class="kbd">Shift+Enter</span> <span data-i18n="hintNewline">new line</span> ·
-                    <span class="kbd">Ctrl K</span> <span data-i18n="hintFocus">focus</span>
-                </span>
-            </div>
-        </div>
+        </section>
     </main>
 
     <!-- ═══ HISTORY DRAWER ═══ -->
-    <div class="drawer-overlay" id="historyOverlay"></div>
-
-    <aside class="history-drawer" id="historyDrawer" role="dialog" aria-modal="true" aria-label="Chat history">
-        <div class="drawer-header">
-            <h3><svg class="icon icon-sm" aria-hidden="true"><use href="#i-history"/></svg> <span data-i18n="history">History</span></h3>
-            <div class="drawer-header-actions">
-                <button class="icon-btn" id="clearChatBtn" aria-label="Clear chat" data-i18n-title="clearChatTitle" type="button"><svg class="icon" aria-hidden="true"><use href="#i-trash"/></svg></button>
-                <button class="btn btn-primary btn-sm" id="newChatDrawerBtn" type="button"><svg class="icon icon-sm" aria-hidden="true"><use href="#i-plus"/></svg> <span data-i18n="newChatDrawer">New Chat</span></button>
-                <button class="icon-btn" id="closeHistoryBtn" aria-label="Close history" type="button"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></button>
-            </div>
+    <div class="drawer-overlay" id="drawerOverlay" aria-hidden="true"></div>
+    <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" aria-hidden="true">
+        <div class="drawer-head">
+            <h2 id="drawerTitle">
+                <svg class="icon icon-sm" aria-hidden="true"><use href="#i-history"/></svg>
+                <span data-i18n="historyHeading">Riwayat</span>
+            </h2>
+            <button class="icon-btn" id="drawerClose" type="button" data-i18n-aria-label="closeHistory" aria-label="Tutup riwayat">
+                <svg class="icon" aria-hidden="true"><use href="#i-x"/></svg>
+            </button>
         </div>
-
         <div class="drawer-body">
-            <ul class="history-list" id="chatHistoryList"></ul>
+            <ul class="history-list" id="historyList"></ul>
+            <p class="history-empty" id="historyEmpty" data-i18n="historyEmpty">Belum ada riwayat chat.</p>
+        </div>
+        <div class="drawer-foot">
+            <button class="btn btn-danger btn-block" id="clearAllBtn" type="button">
+                <svg class="icon icon-sm" aria-hidden="true"><use href="#i-trash"/></svg>
+                <span data-i18n="clearAllHistory">Hapus semua riwayat</span>
+            </button>
         </div>
     </aside>
 
     <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
 
-    <!-- Vendor libs -->
+    <!-- Vendor libraries (pinned versions) -->
     <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.8/dist/purify.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+
     <script src="i18n.js"></script>
     <script src="script.js"></script>
 </body>
-                        </html>
+</html>
