@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════
-   RAIA · Reflecting Tomorrow · v1.2.2
+   RAIA · Reflecting Tomorrow · v1.2.3
    script.js: routing (#/chat, #/setting), chat, providers,
    settings, history, Markdown and LaTeX rendering
    ═══════════════════════════════════════════════════════ */
@@ -8,7 +8,7 @@
     'use strict';
 
     /* ─── Constants ─── */
-    const APP_VERSION = '1.2.2';
+    const APP_VERSION = '1.2.3';
     const SETTINGS_KEY = 'raia_settings_v122';
     const SESSIONS_KEY = 'raia_sessions_v122';
     const THEME_KEY = 'raia_theme';
@@ -18,8 +18,8 @@
     const CONTEXT_LIMIT = 20;
     const MAX_SESSIONS = 30;
     const ROUTES = ['chat', 'setting'];
-    const DEFAULT_PROVIDER = 'OpenRouter';
-    const OPENROUTER_REFERER = 'https://raia.is-a.bot';
+    const DEFAULT_PROVIDER = 'Gemini (Google)';
+    const OPENROUTER_REFERER = 'https://hajir.is-a.dev/raia-ai';
 
     const SYSTEM_PROMPT =
         'You are Raia, a clear, honest, and helpful AI assistant. ' +
@@ -56,7 +56,7 @@
         },
         'Gemini (Google)': {
             label: 'Gemini (Google)',
-            models: ['gemini-3.5-flash', 'gemini-3.1-pro-preview', 'gemini-3.1-flash-lite', 'gemini-2.5-flash'],
+            models: ['gemini-2.5-flash-lite', 'gemini-3.5-flash', 'gemini-3.1-pro-preview', 'gemini-3.1-flash-lite', 'gemini-2.5-flash'],
             baseUrl: 'https://generativelanguage.googleapis.com/v1beta',
             keyUrl: 'https://aistudio.google.com/app/apikey'
         },
@@ -70,6 +70,7 @@
 
     /* Providers that block direct browser calls; they need a CORS proxy when one is set */
     const CORS_BLOCKED = ['OpenAI', 'Perplexity', 'Mistral'];
+    const BUILTIN_PROXY_URL = 'https://raia-proxy.haiere.workers.dev/';
 
     /* ─── Helpers ─── */
     const $ = (id) => document.getElementById(id);
@@ -552,7 +553,7 @@
        PROVIDER REQUESTS
        ═══════════════════════════════════════ */
     function hasKey() {
-        return Boolean(state.apiKey);
+        return Boolean(state.apiKey) || (state.provider === 'Gemini (Google)' && Boolean(BUILTIN_PROXY_URL));
     }
 
     function isReasoningModel(model) {
@@ -576,7 +577,9 @@
         let body;
 
         if (provider === 'Gemini (Google)') {
-            url = `${base}/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
+            url = apiKey
+                ? `${base}/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`
+                : BUILTIN_PROXY_URL;
             headers = { 'Content-Type': 'application/json' };
             body = {
                 contents: history.map((m) => ({
@@ -586,6 +589,7 @@
                 systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
                 generationConfig: { temperature: temp, maxOutputTokens: tokens }
             };
+            if (!apiKey) body.model = model;
         } else if (provider === 'Claude (Anthropic)') {
             url = `${base}/messages`;
             headers = {

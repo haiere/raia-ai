@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════
-   RAIA · Reflecting Tomorrow · v1.2.2
+   RAIA · Reflecting Tomorrow · v1.2.3
    Design: Deep Midnight Navy, Slate Silver, Electric Blue
    Type: Syne (heading), DM Sans (body), JetBrains Mono (code)
    ═══════════════════════════════════════════════════════ */
@@ -233,10 +233,8 @@ button:disabled,
 .brand:hover { color: var(--text); }
 
 .brand-logo {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    object-fit: cover;
+    width: auto;
+    height: 28px;
     flex-shrink: 0;
 }
 
@@ -1271,6 +1269,9 @@ input[type="range"] {
     .brand-tagline,
     .version-badge { display: none; }
 
+    /* Keyboard hint is desktop-only */
+    .hint-keys { display: none; }
+
     /* Header on phones: brand shrinks, actions keep 44px touch targets */
     .app-header {
         gap: var(--space-2);
@@ -1288,8 +1289,7 @@ input[type="range"] {
     .brand-name { white-space: nowrap; }
 
     .brand-logo {
-        width: 32px;
-        height: 32px;
+        height: 24px;
     }
 
     .nav {

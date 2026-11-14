@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════
-   RAIA · Reflecting Tomorrow · v1.2.2
+   RAIA · Reflecting Tomorrow · v1.2.3
    i18n.js: Bahasa Indonesia (id) dan English (en)
    ═══════════════════════════════════════════════════════ */
 

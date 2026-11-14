@@ -1,11 +1,11 @@
 <div align="center">
 
-<img src="https://i.postimg.cc/28bKx4xC/raia2.webp" alt="Raia AI logo" width="120" />
+<img src="https://i.postimg.cc/28bKx4xC/raia2.webp" alt="Raia AI logo" width="240" />
 
 # RAIA: Reflecting Tomorrow
 
 <a href="https://hajir.is-a.dev/raia-ai/">
-  <img src="https://readme-typing-svg.demolab.com?font=DM+Sans&weight=600&size=22&pause=1000&color=3B82F6&center=true&vCenter=true&width=600&lines=A+multi-provider+AI+chat+client;Bring+your+own+API+key;Running+entirely+in+your+browser;No+server,+no+tracking,+no+telemetry" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.demolab.com?font=DM+Sans&weight=600&size=22&pause=1000&color=3B82F6&center=true&vCenter=true&width=600&lines=A+multi-provider+AI+chat+client;Bring+your+own+API+key;Running+entirely+in+your+browser;Built-in+Gemini,+no+tracking,+no+telemetry" alt="Typing SVG" />
 </a>
 
 <br />
@@ -19,7 +19,7 @@
 
 <br />
 
-<img src="https://img.shields.io/badge/Version-v1.2.2-3B82F6?style=flat-square" alt="Version v1.2.2" />
+<img src="https://img.shields.io/badge/Version-v1.2.3-3B82F6?style=flat-square" alt="Version v1.2.3" />
 <img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" alt="MIT License" />
 <img src="https://img.shields.io/badge/PRs-Welcome-brightgreen?style=flat-square" alt="PRs Welcome" />
 
@@ -45,6 +45,7 @@
 ## Table of Contents
 
 - [Overview](#overview)
+- [What's New in v1.2.3](#whats-new-in-v123)
 - [What's New in v1.2.2](#whats-new-in-v122)
 - [Features](#features)
 - [Requirements](#requirements)
@@ -102,7 +103,20 @@ RAIA is a client-side AI chat interface that connects to several large language 
 </table>
 
 > [!IMPORTANT]
-> All communication with AI providers happens **directly from your browser**. No server is involved. Your API keys and conversations stay on your device.
+> With your own API key, requests go **directly from your browser** to the provider. The optional built-in Gemini option sends its requests through a small proxy on Cloudflare Workers, which holds the Google API key on the server. The proxy does not store conversations. Your own API keys stay on your device.
+
+---
+
+## What's New in v1.2.3
+
+This release adds a built-in Gemini option, updates the logo, and tidies the mobile layout.
+
+| Change | Details |
+|---|---|
+| **Built-in Gemini** | Gemini 2.5 Flash-Lite is the default provider. It works without your own key through a small proxy, with a free daily quota per IP address. |
+| **Logo** | The header shows the RAIA wordmark. |
+| **Mobile keyboard hint** | The "Enter to send, Shift+Enter for a new line" hint is hidden on phones. It still shows on desktop. |
+| **Version display** | The version badge was removed from the header. |
 
 ---
 
@@ -211,8 +225,8 @@ This release fixes the header layout on phones, moves settings to its own page, 
 | Requirement | Details |
 |---|---|
 | **Browser** | A modern browser with JavaScript enabled, such as Chrome, Firefox, Edge, or Safari. |
-| **API key** | An API key for at least one supported provider. |
-| **Installation** | No installation. The app is a static page made of four files. |
+| **API key** | An API key for any supported provider. Gemini also works without one, within the free daily quota. |
+| **Installation** | No installation. The app is a static page made of four files. The optional built-in Gemini option also needs the proxy in `proxy/`. |
 
 ---
 
@@ -226,7 +240,7 @@ RAIA is a static web app with no build step.
 
 ### Run locally
 
-Download the source files into one folder and open `index.html` in your browser. An internet connection is needed for the vendor libraries (marked.js, DOMPurify, KaTeX, GSAP, and Google Fonts), which load from CDN.
+Download the source files into one folder and open `index.html` in your browser. An internet connection is needed for the vendor libraries (marked.js, DOMPurify, KaTeX, GSAP, and Google Fonts), which load from CDN. The built-in Gemini option only works from an origin listed in the proxy's `ALLOWED_ORIGINS`. For local tests, add `http://localhost:8080` there or use your own key.
 
 ### Self-host
 
@@ -247,7 +261,7 @@ Place the files on any static web server. Styles, icons, and application logic a
 | 7 | **Start chatting.** Go to `#/chat`, type a message, and press `Enter`. |
 | 8 | **Open history.** Select the history icon or press `Ctrl+H` to open, load, or delete a chat. |
 
-If no API key is saved, the chat page shows a notice with a link to settings. The typed message stays in the box.
+If no API key is saved for a provider other than Gemini, the chat page shows a notice with a link to settings. The typed message stays in the box. With Gemini selected, you can chat without a key until the free daily quota runs out.
 
 ### Routes
 
@@ -255,6 +269,10 @@ If no API key is saved, the chat page shows a notice with a link to settings. Th
 |---|---|
 | `#/chat` | Conversations. This is the default page. |
 | `#/setting` | Language, provider, model, API key, and generation settings. |
+
+### Built-in Gemini (Free Quota)
+
+Gemini (Google) is the default provider. It uses the app owner's Gemini API key through the proxy, so you can try it without your own key. Each IP address gets a limited number of requests per day. When the limit is reached, the chat asks you to add your own key in settings. The other providers always require your own key.
 
 ### Supported Providers and Example Models
 
@@ -264,7 +282,7 @@ If no API key is saved, the chat page shows a notice with a link to settings. Th
 | OpenAI | `gpt-5.6`, `gpt-5.6-terra`, `gpt-5.6-luna`, `gpt-4o`, `gpt-4o-mini` |
 | Perplexity | `sonar`, `sonar-pro`, `sonar-reasoning-pro`, `sonar-deep-research` |
 | Claude (Anthropic) | `claude-sonnet-5`, `claude-opus-4-8`, `claude-haiku-4-5-20251001`, `claude-fable-5` |
-| Gemini (Google) | `gemini-3.5-flash`, `gemini-3.1-pro-preview`, `gemini-3.1-flash-lite`, `gemini-2.5-flash` |
+| Gemini (Google) | `gemini-2.5-flash-lite` (built-in default), `gemini-3.5-flash`, `gemini-3.1-pro-preview`, `gemini-3.1-flash-lite`, `gemini-2.5-flash` |
 | Mistral | `mistral-large-latest`, `mistral-small-latest`, `magistral-medium-latest`, `codestral-latest` |
 
 > [!TIP]
@@ -331,13 +349,14 @@ On a Mac, use `Cmd` in place of `Ctrl`.
 
 ## Privacy and Security
 
-RAIA keeps your data on your device.
+RAIA keeps your data on your device, except for the built-in Gemini option described below.
 
 - The API key is stored in `localStorage` when you choose to remember it. Otherwise it is kept in `sessionStorage` and cleared when the browser session ends.
 - Chat history is stored in `localStorage` and is never sent to a third party.
 - No analytics, tracking, or telemetry is collected.
-- The app uses no cookies and no external services besides the provider APIs and the vendor libraries from CDN.
-- Requests go **directly from your browser** to the provider you select.
+- The app uses no cookies and no external services besides the provider APIs, the optional proxy, and the vendor libraries from CDN.
+- Requests go **directly from your browser** to the provider you select, when you use your own key.
+- The built-in Gemini option sends requests through the proxy. The proxy checks each request, adds the Google API key on the server, and forwards it. It stores only a daily request counter per IP address. It does not store chats.
 - Assistant output is sanitized with DOMPurify before it is added to the page. Links in replies open in a new tab with `noopener noreferrer`.
 
 ---
@@ -372,6 +391,8 @@ RAIA keeps your data on your device.
 | **Animations are missing** | GSAP loads from jsDelivr. If it is blocked, the page still works without motion. |
 | **History is not saved** | Check that the browser allows `localStorage`, and that you are not in private mode. |
 | **Language resets** | Private mode can block `localStorage`. In normal mode, the language is remembered. |
+| **Free Gemini quota reached** | The built-in daily limit is used up. Add your own Gemini key in settings, or try again tomorrow. |
+| **CORS error with built-in Gemini** | The site's origin is missing from the proxy's `ALLOWED_ORIGINS`. Add it in `proxy/worker.js`, then deploy the Worker again. |
 
 ---
 
@@ -418,7 +439,7 @@ Fork the repository and open a pull request with a clear description of the chan
 
 ## Development Setup
 
-The application has four source files.
+The application has four source files, plus an optional proxy Worker.
 
 ```text
 .
@@ -426,7 +447,9 @@ The application has four source files.
 ├── style.css    Design tokens, layout, themes, and responsive rules
 ├── i18n.js      Translations for Bahasa Indonesia (id) and English (en)
 ├── script.js    Routing, providers, chat state, and the Markdown and KaTeX pipeline
-└── README.md
+├── README.md
+└── proxy/
+    └── worker.js  Optional Cloudflare Worker for built-in Gemini
 ```
 
 ### Local development
@@ -481,17 +504,33 @@ Then open `http://localhost:8080` in your browser.
 | Math | KaTeX 0.16.9 from jsDelivr |
 | i18n | `i18n.js`, with no dependencies (id and en) |
 | Storage | `localStorage` for settings, language, theme, API key, and history. `sessionStorage` when the key is not remembered. |
+| Backend (optional) | Cloudflare Worker with KV for the daily quota. The Gemini key is stored as a secret. |
 | Typography | Google Fonts: Syne (headings), DM Sans (body), JetBrains Mono (code) |
 
 ---
 
 ## Deployment
 
-RAIA is a static site with no build step. Upload the four source files and this README to any static host.
+RAIA has two parts, and they are deployed to different places.
+
+| Part | Files | Where |
+|---|---|---|
+| Frontend | `index.html`, `style.css`, `i18n.js`, `script.js`, and this README | Any static host, such as GitHub Pages |
+| Gemini proxy (optional) | `proxy/worker.js` | Cloudflare Workers, not GitHub Pages |
+
+GitHub Pages only serves static files, so it cannot run `worker.js` or keep an API key. Deploy the proxy with Wrangler, add `GEMINI_API_KEY` as a secret, and bind a KV namespace named `RAIA_QUOTA`. Set the Worker URL in `BUILTIN_PROXY_URL` in `script.js`, and add the site's origin to `ALLOWED_ORIGINS` in the Worker.
 
 ---
 
 ## Changelog
+
+### v1.2.3 (November 14, 2026)
+
+- Added built-in Gemini 2.5 Flash-Lite through a Cloudflare Worker proxy, with a free daily quota per IP address.
+- Made Gemini the default provider.
+- Replaced the header logo with the RAIA wordmark.
+- Hid the keyboard hint on phones.
+- Removed the version badge from the header.
 
 ### v1.2.2 (November 13, 2026)
 
@@ -577,6 +616,6 @@ Developed and maintained by Haiere and HajirStudio.
 
 <div align="center">
 <sub>
-Last updated: November 13, 2026 · RAIA v1.2.2
+Last updated: November 14, 2026 · RAIA v1.2.3
 </sub>
 </div>
