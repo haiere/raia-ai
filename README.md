@@ -69,6 +69,7 @@
 ## Overview
 
 RAIA is a client-side AI chat interface that connects to several large language model providers from one place.
+[![Architecture diagram of haiere/raia-ai](https://gitdiagram.com/haiere/raia-ai/diagram.png)](https://gitdiagram.com/haiere/raia-ai?utm_source=readme&utm_medium=picture)
 
 <table>
 <tr>
