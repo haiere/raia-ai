@@ -60,17 +60,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous" />
 
-    <!-- Static hosts: restore /chat or /setting that 404.html sent here as /raia-ai/?p=... (runs before scripts) -->
-    <script>
-        (function () {
-            var BASE = '/raia-ai';
-            var match = location.search.match(/[?&]p=([^&]*)/);
-            if (!match) return;
-            var path = decodeURIComponent(match[1].replace(/\+/g, '%20'));
-            if (path.charAt(0) !== '/') path = '/' + path;
-            history.replaceState(null, '', BASE + path);
-        })();
-    </script>
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -115,7 +104,7 @@
 
     <!-- ═══ HEADER ═══ -->
     <header class="app-header">
-        <a class="brand" href="/chat" data-route="chat" aria-label="Raia AI">
+        <a class="brand" href="#/chat" data-route="chat" aria-label="Raia AI">
             <img class="brand-logo" src="https://i.postimg.cc/GmWt2wch/H-blue.webp" alt="RAIA" height="28" decoding="async" />
             <span class="brand-text">
                 <span class="brand-name">RAIA</span>
@@ -124,11 +113,11 @@
         </a>
 
         <div class="nav">
-            <a class="nav-link" href="/chat" id="navChat" data-route="chat">
+            <a class="nav-link" href="#/chat" id="navChat" data-route="chat">
                 <svg class="icon icon-sm" aria-hidden="true"><use href="#i-message"/></svg>
                 <span class="nav-label" data-i18n="navChat">Chat</span>
             </a>
-            <a class="nav-link" href="/setting" id="navSetting" data-route="setting">
+            <a class="nav-link" href="#/setting" id="navSetting" data-route="setting">
                 <svg class="icon icon-sm" aria-hidden="true"><use href="#i-settings"/></svg>
                 <span class="nav-label" data-i18n="navSetting">Pengaturan</span>
             </a>
@@ -150,7 +139,7 @@
 
     <main class="app-main" id="main" tabindex="-1">
 
-        <!-- ═══ CHAT VIEW (/chat) ═══ -->
+        <!-- ═══ CHAT VIEW (#/chat) ═══ -->
         <section class="view" id="chat" aria-labelledby="welcomeTitle">
             <div class="chat-scroll" id="chatScroll">
                 <div class="chat-inner">
@@ -183,7 +172,7 @@
                         <div class="notice-body">
                             <p class="notice-text" data-i18n="noKeyBanner">API key belum diisi. Tambahkan dulu di pengaturan supaya Raia bisa menjawab.</p>
                             <div class="notice-action">
-                                <a class="btn btn-secondary" href="/setting" data-route="setting" data-i18n="goSetting">Buka pengaturan</a>
+                                <a class="btn btn-secondary" href="#/setting" data-route="setting" data-i18n="goSetting">Buka pengaturan</a>
                             </div>
                         </div>
                     </div>
@@ -231,7 +220,7 @@
             </div>
         </section>
 
-        <!-- ═══ SETTINGS VIEW (/setting) ═══ -->
+        <!-- ═══ SETTINGS VIEW (#/setting) ═══ -->
         <section class="view" id="setting" aria-labelledby="setTitle" hidden>
             <div class="settings-scroll">
                 <div class="settings-inner">

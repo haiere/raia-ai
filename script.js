@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════
    RAIA · Reflecting Tomorrow · v1.2.4
-   script.js: routing (/chat, /setting), chat, provider and
+   script.js: routing (#/chat, #/setting), chat, provider and
    model catalog, custom API, quota, settings, history,
    Markdown and LaTeX rendering
    ═══════════════════════════════════════════════════════ */
@@ -95,12 +95,6 @@
     /* Providers that block direct browser calls; they need a CORS proxy when one is set */
     const CORS_BLOCKED = ['OpenAI', 'Perplexity', 'Mistral'];
     const BUILTIN_PROXY_URL = 'https://raia-proxy.haiere.workers.dev/';
-
-    /* Base path of the app, so /chat and /setting work when the app is served from a sub-folder */
-    const BASE_PATH = location.pathname
-        .replace(/\/index\.html$/, '')
-        .replace(/\/(chat|setting)\/?$/, '')
-        .replace(/\/+$/, '');
 
     /* ─── Helpers ─── */
     const $ = (id) => document.getElementById(id);
@@ -1836,29 +1830,17 @@
 
     /* ═══════════════════════════════════════
        ROUTING
-       Routes are real paths: /chat and /setting. Old #/chat and #/setting links are converted.
+       Hash routes: #/chat and #/setting. These work on any static host.
        ═══════════════════════════════════════ */
-    function routeHref(route) {
-        return `${BASE_PATH}/${route}`;
-    }
-
     function currentRoute() {
-        const match = location.pathname.match(/\/(chat|setting)\/?$/);
-        if (match) return match[1];
-        const legacy = location.hash.match(/^#\/?(chat|setting)$/);
-        return legacy ? legacy[1] : 'chat';
-    }
-
-    function normalizeLegacyHash() {
-        const legacy = location.hash.match(/^#\/?(chat|setting)$/);
-        if (legacy) history.replaceState(null, '', routeHref(legacy[1]));
+        const match = location.hash.match(/^#\/(chat|setting)$/);
+        return match ? match[1] : 'chat';
     }
 
     function go(route) {
-        const target = ROUTES.includes(route) ? route : 'chat';
-        const onRoute = /\/(chat|setting)\/?$/.test(location.pathname) && currentRoute() === target && !location.hash;
-        if (!onRoute) history.pushState(null, '', routeHref(target));
-        renderRoute();
+        const target = `#/${ROUTES.includes(route) ? route : 'chat'}`;
+        if (location.hash !== target) location.hash = target;
+        else renderRoute();
     }
 
     let activeView = null;
@@ -1974,7 +1956,7 @@
 
         /* Route links: a single tap goes straight to the page */
         document.addEventListener('click', (e) => {
-            const link = e.target.closest('[data-route], a[href="#/chat"], a[href="#/setting"], a[href="/chat"], a[href="/setting"]');
+            const link = e.target.closest('[data-route], a[href="#/chat"], a[href="#/setting"]');
             if (!link) return;
             const route = link.dataset.route || ((link.getAttribute('href') || '').match(/(chat|setting)\/?$/) || [])[1];
             if (!ROUTES.includes(route)) return;
@@ -2045,11 +2027,7 @@
         });
 
         /* Routing and language */
-        window.addEventListener('popstate', renderRoute);
-        window.addEventListener('hashchange', () => {
-            normalizeLegacyHash();
-            renderRoute();
-        });
+        window.addEventListener('hashchange', renderRoute);
         window.addEventListener('raia:langchange', () => {
             els.langSelect.value = window.I18N.getLang();
             renderAll();
@@ -2118,9 +2096,8 @@
         els.langSelect.value = window.I18N.getLang();
         syncSettingsForm();
 
-        normalizeLegacyHash();
-        if (!/\/(chat|setting)\/?$/.test(location.pathname)) {
-            history.replaceState(null, '', routeHref('chat'));
+        if (!/^#\/(chat|setting)$/.test(location.hash)) {
+            history.replaceState(null, '', '#/chat');
         }
 
         bindEvents();

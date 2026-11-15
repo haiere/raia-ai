@@ -117,7 +117,7 @@ This release makes the provider layer more flexible, moves routes to real paths,
 | **Provider adapters** | Each provider has its own request format, response parser, and model list. Models are never mixed between providers. **Muat model** (Load models) fetches the list from the provider's own API and shows only chat models. |
 | **Custom API** | Add as many custom providers as you need. Each one has a name, an API type (OpenAI-compatible, Gemini-compatible, or Anthropic-compatible), an endpoint, a model ID, and an API key. The key is hidden after saving. Custom providers can be used, edited, and deleted. |
 | **Model picker** | Models are chosen from a visible dropdown, not from the keyboard suggestions. The active provider and model are shown below the message field. |
-| **Real paths** | Routes are `/chat` and `/setting`, without `#`. Old `#/chat` and `#/setting` links are converted. A `404.html` and a restore script keep these paths working on GitHub Pages. |
+| **Hash routes** | Routes stay as `#/chat` and `#/setting`, so the app works on any static host without server rewrites. |
 | **One-tap navigation** | The Chat and Settings buttons open their page at once. The extra Chat button at the bottom of settings is removed. |
 | **Sliders** | Creativity and maximum answer length are drag sliders, with min and max values shown and a larger touch area. |
 | **Gemini fallback** | If the built-in Gemini request fails with a quota or authentication error, the proxy retries with OpenRouter using the same model where available. The reply shows which provider answered. |
@@ -249,7 +249,7 @@ This release fixes the header layout on phones, moves settings to its own page, 
 |---|---|
 | **Browser** | A modern browser with JavaScript enabled, such as Chrome, Firefox, Edge, or Safari. |
 | **API key** | An API key for any supported provider. Gemini also works without one, within the free daily quota. |
-| **Installation** | No installation. The app is a static site made of five files (`index.html`, `404.html`, `style.css`, `script.js`, `i18n.js`). The optional built-in Gemini option also needs the Worker in `worker.js`. |
+| **Installation** | No installation. The app is a static site made of four files (`index.html`, `style.css`, `script.js`, `i18n.js`). The optional built-in Gemini option also needs the Worker in `worker.js`. |
 
 ---
 
@@ -263,26 +263,19 @@ RAIA is a static web app with no build step.
 
 ### Run locally
 
-Download the source files into one folder and serve it with a static server in single-page mode, so that `/chat` and `/setting` open directly:
+Download the source files into one folder and serve it with any static server:
 
 ```bash
-npx serve -s . -l 8080
+npx serve . -l 8080
 ```
 
-Opening `index.html` straight from the disk does not support the `/chat` and `/setting` paths. An internet connection is needed for the vendor libraries (marked.js, DOMPurify, KaTeX, GSAP, and Google Fonts), which load from CDN. The built-in Gemini option only works from an origin listed in the Worker's `ALLOWED_ORIGINS`. For local tests, use your own key, or add `http://localhost:8080` to that list.
+An internet connection is needed for the vendor libraries (marked.js, DOMPurify, KaTeX, GSAP, and Google Fonts), which load from CDN. The built-in Gemini option only works from an origin listed in the Worker's `ALLOWED_ORIGINS`. For local tests, use your own key, or add `http://localhost:8080` to that list.
 
 ### Self-host
 
 Place the files on any static web server. Styles, icons, and application logic are included in the project. The vendor libraries load from jsDelivr and Google Fonts.
 
-For deep links such as `/chat` and `/setting` to work after a refresh, the host must send unknown paths to `index.html`, or use the included `404.html`:
-
-| Host | How to enable deep links |
-|---|---|
-| **GitHub Pages** | Put `404.html` in the root of the published branch. Set `BASE` in `404.html` and `index.html` to the path the site is served from, for example `/raia-ai`, or `''` for a root domain. |
-| **Cloudflare Pages or Netlify** | Add a `_redirects` file with `/raia-ai/* /raia-ai/index.html 200`. |
-| **Vercel** | Add a rewrite from `/raia-ai/(.*)` to `/raia-ai/index.html` in `vercel.json`. |
-| **nginx** | `try_files $uri $uri/ /raia-ai/index.html;` inside the location block. |
+Routes use the URL hash (`#/chat` and `#/setting`), so no rewrite rules are needed on the host.
 
 ---
 
@@ -290,13 +283,13 @@ For deep links such as `/chat` and `/setting` to work after a refresh, the host 
 
 | Step | Action |
 |:-:|---|
-| 1 | **Open settings.** Select **Pengaturan** (Settings) in the header, or go to `/setting`. |
+| 1 | **Open settings.** Select **Pengaturan** (Settings) in the header, or go to `#/setting`. |
 | 2 | **Pick a language.** Bahasa Indonesia or English. The app detects the browser language on the first visit. |
 | 3 | **Select a provider.** OpenRouter, OpenAI, Perplexity, Claude, Gemini, or Mistral. |
 | 4 | **Enter your API key.** Paste it into the API key field. Choose whether to remember it in this browser. |
 | 5 | **Select a model.** Choose from the list. Select **Muat model** to load the provider's full list, or type a custom model ID. |
 | 6 | **Save and test.** Select **Simpan** (Save). The status shows **Terhubung** (Connected). Select **Tes koneksi** (Test connection) to check the setup. |
-| 7 | **Start chatting.** Go to `/chat`, type a message, and press `Enter`. |
+| 7 | **Start chatting.** Go to `#/chat`, type a message, and press `Enter`. |
 | 8 | **Open history.** Select the history icon or press `Ctrl+H` to open, load, or delete a chat. |
 
 If no API key is saved for a provider other than Gemini, the chat page shows a notice with a link to settings. The typed message stays in the box. With Gemini selected, you can chat without a key until the free daily quota runs out.
@@ -305,10 +298,8 @@ If no API key is saved for a provider other than Gemini, the chat page shows a n
 
 | Route | Page |
 |---|---|
-| `/chat` | Conversations. This is the default page. |
-| `/setting` | Language, provider, model, custom APIs, API key, and generation settings. |
-
-Old links with `#/chat` or `#/setting` are converted to the new paths automatically.
+| `#/chat` | Conversations. This is the default page. |
+| `#/setting` | Language, provider, model, custom APIs, API key, and generation settings. |
 
 ### Built-in Gemini (Free Quota)
 
@@ -448,7 +439,6 @@ RAIA keeps your data on your device, except for the built-in Gemini option descr
 | **Animations are missing** | GSAP loads from jsDelivr. If it is blocked, the page still works without motion. |
 | **History is not saved** | Check that the browser allows `localStorage`, and that you are not in private mode. |
 | **Language resets** | Private mode can block `localStorage`. In normal mode, the language is remembered. |
-| **"File not found" on refresh of `/chat` or `/setting`** | The host does not send unknown paths to `index.html`. See [Self-host](#self-host). Locally, use `npx serve -s .`. |
 | **Free quota note is missing** | The proxy is not deployed yet, or it does not send the `X-RateLimit-*` headers. Built-in Gemini sends these headers. |
 | **Model list does not load** | The provider may not offer a list endpoint (Perplexity has none), the key may be invalid, or the provider blocks browser requests. Use a CORS proxy, or type the model ID. |
 | **Custom API fails** | Check the endpoint, the API type, and the model ID. The endpoint must allow browser requests (CORS). |
@@ -505,7 +495,6 @@ The application has five source files, plus an optional Worker.
 ```text
 .
 ├── index.html   Markup, SVG icon sprite, routes, and vendor script tags
-├── 404.html     Redirects /chat and /setting to index.html on static hosts
 ├── style.css    Design tokens, layout, themes, and responsive rules
 ├── i18n.js      Translations for Bahasa Indonesia (id) and English (en)
 ├── script.js    Routing, provider adapters, custom APIs, chat state, quota, and Markdown and KaTeX
@@ -517,11 +506,11 @@ The application has five source files, plus an optional Worker.
 ### Local development
 
 1. Edit the files directly.
-2. Serve the folder in single-page mode (see Local hosting), and test in a browser.
+2. Serve the folder (see Local hosting), and test in a browser.
 3. No build tools are needed.
 
 > [!WARNING]
-> **Load order matters.** `marked`, `DOMPurify`, and `katex` must load before `script.js`. `gsap` must also load before `script.js`. `i18n.js` must load before `script.js`. `index.html` already includes the scripts in this order. The script that restores deep links must stay in the `<head>` of `index.html`, before the stylesheet.
+> **Load order matters.** `marked`, `DOMPurify`, and `katex` must load before `script.js`. `gsap` must also load before `script.js`. `i18n.js` must load before `script.js`. `index.html` already includes the scripts in this order.
 
 ### Local hosting
 
@@ -534,8 +523,6 @@ Python
 ```bash
 python -m http.server 8080
 ```
-
-Python's server does not handle `/chat` or `/setting`. Use the Node.js option for those paths.
 
 </td>
 <td width="50%" valign="top">
@@ -550,7 +537,7 @@ npx serve
 </tr>
 </table>
 
-Then open `http://localhost:8080` in your browser. With `npx serve -s`, the `/chat` and `/setting` paths work as well.
+Then open `http://localhost:8080` in your browser.
 
 ---
 
@@ -559,7 +546,7 @@ Then open `http://localhost:8080` in your browser. With `npx serve -s`, the `/ch
 | Layer | Used |
 |---|---|
 | Logic | Vanilla JavaScript, no framework |
-| Routing | Path routes (`/chat`, `/setting`), with `history.pushState`. Static hosts fall back through `404.html`. |
+| Routing | Hash routes (`#/chat`, `#/setting`), which work on any static host. |
 | Styling | CSS custom properties with dark and light theme tokens |
 | Icons | Inline SVG sprite with stroke icons |
 | Motion | GSAP 3.12.5 from jsDelivr |
@@ -579,7 +566,7 @@ RAIA has two parts, and they are deployed to different places.
 
 | Part | Files | Where |
 |---|---|---|
-| Frontend | `index.html`, `404.html`, `style.css`, `script.js`, `i18n.js`, and this README | Any static host, such as GitHub Pages |
+| Frontend | `index.html`, `style.css`, `script.js`, `i18n.js`, and this README | Any static host, such as GitHub Pages |
 | Gemini proxy (optional) | `worker.js` and `wrangler.jsonc` | Cloudflare Workers, not GitHub Pages |
 
 **1. Deploy the Worker**
@@ -599,7 +586,7 @@ The Worker's URL must match `BUILTIN_PROXY_URL` in `script.js`.
 
 **2. Deploy the frontend**
 
-Push `index.html`, `404.html`, `style.css`, `script.js`, and `i18n.js` to the published branch. Then check that `/chat` and `/setting` open directly after a refresh.
+Push `index.html`, `style.css`, `script.js`, and `i18n.js` to the published branch. Then check that `#/chat` and `#/setting` open.
 
 GitHub Pages only serves static files, so it cannot run `worker.js` or keep an API key.
 
@@ -611,7 +598,6 @@ GitHub Pages only serves static files, so it cannot run `worker.js` or keep an A
 
 - Added per-provider adapters, with model lists loaded from each provider's API.
 - Added custom APIs (OpenAI-, Gemini-, and Anthropic-compatible) with masked keys.
-- Replaced hash routes with `/chat` and `/setting`, and added a `404.html` fallback for static hosts.
 - Made the Chat and Settings buttons open their page in one tap, and removed the extra Chat button from settings.
 - Changed the model picker to a visible dropdown, and added an active provider and model indicator.
 - Changed Creativity and Max Answer Length to drag sliders with min and max values.
