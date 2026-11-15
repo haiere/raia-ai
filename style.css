@@ -1615,6 +1615,76 @@ input[type="range"].range-input:active::-moz-range-thumb {
 
 }
 
+/* ═══════════════════════════════════════════════════════
+   Settings panel (opens over the chat)
+   ═══════════════════════════════════════════════════════ */
+.nav-link[aria-expanded="true"] {
+    background: var(--accent-soft);
+    color: var(--accent-ink);
+}
+
+.settings-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    background: rgba(2, 6, 23, 0.55);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s var(--ease);
+}
+
+.settings-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.settings-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 50;
+    width: min(720px, 100%);
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+    border-left: 1px solid var(--border);
+    box-shadow: var(--shadow-lg);
+    transform: translateX(100%);
+    visibility: hidden;
+    transition: transform 0.3s var(--ease), visibility 0.3s;
+}
+
+.settings-panel.open {
+    transform: translateX(0);
+    visibility: visible;
+}
+
+.settings-panel .settings-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.panel-head {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-4) var(--space-4) var(--space-6);
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-raised);
+}
+
+.panel-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-lg);
+}
+
 /* ─── Motion and contrast preferences ─── */
 @media (prefers-reduced-motion: reduce) {
     *,

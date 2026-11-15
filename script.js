@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════
    RAIA · Reflecting Tomorrow · v1.2.4
-   script.js: routing (#/chat, #/setting), chat, provider and
+   script.js: settings panel, chat, provider and
    model catalog, custom API, quota, settings, history,
    Markdown and LaTeX rendering
    ═══════════════════════════════════════════════════════ */
@@ -22,7 +22,6 @@
     const CONTEXT_LIMIT = 20;
     const MAX_SESSIONS = 30;
     const MAX_CUSTOM = 20;
-    const ROUTES = ['chat', 'setting'];
     const DEFAULT_PROVIDER = 'Gemini (Google)';
     const CUSTOM_PREFIX = 'custom:';
     const CUSTOM_COMPAT = ['openai', 'gemini', 'anthropic'];
@@ -207,10 +206,11 @@
         themeIcon: $('themeIcon'),
         historyBtn: $('historyBtn'),
         newChatBtn: $('newChatBtn'),
-        navChat: $('navChat'),
         navSetting: $('navSetting'),
         chatView: $('chat'),
         settingView: $('setting'),
+        settingsOverlay: $('settingsOverlay'),
+        settingsClose: $('settingsClose'),
         chatScroll: $('chatScroll'),
         messages: $('messages'),
         welcome: $('welcome'),
@@ -1243,7 +1243,7 @@
 
     /* Opens settings and puts focus on the key field (or the custom form when a custom provider is active) */
     function goToKeySettings() {
-        go('setting');
+        openSettings();
         const target = findCustom(state.provider) ? els.customBaseUrl : els.apiKeyInput;
         if (target && !target.disabled) setTimeout(() => target.focus(), 60);
     }
@@ -1354,7 +1354,7 @@
         state.sessionId = session.id;
         state.messages = session.messages.slice();
         closeDrawer();
-        go('chat');
+        closeSettings();
         renderAll({ stick: true });
     }
 
@@ -1829,45 +1829,46 @@
     }
 
     /* ═══════════════════════════════════════
-       ROUTING
-       Hash routes: #/chat and #/setting. These work on any static host.
+       SETTINGS PANEL
+       Opens over the chat. The settings button toggles it, and the same button closes it.
        ═══════════════════════════════════════ */
-    function currentRoute() {
-        const match = location.hash.match(/^#\/(chat|setting)$/);
-        return match ? match[1] : 'chat';
+    function isSettingsOpen() {
+        return els.settingView.classList.contains('open');
     }
 
-    function go(route) {
-        const target = `#/${ROUTES.includes(route) ? route : 'chat'}`;
-        if (location.hash !== target) location.hash = target;
-        else renderRoute();
+    function setSettingsButton(open) {
+        if (!els.navSetting) return;
+        els.navSetting.setAttribute('aria-expanded', String(open));
+        els.navSetting.classList.toggle('is-active', open);
     }
 
-    let activeView = null;
+    function openSettings() {
+        if (isSettingsOpen()) return;
+        closeDrawer();
+        syncSettingsForm();
+        els.settingView.classList.add('open');
+        els.settingView.setAttribute('aria-hidden', 'false');
+        els.settingsOverlay.classList.add('open');
+        setSettingsButton(true);
+        animateSettings();
+        setTimeout(() => els.settingsClose.focus(), 60);
+    }
 
-    function renderRoute() {
-        const route = currentRoute();
-        const onChat = route === 'chat';
-        const enteringSettings = route === 'setting' && activeView !== 'setting';
-        activeView = route;
+    function closeSettings() {
+        if (!isSettingsOpen()) return;
+        const hadFocus = els.settingView.contains(document.activeElement);
+        els.settingView.classList.remove('open');
+        els.settingView.setAttribute('aria-hidden', 'true');
+        els.settingsOverlay.classList.remove('open');
+        setSettingsButton(false);
+        if (hadFocus && els.navSetting) els.navSetting.focus();
+        updateJumpButton();
+        if (!prefersReducedMotion()) scrollToBottom(false);
+    }
 
-        els.chatView.hidden = !onChat;
-        els.settingView.hidden = onChat;
-
-        [[els.navChat, onChat], [els.navSetting, !onChat]].forEach(([node, active]) => {
-            if (!node) return;
-            node.classList.toggle('is-active', active);
-            if (active) node.setAttribute('aria-current', 'page');
-            else node.removeAttribute('aria-current');
-        });
-
-        if (onChat) {
-            updateJumpButton();
-            if (!prefersReducedMotion()) scrollToBottom(false);
-        } else {
-            syncSettingsForm();
-            if (enteringSettings) animateSettings();
-        }
+    function toggleSettings() {
+        if (isSettingsOpen()) closeSettings();
+        else openSettings();
     }
 
     /* ═══════════════════════════════════════
@@ -1934,7 +1935,7 @@
         /* Header */
         els.newChatBtn.addEventListener('click', () => {
             startNewChat();
-            go('chat');
+            closeSettings();
             els.prompt.focus();
         });
         els.historyBtn.addEventListener('click', openDrawer);
@@ -1954,14 +1955,16 @@
             if (open) openSession(open.dataset.openSession);
         });
 
-        /* Route links: a single tap goes straight to the page */
-        document.addEventListener('click', (e) => {
-            const link = e.target.closest('[data-route], a[href="#/chat"], a[href="#/setting"]');
-            if (!link) return;
-            const route = link.dataset.route || ((link.getAttribute('href') || '').match(/(chat|setting)\/?$/) || [])[1];
-            if (!ROUTES.includes(route)) return;
+        /* Settings panel */
+        on(els.navSetting, 'click', toggleSettings);
+        on(els.settingsClose, 'click', closeSettings);
+        on(els.settingsOverlay, 'click', closeSettings);
+        on($('brandLink'), 'click', (e) => {
             e.preventDefault();
-            go(route);
+            closeSettings();
+        });
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('[data-open-settings]')) openSettings();
         });
 
         /* Settings */
@@ -2027,7 +2030,6 @@
         });
 
         /* Routing and language */
-        window.addEventListener('hashchange', renderRoute);
         window.addEventListener('raia:langchange', () => {
             els.langSelect.value = window.I18N.getLang();
             renderAll();
@@ -2047,17 +2049,18 @@
             if (mod && key === 'n') {
                 e.preventDefault();
                 startNewChat();
-                go('chat');
+                closeSettings();
                 els.prompt.focus();
             } else if (mod && key === 'k') {
                 e.preventDefault();
-                go('chat');
+                closeSettings();
                 els.prompt.focus();
             } else if (mod && key === 'h') {
                 e.preventDefault();
                 openDrawer();
             } else if (e.key === 'Escape') {
                 closeDrawer();
+                closeSettings();
             }
         });
 
@@ -2096,12 +2099,7 @@
         els.langSelect.value = window.I18N.getLang();
         syncSettingsForm();
 
-        if (!/^#\/(chat|setting)$/.test(location.hash)) {
-            history.replaceState(null, '', '#/chat');
-        }
-
         bindEvents();
-        renderRoute();
         renderAll();
         animateWelcome();
         syncSendButton();

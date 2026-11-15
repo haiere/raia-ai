@@ -104,7 +104,7 @@
 
     <!-- ═══ HEADER ═══ -->
     <header class="app-header">
-        <a class="brand" href="#/chat" data-route="chat" aria-label="Raia AI">
+        <a class="brand" href="#" id="brandLink" aria-label="Raia AI">
             <img class="brand-logo" src="https://i.postimg.cc/GmWt2wch/H-blue.webp" alt="RAIA" height="28" decoding="async" />
             <span class="brand-text">
                 <span class="brand-name">RAIA</span>
@@ -113,14 +113,10 @@
         </a>
 
         <div class="nav">
-            <a class="nav-link" href="#/chat" id="navChat" data-route="chat">
-                <svg class="icon icon-sm" aria-hidden="true"><use href="#i-message"/></svg>
-                <span class="nav-label" data-i18n="navChat">Chat</span>
-            </a>
-            <a class="nav-link" href="#/setting" id="navSetting" data-route="setting">
+            <button class="nav-link" id="navSetting" type="button" aria-expanded="false" aria-controls="setting">
                 <svg class="icon icon-sm" aria-hidden="true"><use href="#i-settings"/></svg>
                 <span class="nav-label" data-i18n="navSetting">Pengaturan</span>
-            </a>
+            </button>
             <button class="icon-btn" id="historyBtn" type="button" data-i18n-aria-label="historyTitle" data-i18n-title="historyTitle" aria-label="Buka riwayat chat" aria-controls="drawer" aria-expanded="false">
                 <svg class="icon" aria-hidden="true"><use href="#i-history"/></svg>
             </button>
@@ -172,7 +168,7 @@
                         <div class="notice-body">
                             <p class="notice-text" data-i18n="noKeyBanner">API key belum diisi. Tambahkan dulu di pengaturan supaya Raia bisa menjawab.</p>
                             <div class="notice-action">
-                                <a class="btn btn-secondary" href="#/setting" data-route="setting" data-i18n="goSetting">Buka pengaturan</a>
+                                <button class="btn btn-secondary" type="button" data-open-settings data-i18n="goSetting">Buka pengaturan</button>
                             </div>
                         </div>
                     </div>
@@ -220,8 +216,18 @@
             </div>
         </section>
 
-        <!-- ═══ SETTINGS VIEW (#/setting) ═══ -->
-        <section class="view" id="setting" aria-labelledby="setTitle" hidden>
+        <!-- ═══ SETTINGS PANEL (opened from the header, closed by the same button) ═══ -->
+        <div class="settings-overlay" id="settingsOverlay" aria-hidden="true"></div>
+        <aside class="settings-panel" id="setting" role="dialog" aria-modal="true" aria-labelledby="setTitle" aria-hidden="true">
+            <div class="panel-head">
+                <h2 class="panel-title">
+                    <svg class="icon icon-sm" aria-hidden="true"><use href="#i-settings"/></svg>
+                    <span data-i18n="navSetting">Pengaturan</span>
+                </h2>
+                <button class="icon-btn" id="settingsClose" type="button" data-i18n-aria-label="closeSettings" aria-label="Tutup pengaturan">
+                    <svg class="icon" aria-hidden="true"><use href="#i-x"/></svg>
+                </button>
+            </div>
             <div class="settings-scroll">
                 <div class="settings-inner">
                     <header class="settings-head">
@@ -389,7 +395,7 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </aside>
     </main>
 
     <!-- ═══ HISTORY DRAWER ═══ -->
