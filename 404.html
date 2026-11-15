@@ -1,6 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script>
+/* GitHub Pages / static host fallback: /raia-ai/chat and /raia-ai/setting are sent to index.html.
+   index.html restores the real path, so the app opens on that page after a refresh.
+   This runs before the page renders. */
+(function () {
+  var BASE = '/raia-ai';
+  var path = location.pathname;
+  var route = path.indexOf(BASE) === 0 ? path.slice(BASE.length) : path;
+  if (!route || route === '/') route = '/chat';
+  location.replace(BASE + '/?p=' + encodeURIComponent(route + location.search + location.hash));
+})();
+</script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="theme-color" content="#060D1A" />
