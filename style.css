@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════
-   RAIA · Reflecting Tomorrow · v1.2.3
+   RAIA · Reflecting Tomorrow · v1.2.4
    Design: Deep Midnight Navy, Slate Silver, Electric Blue
    Type: Syne (heading), DM Sans (body), JetBrains Mono (code)
    ═══════════════════════════════════════════════════════ */
@@ -1279,9 +1279,8 @@ input[type="range"] {
     }
 
     .brand {
-        flex: 1 1 0;
+        flex: 1 1 auto;
         min-width: 0;
-        overflow: hidden;
     }
 
     .brand-text { min-width: 0; }
@@ -1300,8 +1299,7 @@ input[type="range"] {
     .nav-link .nav-label,
     .support-link .support-label { display: none; }
 
-    /* Chat is reached from the logo on phones, and support moves to the settings page */
-    .nav-link[data-route="chat"],
+    /* Support moves to the settings page on phones. Chat stays in the nav (also reachable from the logo) */
     .support-link { display: none; }
 
     .nav-link,
@@ -1319,6 +1317,302 @@ input[type="range"] {
     .jump-btn { bottom: 104px; }
 
     .pill { padding-left: var(--space-4); }
+}
+
+/* ═══════════════════════════════════════════════════════
+   v1.2.4 additions
+   ═══════════════════════════════════════════════════════ */
+
+/* Active nav link, set by script.js with a class as well as aria-current */
+.nav-link.is-active {
+    background: var(--accent-soft);
+    color: var(--accent-ink);
+}
+
+/* URL input (custom endpoint) uses the same look as the other text fields */
+.field input[type="url"] {
+    width: 100%;
+    min-height: var(--control-size);
+    padding: 0 var(--space-4);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--text);
+    transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+
+.field input[type="url"]::placeholder { color: var(--text-faint); }
+
+.field input[type="url"]:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+/* Model picker: a large, readable select on phones */
+.model-select {
+    min-height: 48px;
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+}
+
+.field-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-3);
+}
+
+.field-head > label { margin-right: auto; }
+
+.field-sub {
+    margin-top: var(--space-2);
+}
+
+.field-title {
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--text);
+    margin-top: var(--space-2);
+}
+
+.btn-sm {
+    min-height: 36px;
+    padding: 0 var(--space-4);
+    font-size: var(--text-xs);
+}
+
+.custom-form { align-items: start; }
+
+/* Sliders: larger touch target and a thumb that responds to a drag */
+input[type="range"].range-input {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 44px;
+    padding: 0;
+    background: transparent;
+}
+
+input[type="range"].range-input::-webkit-slider-runnable-track {
+    height: 6px;
+    border-radius: var(--radius-pill);
+    background: var(--border-strong);
+}
+
+input[type="range"].range-input::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 26px;
+    height: 26px;
+    margin-top: -10px;
+    border-radius: 50%;
+    border: 3px solid var(--bg-raised);
+    background: var(--accent);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+
+input[type="range"].range-input::-moz-range-track {
+    height: 6px;
+    border-radius: var(--radius-pill);
+    background: var(--border-strong);
+}
+
+input[type="range"].range-input::-moz-range-thumb {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 3px solid var(--bg-raised);
+    background: var(--accent);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+
+input[type="range"].range-input:active::-webkit-slider-thumb {
+    transform: scale(1.15);
+    box-shadow: 0 0 0 6px var(--accent-soft);
+}
+
+input[type="range"].range-input:active::-moz-range-thumb {
+    transform: scale(1.15);
+    box-shadow: 0 0 0 6px var(--accent-soft);
+}
+
+.range-scale {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--text-faint);
+}
+
+/* Free quota note below the composer */
+.quota-note {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-3);
+    margin-top: var(--space-2);
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    font-size: var(--text-xs);
+    color: var(--text-soft);
+}
+
+.quota-btn {
+    min-height: 32px;
+    padding: 0 var(--space-3);
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--accent);
+    color: var(--accent-ink);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    transition: background 0.2s var(--ease);
+}
+
+.quota-btn:hover { background: var(--accent-soft); }
+
+/* Active provider and model, shown next to the character count */
+.active-model {
+    min-width: 0;
+    max-width: 70%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: var(--font-mono);
+    color: var(--text-soft);
+}
+
+/* Provider line under each assistant message */
+.msg-provider {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--text-faint);
+    margin-top: var(--space-1);
+}
+
+.msg-provider.is-backup {
+    color: var(--accent-ink);
+}
+
+/* Call-to-action inside an error notice */
+.msg-action.msg-action-cta {
+    align-self: flex-start;
+    min-height: 36px;
+    margin-top: var(--space-3);
+    padding: 0 var(--space-4);
+    border-radius: var(--radius-pill);
+    background: var(--accent);
+    color: var(--on-accent);
+    font-size: var(--text-sm);
+    font-weight: 600;
+}
+
+.msg-action.msg-action-cta:hover {
+    background: var(--accent-strong);
+    color: var(--on-accent);
+}
+
+/* Custom API list */
+.custom-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.custom-item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    background: var(--surface);
+}
+
+.custom-item.is-active {
+    border-color: var(--accent);
+    box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.custom-info {
+    flex: 1 1 180px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.custom-info strong {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.custom-meta {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--text-faint);
+    overflow-wrap: anywhere;
+}
+
+.custom-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+}
+
+.custom-btn {
+    min-height: 36px;
+    padding: 0 var(--space-3);
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border-strong);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    color: var(--text);
+    transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+
+.custom-btn:hover {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+}
+
+.custom-btn[data-custom-action="delete"] {
+    color: var(--danger);
+    border-color: var(--danger);
+}
+
+.custom-btn[data-custom-action="delete"]:hover {
+    background: var(--danger-soft);
+}
+
+.custom-empty {
+    font-size: var(--text-sm);
+    color: var(--text-faint);
+}
+
+/* Items marked data-hide-touch are hidden on touch screens */
+@media (hover: none) and (pointer: coarse) {
+    [data-hide-touch] { display: none !important; }
+}
+
+/* Phone header: compact nav buttons so the brand (logo and name) is not clipped */
+@media (max-width: 639px) {
+    .nav { gap: 4px; }
+
+    .nav-link,
+    .icon-btn {
+        width: 40px;
+        height: 40px;
+    }
+
 }
 
 /* ─── Motion and contrast preferences ─── */

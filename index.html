@@ -42,8 +42,8 @@
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "All",
         "browserRequirements": "Requires JavaScript",
-        "softwareVersion": "1.2.3",
-        "dateModified": "2026-11-14",
+        "softwareVersion": "1.2.4",
+        "dateModified": "2026-11-15",
         "inLanguage": ["id", "en"],
         "isAccessibleForFree": true,
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
@@ -60,6 +60,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous" />
 
+    <!-- Static hosts: restore /chat or /setting that 404.html sent here as /raia-ai/?p=... (runs before scripts) -->
+    <script>
+        (function () {
+            var BASE = '/raia-ai';
+            var match = location.search.match(/[?&]p=([^&]*)/);
+            if (!match) return;
+            var path = decodeURIComponent(match[1].replace(/\+/g, '%20'));
+            if (path.charAt(0) !== '/') path = '/' + path;
+            history.replaceState(null, '', BASE + path);
+        })();
+    </script>
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -104,7 +115,7 @@
 
     <!-- ═══ HEADER ═══ -->
     <header class="app-header">
-        <a class="brand" href="#/chat" aria-label="Raia AI">
+        <a class="brand" href="/chat" data-route="chat" aria-label="Raia AI">
             <img class="brand-logo" src="https://i.postimg.cc/GmWt2wch/H-blue.webp" alt="RAIA" height="28" decoding="async" />
             <span class="brand-text">
                 <span class="brand-name">RAIA</span>
@@ -113,11 +124,11 @@
         </a>
 
         <div class="nav">
-            <a class="nav-link" href="#/chat" id="navChat" data-route="chat">
+            <a class="nav-link" href="/chat" id="navChat" data-route="chat">
                 <svg class="icon icon-sm" aria-hidden="true"><use href="#i-message"/></svg>
                 <span class="nav-label" data-i18n="navChat">Chat</span>
             </a>
-            <a class="nav-link" href="#/setting" id="navSetting" data-route="setting">
+            <a class="nav-link" href="/setting" id="navSetting" data-route="setting">
                 <svg class="icon icon-sm" aria-hidden="true"><use href="#i-settings"/></svg>
                 <span class="nav-label" data-i18n="navSetting">Pengaturan</span>
             </a>
@@ -139,7 +150,7 @@
 
     <main class="app-main" id="main" tabindex="-1">
 
-        <!-- ═══ CHAT VIEW (#/chat) ═══ -->
+        <!-- ═══ CHAT VIEW (/chat) ═══ -->
         <section class="view" id="chat" aria-labelledby="welcomeTitle">
             <div class="chat-scroll" id="chatScroll">
                 <div class="chat-inner">
@@ -172,7 +183,7 @@
                         <div class="notice-body">
                             <p class="notice-text" data-i18n="noKeyBanner">API key belum diisi. Tambahkan dulu di pengaturan supaya Raia bisa menjawab.</p>
                             <div class="notice-action">
-                                <a class="btn btn-secondary" href="#/setting" data-i18n="goSetting">Buka pengaturan</a>
+                                <a class="btn btn-secondary" href="/setting" data-route="setting" data-i18n="goSetting">Buka pengaturan</a>
                             </div>
                         </div>
                     </div>
@@ -205,9 +216,14 @@
                             <svg class="icon" id="sendIcon" aria-hidden="true"><use href="#i-send"/></svg>
                         </button>
                     </form>
+                    <div class="quota-note" id="quotaNote" role="status" hidden>
+                        <span id="quotaText"></span>
+                        <button class="quota-btn" id="quotaBtn" type="button" data-i18n="useOwnKey">Pakai API key sendiri</button>
+                    </div>
                     <div class="dock-meta">
+                        <span class="active-model" id="activeModel" title="Penyedia dan model aktif"></span>
                         <span id="charCount">0 karakter</span>
-                        <span class="hint-keys">
+                        <span class="hint-keys" data-hide-touch>
                             <span class="kbd">Enter</span> <span data-i18n="inputHint">untuk kirim, Shift+Enter untuk baris baru</span>
                         </span>
                     </div>
@@ -215,7 +231,7 @@
             </div>
         </section>
 
-        <!-- ═══ SETTINGS VIEW (#/setting) ═══ -->
+        <!-- ═══ SETTINGS VIEW (/setting) ═══ -->
         <section class="view" id="setting" aria-labelledby="setTitle" hidden>
             <div class="settings-scroll">
                 <div class="settings-inner">
@@ -241,10 +257,16 @@
                                 <select id="providerSelect"></select>
                             </div>
                             <div class="field field-wide">
-                                <label for="modelInput">
-                                    <span data-i18n="model">Model</span>
+                                <div class="field-head">
+                                    <label for="modelSelect" data-i18n="model">Model</label>
                                     <span class="status" id="modelBadge" hidden></span>
-                                </label>
+                                    <button class="btn btn-secondary btn-sm" id="loadModelsBtn" type="button">
+                                        <svg class="icon icon-sm" aria-hidden="true"><use href="#i-refresh"/></svg>
+                                        <span data-i18n="loadModels">Muat model</span>
+                                    </button>
+                                </div>
+                                <select id="modelSelect" class="model-select"></select>
+                                <label class="field-sub" for="modelInput" data-i18n="modelIdLabel">ID model kustom (opsional)</label>
                                 <input id="modelInput" list="modelList" type="text" placeholder="Pilih atau ketik ID model" data-i18n-placeholder="modelPlaceholder" autocomplete="off" spellcheck="false" />
                                 <datalist id="modelList"></datalist>
                             </div>
@@ -290,6 +312,44 @@
                         </div>
                     </div>
 
+                    <div class="card" id="customCard">
+                        <h2 class="card-title" data-i18n="customApiTitle">Custom API</h2>
+                        <p class="hint" data-i18n="customApiDesc">Tambahkan penyedia lain yang kompatibel dengan format OpenAI, Gemini, atau Anthropic. Key disimpan di browser ini dan tidak ditampilkan lagi setelah disimpan.</p>
+                        <div class="grid-2 custom-form">
+                            <h3 class="field-title field-wide" id="customTitle" data-i18n="customAddTitle">Tambah Custom API</h3>
+                            <div class="field">
+                                <label for="customLabel" data-i18n="customLabelField">Nama provider</label>
+                                <input id="customLabel" type="text" maxlength="40" placeholder="Contoh: Provider Saya" data-i18n-placeholder="customLabelPlaceholder" autocomplete="off" spellcheck="false" />
+                            </div>
+                            <div class="field">
+                                <label for="customCompat" data-i18n="customCompatField">Jenis API</label>
+                                <select id="customCompat">
+                                    <option value="openai">OpenAI-compatible</option>
+                                    <option value="gemini">Gemini-compatible</option>
+                                    <option value="anthropic">Anthropic-compatible</option>
+                                </select>
+                            </div>
+                            <div class="field field-wide">
+                                <label for="customBaseUrl" data-i18n="customBaseUrlField">Endpoint (base URL)</label>
+                                <input id="customBaseUrl" type="url" inputmode="url" placeholder="https://api.contoh.com/v1" autocomplete="off" spellcheck="false" />
+                            </div>
+                            <div class="field">
+                                <label for="customModel" data-i18n="customModelField">ID model</label>
+                                <input id="customModel" type="text" placeholder="contoh: model-chat-1" autocomplete="off" spellcheck="false" />
+                            </div>
+                            <div class="field">
+                                <label for="customApiKey" data-i18n="customKeyField">API key</label>
+                                <input id="customApiKey" type="password" autocomplete="new-password" spellcheck="false" />
+                            </div>
+                        </div>
+                        <div class="actions">
+                            <button class="btn btn-primary" id="customSaveBtn" type="button" data-i18n="customSave">Simpan</button>
+                            <button class="btn btn-secondary" id="customCancelBtn" type="button" data-i18n="customCancel" hidden>Batal</button>
+                        </div>
+                        <h3 class="field-title" data-i18n="customListTitle">Daftar custom API</h3>
+                        <div class="custom-list" id="customList"></div>
+                    </div>
+
                     <div class="card">
                         <div class="range-row">
                             <div class="range-group">
@@ -297,14 +357,16 @@
                                     <label for="tempRange" data-i18n="temp">Kreativitas</label>
                                     <span class="range-value" id="tempValue">0.7</span>
                                 </div>
-                                <input type="range" id="tempRange" min="0" max="2" step="0.1" value="0.7" />
+                                <input type="range" id="tempRange" class="range-input" min="0" max="2" step="0.1" value="0.7" />
+                                <div class="range-scale" aria-hidden="true"><span>0</span><span>2</span></div>
                             </div>
                             <div class="range-group">
                                 <div class="range-head">
                                     <label for="tokRange" data-i18n="maxTok">Panjang jawaban maks</label>
                                     <span class="range-value" id="tokValue">1024</span>
                                 </div>
-                                <input type="range" id="tokRange" min="256" max="8192" step="128" value="1024" />
+                                <input type="range" id="tokRange" class="range-input" min="256" max="8192" step="128" value="1024" />
+                                <div class="range-scale" aria-hidden="true"><span>256</span><span>8192</span></div>
                             </div>
                         </div>
 
@@ -334,10 +396,6 @@
                         <a class="btn btn-secondary" href="https://buymeacoffee.com/hajirstudio" target="_blank" rel="noopener noreferrer">
                             <svg class="icon icon-sm" aria-hidden="true"><use href="#i-coffee"/></svg>
                             <span data-i18n="support">Dukung</span>
-                        </a>
-                        <a class="btn btn-secondary" href="#/chat">
-                            <svg class="icon icon-sm" aria-hidden="true"><use href="#i-message"/></svg>
-                            <span data-i18n="navChat">Chat</span>
                         </a>
                     </div>
                 </div>

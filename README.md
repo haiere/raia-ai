@@ -19,7 +19,7 @@
 
 <br />
 
-<img src="https://img.shields.io/badge/Version-v1.2.3-3B82F6?style=flat-square" alt="Version v1.2.3" />
+<img src="https://img.shields.io/badge/Version-v1.2.4-3B82F6?style=flat-square" alt="Version v1.2.4" />
 <img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" alt="MIT License" />
 <img src="https://img.shields.io/badge/PRs-Welcome-brightgreen?style=flat-square" alt="PRs Welcome" />
 
@@ -45,6 +45,7 @@
 ## Table of Contents
 
 - [Overview](#overview)
+- [What's New in v1.2.4](#whats-new-in-v124)
 - [What's New in v1.2.3](#whats-new-in-v123)
 - [What's New in v1.2.2](#whats-new-in-v122)
 - [Features](#features)
@@ -103,7 +104,29 @@ RAIA is a client-side AI chat interface that connects to several large language 
 </table>
 
 > [!IMPORTANT]
-> With your own API key, requests go **directly from your browser** to the provider. The optional built-in Gemini option sends its requests through a small proxy on Cloudflare Workers, which holds the Google API key on the server. The proxy does not store conversations. Your own API keys stay on your device.
+> With your own API key, requests go **directly from your browser** to the provider. The optional built-in Gemini option sends its requests through a small proxy on Cloudflare Workers, which holds the API keys on the server. If the built-in Gemini quota or key fails, the proxy can send the same request to OpenRouter (see [Privacy and Security](#privacy-and-security)). The proxy does not store conversations. Your own API keys stay on your device.
+
+---
+
+## What's New in v1.2.4
+
+This release makes the provider layer more flexible, moves routes to real paths, and adds a fallback for the built-in Gemini option.
+
+| Change | Details |
+|---|---|
+| **Provider adapters** | Each provider has its own request format, response parser, and model list. Models are never mixed between providers. **Muat model** (Load models) fetches the list from the provider's own API and shows only chat models. |
+| **Custom API** | Add as many custom providers as you need. Each one has a name, an API type (OpenAI-compatible, Gemini-compatible, or Anthropic-compatible), an endpoint, a model ID, and an API key. The key is hidden after saving. Custom providers can be used, edited, and deleted. |
+| **Model picker** | Models are chosen from a visible dropdown, not from the keyboard suggestions. The active provider and model are shown below the message field. |
+| **Real paths** | Routes are `/chat` and `/setting`, without `#`. Old `#/chat` and `#/setting` links are converted. A `404.html` and a restore script keep these paths working on GitHub Pages. |
+| **One-tap navigation** | The Chat and Settings buttons open their page at once. The extra Chat button at the bottom of settings is removed. |
+| **Sliders** | Creativity and maximum answer length are drag sliders, with min and max values shown and a larger touch area. |
+| **Gemini fallback** | If the built-in Gemini request fails with a quota or authentication error, the proxy retries with OpenRouter using the same model where available. The reply shows which provider answered. |
+| **Free quota note** | Under the message field: "N free messages left today", or "Today's free quota is used up". The note is hidden when the proxy does not send quota headers. |
+| **Clear errors** | Quota errors show a **Use your own API key** button that opens settings. Rate-limit, authentication, model, network, and server errors each have their own message. |
+| **Proxy rate limiting** | The Worker adds a Cloudflare Rate Limiting layer in front of the daily per-IP quota. |
+
+> [!NOTE]
+> Streaming responses are planned, not included in this release.
 
 ---
 
@@ -226,7 +249,7 @@ This release fixes the header layout on phones, moves settings to its own page, 
 |---|---|
 | **Browser** | A modern browser with JavaScript enabled, such as Chrome, Firefox, Edge, or Safari. |
 | **API key** | An API key for any supported provider. Gemini also works without one, within the free daily quota. |
-| **Installation** | No installation. The app is a static page made of four files. The optional built-in Gemini option also needs the proxy in `proxy/`. |
+| **Installation** | No installation. The app is a static site made of five files (`index.html`, `404.html`, `style.css`, `script.js`, `i18n.js`). The optional built-in Gemini option also needs the Worker in `worker.js`. |
 
 ---
 
@@ -240,11 +263,26 @@ RAIA is a static web app with no build step.
 
 ### Run locally
 
-Download the source files into one folder and open `index.html` in your browser. An internet connection is needed for the vendor libraries (marked.js, DOMPurify, KaTeX, GSAP, and Google Fonts), which load from CDN. The built-in Gemini option only works from an origin listed in the proxy's `ALLOWED_ORIGINS`. For local tests, add `http://localhost:8080` there or use your own key.
+Download the source files into one folder and serve it with a static server in single-page mode, so that `/chat` and `/setting` open directly:
+
+```bash
+npx serve -s . -l 8080
+```
+
+Opening `index.html` straight from the disk does not support the `/chat` and `/setting` paths. An internet connection is needed for the vendor libraries (marked.js, DOMPurify, KaTeX, GSAP, and Google Fonts), which load from CDN. The built-in Gemini option only works from an origin listed in the Worker's `ALLOWED_ORIGINS`. For local tests, use your own key, or add `http://localhost:8080` to that list.
 
 ### Self-host
 
 Place the files on any static web server. Styles, icons, and application logic are included in the project. The vendor libraries load from jsDelivr and Google Fonts.
+
+For deep links such as `/chat` and `/setting` to work after a refresh, the host must send unknown paths to `index.html`, or use the included `404.html`:
+
+| Host | How to enable deep links |
+|---|---|
+| **GitHub Pages** | Put `404.html` in the root of the published branch. Set `BASE` in `404.html` and `index.html` to the path the site is served from, for example `/raia-ai`, or `''` for a root domain. |
+| **Cloudflare Pages or Netlify** | Add a `_redirects` file with `/raia-ai/* /raia-ai/index.html 200`. |
+| **Vercel** | Add a rewrite from `/raia-ai/(.*)` to `/raia-ai/index.html` in `vercel.json`. |
+| **nginx** | `try_files $uri $uri/ /raia-ai/index.html;` inside the location block. |
 
 ---
 
@@ -252,13 +290,13 @@ Place the files on any static web server. Styles, icons, and application logic a
 
 | Step | Action |
 |:-:|---|
-| 1 | **Open settings.** Select **Pengaturan** (Settings) in the header, or go to `#/setting`. |
+| 1 | **Open settings.** Select **Pengaturan** (Settings) in the header, or go to `/setting`. |
 | 2 | **Pick a language.** Bahasa Indonesia or English. The app detects the browser language on the first visit. |
 | 3 | **Select a provider.** OpenRouter, OpenAI, Perplexity, Claude, Gemini, or Mistral. |
 | 4 | **Enter your API key.** Paste it into the API key field. Choose whether to remember it in this browser. |
-| 5 | **Select a model.** Choose from the list, or type a custom model ID. |
+| 5 | **Select a model.** Choose from the list. Select **Muat model** to load the provider's full list, or type a custom model ID. |
 | 6 | **Save and test.** Select **Simpan** (Save). The status shows **Terhubung** (Connected). Select **Tes koneksi** (Test connection) to check the setup. |
-| 7 | **Start chatting.** Go to `#/chat`, type a message, and press `Enter`. |
+| 7 | **Start chatting.** Go to `/chat`, type a message, and press `Enter`. |
 | 8 | **Open history.** Select the history icon or press `Ctrl+H` to open, load, or delete a chat. |
 
 If no API key is saved for a provider other than Gemini, the chat page shows a notice with a link to settings. The typed message stays in the box. With Gemini selected, you can chat without a key until the free daily quota runs out.
@@ -267,12 +305,16 @@ If no API key is saved for a provider other than Gemini, the chat page shows a n
 
 | Route | Page |
 |---|---|
-| `#/chat` | Conversations. This is the default page. |
-| `#/setting` | Language, provider, model, API key, and generation settings. |
+| `/chat` | Conversations. This is the default page. |
+| `/setting` | Language, provider, model, custom APIs, API key, and generation settings. |
+
+Old links with `#/chat` or `#/setting` are converted to the new paths automatically.
 
 ### Built-in Gemini (Free Quota)
 
-Gemini (Google) is the default provider. It uses the app owner's Gemini API key through the proxy, so you can try it without your own key. Each IP address gets a limited number of requests per day. When the limit is reached, the chat asks you to add your own key in settings. The other providers always require your own key.
+Gemini (Google) is the default provider. It uses the app owner's API keys through the proxy, so you can try it without your own key. Each IP address gets a limited number of requests per day, and the message field shows how many are left. When the limit is reached, the chat shows a **Use your own API key** button that opens settings.
+
+If the Gemini request fails because of its quota or key, the proxy can retry with OpenRouter using the same model where available. Each reply shows its provider, for example `Provider: Gemini`, or `Provider: OpenRouter — Backup` when the backup answered. The other providers always require your own key.
 
 ### Supported Providers and Example Models
 
@@ -288,6 +330,18 @@ Gemini (Google) is the default provider. It uses the app owner's Gemini API key 
 > [!TIP]
 > Custom model IDs are supported. Type the ID into the model field.
 
+### Custom APIs
+
+Under **Custom API** in settings, add any provider that speaks one of these formats:
+
+| API type | Format |
+|---|---|
+| OpenAI-compatible | `POST {endpoint}/chat/completions` |
+| Gemini-compatible | `POST {endpoint}/models/{model}:generateContent` |
+| Anthropic-compatible | `POST {endpoint}/messages` |
+
+Each custom API needs a provider name, an endpoint (`https`, or `http` for `localhost` only), a model ID, and an API key. Custom APIs connect **directly from the browser**, so the endpoint must allow browser requests (CORS). They do not use the CORS proxy setting. After saving, a custom API appears in the provider list with the suffix `(Custom)`. Keys are not shown again after saving; leave the key field empty to keep the saved key when editing.
+
 ---
 
 ## Configuration
@@ -298,13 +352,14 @@ Gemini (Google) is the default provider. It uses the app owner's Gemini API key 
 |---|---|
 | **Language** | Bahasa Indonesia or English. |
 | **Provider** | The AI provider to use. |
-| **Model** | A text field with suggestions for the selected provider. |
+| **Model** | A dropdown of the provider's models, with **Muat model** to load the full list from the provider. A field below takes a custom model ID. |
 | **API key** | Password field with a show and hide toggle, and an option to remember the key. |
 | **Custom base URL** | Overrides the default endpoint. Found under Advanced. |
 | **CORS proxy URL** | Used for providers that block direct browser requests: OpenAI, Perplexity, and Mistral. Found under Advanced. |
-| **Creativity (temperature)** | Slider from `0.0` to `2.0`, step `0.1`. Default `0.7`. Claude accepts up to `1.0`, and Mistral up to `1.5`. |
-| **Maximum answer length** | Slider from `256` to `8192`, step `128`. Default `1024`. |
-| **Reset all** | Restores the default settings and removes the saved API key. Chat history is kept. |
+| **Creativity (temperature)** | Drag slider from `0.0` to `2.0`, step `0.1`, with min and max shown. Default `0.7`. Claude accepts up to `1.0`, and Mistral up to `1.5`. |
+| **Maximum answer length** | Drag slider from `256` to `8192`, step `128`, with min and max shown. Default `1024`. |
+| **Custom API** | Add, edit, use, and delete custom providers. |
+| **Reset all** | Restores the default settings and removes the saved API key. Custom APIs and chat history are kept. |
 
 ### Advanced Options
 
@@ -356,7 +411,9 @@ RAIA keeps your data on your device, except for the built-in Gemini option descr
 - No analytics, tracking, or telemetry is collected.
 - The app uses no cookies and no external services besides the provider APIs, the optional proxy, and the vendor libraries from CDN.
 - Requests go **directly from your browser** to the provider you select, when you use your own key.
-- The built-in Gemini option sends requests through the proxy. The proxy checks each request, adds the Google API key on the server, and forwards it. It stores only a daily request counter per IP address. It does not store chats.
+- The built-in Gemini option sends requests through the proxy. The proxy checks each request, adds the API keys on the server, and forwards it. It stores only a daily request counter per IP address. It does not store chats.
+- **Fallback to OpenRouter:** if the built-in Gemini request fails because of its quota or key, the same conversation is sent to OpenRouter using the app owner's OpenRouter key. The prompt is then handled by OpenRouter and the model it routes to. The reply shows `Provider: OpenRouter — Backup` so you know who answered.
+- Custom APIs send requests directly from your browser to the endpoint you enter.
 - Assistant output is sanitized with DOMPurify before it is added to the page. Links in replies open in a new tab with `noopener noreferrer`.
 
 ---
@@ -391,7 +448,11 @@ RAIA keeps your data on your device, except for the built-in Gemini option descr
 | **Animations are missing** | GSAP loads from jsDelivr. If it is blocked, the page still works without motion. |
 | **History is not saved** | Check that the browser allows `localStorage`, and that you are not in private mode. |
 | **Language resets** | Private mode can block `localStorage`. In normal mode, the language is remembered. |
-| **Free Gemini quota reached** | The built-in daily limit is used up. Add your own Gemini key in settings, or try again tomorrow. |
+| **"File not found" on refresh of `/chat` or `/setting`** | The host does not send unknown paths to `index.html`. See [Self-host](#self-host). Locally, use `npx serve -s .`. |
+| **Free quota note is missing** | The proxy is not deployed yet, or it does not send the `X-RateLimit-*` headers. Built-in Gemini sends these headers. |
+| **Model list does not load** | The provider may not offer a list endpoint (Perplexity has none), the key may be invalid, or the provider blocks browser requests. Use a CORS proxy, or type the model ID. |
+| **Custom API fails** | Check the endpoint, the API type, and the model ID. The endpoint must allow browser requests (CORS). |
+| **Free Gemini quota reached** | The built-in daily limit is used up. Select **Use your own API key** in the chat, or try again tomorrow. |
 | **CORS error with built-in Gemini** | The site's origin is missing from the proxy's `ALLOWED_ORIGINS`. Add it in `proxy/worker.js`, then deploy the Worker again. |
 
 ---
@@ -439,27 +500,28 @@ Fork the repository and open a pull request with a clear description of the chan
 
 ## Development Setup
 
-The application has four source files, plus an optional proxy Worker.
+The application has five source files, plus an optional Worker.
 
 ```text
 .
 ├── index.html   Markup, SVG icon sprite, routes, and vendor script tags
+├── 404.html     Redirects /chat and /setting to index.html on static hosts
 ├── style.css    Design tokens, layout, themes, and responsive rules
 ├── i18n.js      Translations for Bahasa Indonesia (id) and English (en)
-├── script.js    Routing, providers, chat state, and the Markdown and KaTeX pipeline
-├── README.md
-└── proxy/
-    └── worker.js  Optional Cloudflare Worker for built-in Gemini
+├── script.js    Routing, provider adapters, custom APIs, chat state, quota, and Markdown and KaTeX
+├── worker.js    Optional Cloudflare Worker for built-in Gemini (deployed separately)
+├── wrangler.jsonc  Wrangler configuration for the Worker
+└── README.md
 ```
 
 ### Local development
 
 1. Edit the files directly.
-2. Open `index.html` in a browser to test.
+2. Serve the folder in single-page mode (see Local hosting), and test in a browser.
 3. No build tools are needed.
 
 > [!WARNING]
-> **Load order matters.** `marked`, `DOMPurify`, and `katex` must load before `script.js`. `gsap` must also load before `script.js`. `i18n.js` must load before `script.js`. `index.html` already includes the scripts in this order.
+> **Load order matters.** `marked`, `DOMPurify`, and `katex` must load before `script.js`. `gsap` must also load before `script.js`. `i18n.js` must load before `script.js`. `index.html` already includes the scripts in this order. The script that restores deep links must stay in the `<head>` of `index.html`, before the stylesheet.
 
 ### Local hosting
 
@@ -472,6 +534,8 @@ Python
 ```bash
 python -m http.server 8080
 ```
+
+Python's server does not handle `/chat` or `/setting`. Use the Node.js option for those paths.
 
 </td>
 <td width="50%" valign="top">
@@ -486,7 +550,7 @@ npx serve
 </tr>
 </table>
 
-Then open `http://localhost:8080` in your browser.
+Then open `http://localhost:8080` in your browser. With `npx serve -s`, the `/chat` and `/setting` paths work as well.
 
 ---
 
@@ -495,7 +559,7 @@ Then open `http://localhost:8080` in your browser.
 | Layer | Used |
 |---|---|
 | Logic | Vanilla JavaScript, no framework |
-| Routing | Hash routes (`#/chat`, `#/setting`) |
+| Routing | Path routes (`/chat`, `/setting`), with `history.pushState`. Static hosts fall back through `404.html`. |
 | Styling | CSS custom properties with dark and light theme tokens |
 | Icons | Inline SVG sprite with stroke icons |
 | Motion | GSAP 3.12.5 from jsDelivr |
@@ -504,7 +568,7 @@ Then open `http://localhost:8080` in your browser.
 | Math | KaTeX 0.16.9 from jsDelivr |
 | i18n | `i18n.js`, with no dependencies (id and en) |
 | Storage | `localStorage` for settings, language, theme, API key, and history. `sessionStorage` when the key is not remembered. |
-| Backend (optional) | Cloudflare Worker with KV for the daily quota. The Gemini key is stored as a secret. |
+| Backend (optional) | Cloudflare Worker with KV for the daily quota, and Cloudflare Rate Limiting. The Gemini and OpenRouter keys are stored as secrets. |
 | Typography | Google Fonts: Syne (headings), DM Sans (body), JetBrains Mono (code) |
 
 ---
@@ -515,14 +579,46 @@ RAIA has two parts, and they are deployed to different places.
 
 | Part | Files | Where |
 |---|---|---|
-| Frontend | `index.html`, `style.css`, `i18n.js`, `script.js`, and this README | Any static host, such as GitHub Pages |
-| Gemini proxy (optional) | `proxy/worker.js` | Cloudflare Workers, not GitHub Pages |
+| Frontend | `index.html`, `404.html`, `style.css`, `script.js`, `i18n.js`, and this README | Any static host, such as GitHub Pages |
+| Gemini proxy (optional) | `worker.js` and `wrangler.jsonc` | Cloudflare Workers, not GitHub Pages |
 
-GitHub Pages only serves static files, so it cannot run `worker.js` or keep an API key. Deploy the proxy with Wrangler, add `GEMINI_API_KEY` as a secret, and bind a KV namespace named `RAIA_QUOTA`. Set the Worker URL in `BUILTIN_PROXY_URL` in `script.js`, and add the site's origin to `ALLOWED_ORIGINS` in the Worker.
+**1. Deploy the Worker**
+
+```bash
+npx wrangler secret put GEMINI_API_KEY
+npx wrangler secret put OPENROUTER_API_KEY
+npx wrangler deploy
+```
+
+The Worker needs:
+- A KV namespace bound as `RAIA_QUOTA`.
+- A Rate Limiting binding named `RATE_LIMITER`, declared in `wrangler.jsonc` under `ratelimits`.
+- The site's origin in `ALLOWED_ORIGINS` at the top of `worker.js`.
+
+The Worker's URL must match `BUILTIN_PROXY_URL` in `script.js`.
+
+**2. Deploy the frontend**
+
+Push `index.html`, `404.html`, `style.css`, `script.js`, and `i18n.js` to the published branch. Then check that `/chat` and `/setting` open directly after a refresh.
+
+GitHub Pages only serves static files, so it cannot run `worker.js` or keep an API key.
 
 ---
 
 ## Changelog
+
+### v1.2.4 (November 15, 2026)
+
+- Added per-provider adapters, with model lists loaded from each provider's API.
+- Added custom APIs (OpenAI-, Gemini-, and Anthropic-compatible) with masked keys.
+- Replaced hash routes with `/chat` and `/setting`, and added a `404.html` fallback for static hosts.
+- Made the Chat and Settings buttons open their page in one tap, and removed the extra Chat button from settings.
+- Changed the model picker to a visible dropdown, and added an active provider and model indicator.
+- Changed Creativity and Max Answer Length to drag sliders with min and max values.
+- Added a fallback from built-in Gemini to OpenRouter on quota or authentication errors, with a provider label on each reply.
+- Added a free-quota note and a **Use your own API key** button for quota errors.
+- Added Cloudflare Rate Limiting in front of the daily per-IP quota.
+- Shows the header logo as the H mark with the RAIA name.
 
 ### v1.2.3 (November 14, 2026)
 
@@ -616,6 +712,6 @@ Developed and maintained by Haiere and HajirStudio.
 
 <div align="center">
 <sub>
-Last updated: November 14, 2026 · RAIA v1.2.3
+Last updated: November 15, 2026 · RAIA v1.2.4
 </sub>
 </div>
