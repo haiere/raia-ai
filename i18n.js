@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════
-   RAIA · Reflecting Tomorrow · v1.2.4
+   RAIA · Reflecting Tomorrow · v1.2.5
    i18n.js: Bahasa Indonesia (id) dan English (en)
    ═══════════════════════════════════════════════════════ */
 
@@ -45,7 +45,10 @@
             stopLabel: 'Hentikan jawaban',
             inputHint: 'Enter untuk kirim, Shift+Enter untuk baris baru',
             charCount: '{n} karakter',
-            jumpBottom: 'Pesan baru',
+            jumpBottom: 'Scroll Down',
+            chooseModel: 'Pilih model',
+            modelActive: 'Aktif',
+            closeModels: 'Tutup pilihan model',
 
             noKeyBanner: 'API key belum diisi. Tambahkan dulu di pengaturan supaya Raia bisa menjawab.',
             goSetting: 'Buka pengaturan',
@@ -201,7 +204,10 @@
             stopLabel: 'Stop answer',
             inputHint: 'Enter to send, Shift+Enter for a new line',
             charCount: '{n} characters',
-            jumpBottom: 'New messages',
+            jumpBottom: 'Scroll Down',
+            chooseModel: 'Choose model',
+            modelActive: 'Active',
+            closeModels: 'Close model list',
 
             noKeyBanner: 'No API key yet. Add one in settings so Raia can reply.',
             goSetting: 'Open settings',

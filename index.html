@@ -36,18 +36,18 @@
     {
         "@context": "https://schema.org",
         "@type": "WebApplication",
-        "name": "Raia AI",
+        "name": "RAIA AI",
         "alternateName": "Reflecting Tomorrow",
         "url": "https://hajir.is-a.dev/raia-ai/",
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "All",
         "browserRequirements": "Requires JavaScript",
-        "softwareVersion": "1.2.4",
-        "dateModified": "2026-11-15",
+        "softwareVersion": "1.2.5",
+        "dateModified": "2026-11-17",
         "inLanguage": ["id", "en"],
         "isAccessibleForFree": true,
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-        "author": { "@type": "Organization", "name": "Hajir Studio" }
+        "author": { "@type": "Organization", "name": "Haiere" }
     }
     </script>
 
@@ -179,7 +179,8 @@
 
             <button class="jump-btn" id="jumpBtn" type="button" hidden>
                 <svg class="icon icon-sm" aria-hidden="true"><use href="#i-arrow-down"/></svg>
-                <span data-i18n="jumpBottom">Pesan baru</span>
+                <span data-i18n="jumpBottom">Scroll Down</span>
+                <span class="jump-dot" id="jumpDot" hidden></span>
             </button>
 
             <div class="dock">
@@ -206,7 +207,10 @@
                         <button class="quota-btn" id="quotaBtn" type="button" data-i18n="useOwnKey">Pakai API key sendiri</button>
                     </div>
                     <div class="dock-meta">
-                        <span class="active-model" id="activeModel" title="Penyedia dan model aktif"></span>
+                        <button class="model-picker-btn" id="modelPickerBtn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="modelSheet" title="Pilih model">
+                            <span class="active-model" id="activeModel"></span>
+                            <svg class="icon icon-sm chevron" aria-hidden="true"><use href="#i-arrow-down"/></svg>
+                        </button>
                         <span id="charCount">0 karakter</span>
                         <span class="hint-keys" data-hide-touch>
                             <span class="kbd">Enter</span> <span data-i18n="inputHint">untuk kirim, Shift+Enter untuk baris baru</span>
@@ -399,6 +403,19 @@
     </main>
 
     <!-- ═══ HISTORY DRAWER ═══ -->
+    <!-- ═══ MODEL SHEET (bottom drawer for choosing a model) ═══ -->
+    <div class="sheet-overlay" id="modelSheetOverlay" aria-hidden="true"></div>
+    <aside class="sheet" id="modelSheet" role="dialog" aria-modal="true" aria-labelledby="modelSheetTitle" aria-hidden="true">
+        <div class="sheet-grip" id="modelSheetGrip" aria-hidden="true"></div>
+        <div class="sheet-head">
+            <h2 class="sheet-title" id="modelSheetTitle" data-i18n="chooseModel">Pilih model</h2>
+            <button class="icon-btn" id="modelSheetClose" type="button" data-i18n-aria-label="closeModels" aria-label="Tutup pilihan model">
+                <svg class="icon" aria-hidden="true"><use href="#i-x"/></svg>
+            </button>
+        </div>
+        <ul class="model-list" id="modelSheetList" role="listbox" aria-label="Daftar model"></ul>
+    </aside>
+
     <div class="drawer-overlay" id="drawerOverlay" aria-hidden="true"></div>
     <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" aria-hidden="true">
         <div class="drawer-head">

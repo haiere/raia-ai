@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════
-   RAIA · Reflecting Tomorrow · v1.2.4
+   RAIA · Reflecting Tomorrow · v1.2.5
    script.js: settings panel, chat, provider and
    model catalog, custom API, quota, settings, history,
    Markdown and LaTeX rendering
@@ -9,7 +9,7 @@
     'use strict';
 
     /* ─── Constants ─── */
-    const APP_VERSION = '1.2.4';
+    const APP_VERSION = '1.2.5';
     const SETTINGS_KEY = 'raia_settings_v122';
     const SESSIONS_KEY = 'raia_sessions_v122';
     const CUSTOM_KEY = 'raia_custom_v124';
@@ -28,9 +28,13 @@
     const OPENROUTER_REFERER = 'https://hajir.is-a.dev/raia-ai';
 
     const SYSTEM_PROMPT = [
-        'You are Raia, a clear, honest, and helpful AI assistant.',
-        'Reply in the language the user writes in.',
-        'Use Markdown when it helps readability.',
+        'You are Raia, a friendly, honest, and helpful AI assistant.',
+        'Talk like a smart friend: warm and relaxed, but still clear and to the point.',
+        'Reply in the same language the user writes in. If the user mixes languages, follow their mix.',
+        'Match the length of your answer to the question. Short questions get short answers. Complex questions are explained step by step.',
+        'If you are not sure, say so honestly. Do not make up facts, numbers, or sources.',
+        'Use Markdown only when it helps readability: small headings, lists, or tables when useful.',
+        'For tables, keep the number of columns small and the cell text concise so they are easy to read on small screens.',
         'Write math with LaTeX: $...$ for inline formulas and $$...$$ for display formulas.',
         'Put code in fenced code blocks and name the language.'
     ].join(' ');
@@ -155,6 +159,7 @@
     function animateNewMessage() {
         const node = els.messages.querySelector('.msg.is-new');
         if (!node || !motion.enabled) return;
+        if (node.classList.contains('msg-assistant')) return;
         gsap.from(node, { opacity: 0, y: 10, duration: 0.35, ease: 'power2.out', clearProps: 'transform,opacity' });
     }
 
@@ -208,6 +213,13 @@
         chips: $('chips'),
         noKey: $('noKeyNotice'),
         jumpBtn: $('jumpBtn'),
+        jumpDot: $('jumpDot'),
+        modelPickerBtn: $('modelPickerBtn'),
+        modelSheet: $('modelSheet'),
+        modelSheetOverlay: $('modelSheetOverlay'),
+        modelSheetList: $('modelSheetList'),
+        modelSheetClose: $('modelSheetClose'),
+        modelSheetGrip: $('modelSheetGrip'),
         composer: $('composer'),
         prompt: $('prompt'),
         sendBtn: $('sendBtn'),
@@ -275,7 +287,8 @@
         custom: [],        /* { id, label, baseUrl, compat, model, apiKey } */
         catalog: {},       /* provider key -> { fetchedAt, models: [{ id, name, provider, capabilities, active }] } */
         quota: null,       /* { limit, remaining, reset } from X-RateLimit-* headers */
-        editingCustomId: null
+        editingCustomId: null,
+        unseen: 0
     };
 
     let controller = null;
@@ -675,6 +688,9 @@
         html = html.replace(/<p>\s*RAIAHOLD(\d+)END\s*<\/p>/g, (_, i) => stash[Number(i)]);
         html = html.replace(/RAIAHOLD(\d+)END/g, (_, i) => stash[Number(i)]);
 
+        /* Tables scroll sideways inside their own box, so cells keep their width */
+        html = html.replace(/<table>/g, '<div class="table-wrap"><table>').replace(/<\/table>/g, '</table></div>');
+
         /* 5. Sanitize everything that reaches the DOM */
         if (window.DOMPurify && typeof window.DOMPurify.sanitize === 'function') {
             return window.DOMPurify.sanitize(html);
@@ -700,7 +716,9 @@
     }
 
     function updateJumpButton() {
+        if (isNearBottom()) state.unseen = 0;
         els.jumpBtn.hidden = state.messages.length === 0 || isNearBottom();
+        if (els.jumpDot) els.jumpDot.hidden = state.unseen === 0;
     }
 
     function makeAction(label, icon, attr) {
@@ -723,6 +741,14 @@
         let line = `${tx('providerLabel', 'Provider')}: ${name}`;
         if (meta.model && meta.requested && meta.model !== meta.requested) line += ` · ${meta.model}`;
         return line;
+    }
+
+    /* A new reply fades in paragraph by paragraph, instead of appearing all at once */
+    function revealParagraphs(body) {
+        Array.from(body.children).forEach((node, i) => {
+            node.classList.add('msg-reveal');
+            node.style.setProperty('--reveal-delay', `${Math.min(i, 12) * 90}ms`);
+        });
     }
 
     function buildMessage(m, isNew, isLast) {
@@ -761,6 +787,7 @@
             body.className = 'msg-body';
             body.innerHTML = renderMarkdown(m.content);
             article.append(meta, body);
+            if (isNew) revealParagraphs(body);
             if (m.meta) {
                 const provider = document.createElement('div');
                 provider.className = `msg-provider${m.meta.providerType === 'backup' ? ' is-backup' : ''}`;
@@ -821,7 +848,12 @@
         els.welcome.hidden = state.messages.length > 0;
         if (wasWelcomeHidden && els.welcome.hidden === false) animateWelcome();
         updateNoKeyNotice();
-        if (stick) scrollToBottom(Boolean(options.newId));
+        if (stick) {
+            state.unseen = 0;
+            scrollToBottom(Boolean(options.newId));
+        } else if (options.newId) {
+            state.unseen += 1;
+        }
         if (options.newId) animateNewMessage();
         updateJumpButton();
     }
@@ -830,7 +862,8 @@
         const message = Object.assign({ id: uid(), role, content, ts: Date.now() }, extra || {});
         state.messages.push(message);
         saveCurrentSession();
-        renderAll({ newId: message.id, stick: true });
+        /* Only the user's own message forces a scroll. A reply scrolls only if the user is already at the bottom */
+        renderAll({ newId: message.id, stick: role === 'user' });
         return message;
     }
 
@@ -1820,6 +1853,127 @@
     }
 
     /* ═══════════════════════════════════════
+       MODEL SHEET
+       Model picker as a bottom drawer. Closes with the overlay, the close button,
+       a swipe down on the handle, or Escape.
+       ═══════════════════════════════════════ */
+    function isModelSheetOpen() {
+        return els.modelSheet.classList.contains('open');
+    }
+
+    function renderModelSheet() {
+        const providerLabel = (getProviderInfo(state.provider) || {}).label || state.provider;
+        const items = modelsFor(state.provider).map((m) => {
+            const li = document.createElement('li');
+            li.setAttribute('role', 'presentation');
+
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'model-option';
+            btn.setAttribute('role', 'option');
+            const active = m.id === state.model;
+            btn.setAttribute('aria-selected', String(active));
+            btn.dataset.modelId = m.id;
+
+            const text = document.createElement('span');
+            text.className = 'model-option-text';
+            const name = document.createElement('span');
+            name.className = 'model-option-name';
+            name.textContent = m.name || m.id;
+            const sub = document.createElement('span');
+            sub.className = 'model-option-id';
+            sub.textContent = `${providerLabel} · ${m.id}`;
+            text.append(name, sub);
+            btn.appendChild(text);
+
+            if (active) {
+                const badge = document.createElement('span');
+                badge.className = 'model-option-badge';
+                badge.textContent = t('modelActive');
+                btn.appendChild(badge);
+            }
+            li.appendChild(btn);
+            return li;
+        });
+        els.modelSheetList.replaceChildren(...items);
+    }
+
+    function openModelSheet() {
+        if (isModelSheetOpen()) return;
+        renderModelSheet();
+        els.modelSheet.classList.add('open');
+        els.modelSheet.setAttribute('aria-hidden', 'false');
+        els.modelSheetOverlay.classList.add('open');
+        els.modelPickerBtn.setAttribute('aria-expanded', 'true');
+        setTimeout(() => {
+            const current = els.modelSheetList.querySelector('[aria-selected="true"]');
+            (current || els.modelSheetClose).focus({ preventScroll: true });
+        }, 80);
+    }
+
+    function closeModelSheet() {
+        if (!isModelSheetOpen()) return;
+        els.modelSheet.classList.remove('open', 'is-dragging');
+        els.modelSheet.setAttribute('aria-hidden', 'true');
+        els.modelSheet.style.transform = '';
+        els.modelSheetOverlay.classList.remove('open');
+        els.modelPickerBtn.setAttribute('aria-expanded', 'false');
+        els.modelPickerBtn.focus({ preventScroll: true });
+    }
+
+    function toggleModelSheet() {
+        if (isModelSheetOpen()) closeModelSheet();
+        else openModelSheet();
+    }
+
+    function selectModel(id) {
+        if (!id) return;
+        state.model = id;
+        els.modelInput.value = id;
+        const custom = findCustom(state.provider);
+        if (custom && custom.model !== id) {
+            custom.model = id;
+            persistCustomProviders();
+        }
+        persistSettings();
+        updateActiveModel();
+        refreshProviderUi();
+        closeModelSheet();
+    }
+
+    /* Swipe down on the handle or header to close. Releasing short of 80px snaps back. */
+    function bindSheetDrag() {
+        const handles = [els.modelSheetGrip, els.modelSheet.querySelector('.sheet-head')].filter(Boolean);
+        let startY = 0;
+        let offset = 0;
+        let active = false;
+        handles.forEach((handle) => {
+            handle.addEventListener('pointerdown', (e) => {
+                active = true;
+                startY = e.clientY;
+                offset = 0;
+                els.modelSheet.classList.add('is-dragging');
+                if (handle.setPointerCapture) handle.setPointerCapture(e.pointerId);
+            });
+            handle.addEventListener('pointermove', (e) => {
+                if (!active) return;
+                offset = Math.max(0, e.clientY - startY);
+                els.modelSheet.style.transform = `translateY(${offset}px)`;
+            });
+            const release = () => {
+                if (!active) return;
+                active = false;
+                els.modelSheet.classList.remove('is-dragging');
+                if (offset > 80) closeModelSheet();
+                else els.modelSheet.style.transform = '';
+                offset = 0;
+            };
+            handle.addEventListener('pointerup', release);
+            handle.addEventListener('pointercancel', release);
+        });
+    }
+
+    /* ═══════════════════════════════════════
        SETTINGS PANEL
        Opens over the chat. The settings button toggles it, and the same button closes it.
        ═══════════════════════════════════════ */
@@ -1865,6 +2019,44 @@
     /* ═══════════════════════════════════════
        EVENT BINDINGS
        ═══════════════════════════════════════ */
+    /* Sliders change only while the thumb is dragged. A tap on the track is ignored. Keyboard arrows still work. */
+    function guardSlider(input) {
+        if (!input) return;
+        const THUMB = 26;
+        const thumbX = () => {
+            const rect = input.getBoundingClientRect();
+            const min = Number(input.min);
+            const max = Number(input.max);
+            const ratio = (Number(input.value) - min) / ((max - min) || 1);
+            return { x: rect.left + THUMB / 2 + ratio * (rect.width - THUMB), reach: THUMB / 2 + 14 };
+        };
+        const begin = (clientX) => {
+            const { x, reach } = thumbX();
+            const onThumb = Math.abs(clientX - x) <= reach;
+            input.dataset.snap = input.value;
+            input.dataset.blocked = onThumb ? '' : '1';
+            input.classList.toggle('is-dragging', onThumb);
+            return onThumb;
+        };
+        const end = () => {
+            input.classList.remove('is-dragging');
+            delete input.dataset.blocked;
+        };
+        input.addEventListener('pointerdown', (e) => {
+            if (!begin(e.clientX)) e.preventDefault();
+        });
+        input.addEventListener('touchstart', (e) => {
+            if (!begin(e.touches[0].clientX)) e.preventDefault();
+        }, { passive: false });
+        ['pointerup', 'pointercancel', 'touchend', 'touchcancel'].forEach((name) => input.addEventListener(name, end));
+        input.addEventListener('input', (e) => {
+            if (input.dataset.blocked === '1' && input.dataset.snap !== undefined) {
+                input.value = input.dataset.snap;
+                e.stopImmediatePropagation();
+            }
+        });
+    }
+
     function bindEvents() {
         /* Composer */
         els.composer.addEventListener('submit', onFormSubmit);
@@ -1946,6 +2138,16 @@
             if (open) openSession(open.dataset.openSession);
         });
 
+        /* Model sheet */
+        on(els.modelPickerBtn, 'click', toggleModelSheet);
+        on(els.modelSheetClose, 'click', closeModelSheet);
+        on(els.modelSheetOverlay, 'click', closeModelSheet);
+        on(els.modelSheetList, 'click', (e) => {
+            const option = e.target.closest('[data-model-id]');
+            if (option) selectModel(option.dataset.modelId);
+        });
+        bindSheetDrag();
+
         /* Settings panel */
         on(els.navSetting, 'click', toggleSettings);
         on(els.settingsClose, 'click', closeSettings);
@@ -1994,6 +2196,9 @@
         });
         on(els.connectBtn, 'click', saveFromForm);
         on(els.testBtn, 'click', testConnection);
+
+        guardSlider(els.tempRange);
+        guardSlider(els.tokRange);
 
         /* Sliders: a drag updates the value, nothing is triggered by taps */
         on(els.tempRange, 'input', () => {
@@ -2052,6 +2257,7 @@
             } else if (e.key === 'Escape') {
                 closeDrawer();
                 closeSettings();
+                closeModelSheet();
             }
         });
 

@@ -4,6 +4,8 @@
 
 # RAIA: Reflecting Tomorrow
 
+[![Architecture diagram of haiere/raia-ai](https://gitdiagram.com/haiere/raia-ai/diagram.png)](https://gitdiagram.com/haiere/raia-ai?utm_source=readme&utm_medium=picture)
+
 <a href="https://hajir.is-a.dev/raia-ai/">
   <img src="https://readme-typing-svg.demolab.com?font=DM+Sans&weight=600&size=22&pause=1000&color=3B82F6&center=true&vCenter=true&width=600&lines=A+multi-provider+AI+chat+client;Bring+your+own+API+key;Running+entirely+in+your+browser;Built-in+Gemini,+no+tracking,+no+telemetry" alt="Typing SVG" />
 </a>
@@ -19,7 +21,7 @@
 
 <br />
 
-<img src="https://img.shields.io/badge/Version-v1.2.4-3B82F6?style=flat-square" alt="Version v1.2.4" />
+<img src="https://img.shields.io/badge/Version-v1.2.5-3B82F6?style=flat-square" alt="Version v1.2.5" />
 <img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" alt="MIT License" />
 <img src="https://img.shields.io/badge/PRs-Welcome-brightgreen?style=flat-square" alt="PRs Welcome" />
 
@@ -46,6 +48,8 @@
 
 - [Overview](#overview)
 - [What's New in v1.2.4](#whats-new-in-v124)
+- [What's New in v1.2.3](#whats-new-in-v123)
+- [What's New in v1.2.2](#whats-new-in-v122)
 - [Features](#features)
 - [Requirements](#requirements)
 - [Installation](#installation)
@@ -69,7 +73,6 @@
 ## Overview
 
 RAIA is a client-side AI chat interface that connects to several large language model providers from one place.
-[![Architecture diagram of haiere/raia-ai](https://gitdiagram.com/haiere/raia-ai/diagram.png)](https://gitdiagram.com/haiere/raia-ai?utm_source=readme&utm_medium=picture)
 
 <table>
 <tr>
@@ -126,6 +129,72 @@ This release makes the provider layer more flexible, moves routes to real paths,
 
 > [!NOTE]
 > Streaming responses are planned, not included in this release.
+
+---
+
+## What's New in v1.2.3
+
+This release adds a built-in Gemini option, updates the logo, and tidies the mobile layout.
+
+| Change | Details |
+|---|---|
+| **Built-in Gemini** | Gemini 2.5 Flash-Lite is the default provider. It works without your own key through a small proxy, with a free daily quota per IP address. |
+| **Logo** | The header shows the RAIA wordmark. |
+| **Mobile keyboard hint** | The "Enter to send, Shift+Enter for a new line" hint is hidden on phones. It still shows on desktop. |
+| **Version display** | The version badge was removed from the header. |
+
+---
+
+## What's New in v1.2.2
+
+This release fixes the header layout on phones, moves settings to its own page, and adds motion.
+
+| Change | Details |
+|---|---|
+| **Send button** | The send button is a round button beside a pill-shaped message field. It never uses the native `disabled` attribute, so it always responds. An empty message shows a short notice. While a reply is loading, the same button stops the response. |
+| **Settings page** | Settings moved from a collapsible panel to its own page, with separate cards for provider, API key, and generation parameters. |
+| **Missing API key** | A friendly notice in the chat explains what to do and links to the settings page. The typed message is kept. |
+| **Code and math** | Fenced code blocks show their language and a copy button. Inline and display math render with KaTeX, so formulas such as `$^{235}\text{U}$` no longer appear as raw text. |
+| **Motion (GSAP)** | Entrance animations for the welcome screen, new messages, the settings page, the history list, and notices. Only `transform` and `opacity` are animated. Motion is skipped when reduced motion is requested. |
+| **Mobile header** | On phones the brand shrinks to fit, and the header keeps 44 px touch targets. The Chat link is reached through the logo, and support moved to the settings page. |
+| **Stop and retry** | A running reply can be stopped. Failed replies show a retry button. |
+| **History** | Up to 30 chats are kept. Each chat can be opened or deleted, and all history can be cleared with confirmation. |
+
+<details>
+<summary><strong>Previous releases (v1.2.1, v1.2.0, v1.1.1)</strong></summary>
+
+<br />
+
+### v1.2.1
+
+| Change | Details |
+|---|---|
+| **Send button fix** | The send button used a `data-disabled` attribute so it always received clicks. Empty input showed a friendly toast. |
+| **Double-submit prevention** | A per-request ID and a loading flag stopped duplicate submissions. |
+| **Full Markdown rendering** | Migrated to `marked.js` with GitHub-Flavored Markdown. |
+| **LaTeX math via KaTeX** | Inline and block math rendering. |
+| **XSS sanitization** | Assistant output is sanitized with DOMPurify. |
+| **Code block copy buttons** | Every fenced code block gets a copy button. |
+| **Retry button for errors** | Failed requests can be retried. |
+| **Responsive layout** | Layout uses `100dvh` with internal scroll. |
+| **Mobile keyboard fix** | `interactive-widget=resizes-content` keeps the input visible when the keyboard opens. |
+
+### v1.2.0
+
+- Bilingual interface (Bahasa Indonesia and English) through `i18n.js`.
+- Built-in system prompt for the assistant.
+- Two-minute request timeout.
+- Online and offline status with localized notices.
+- Confirmation before deleting a chat.
+
+### v1.1.1
+
+- Support link in the header.
+- Open Graph, Twitter Card, and JSON-LD metadata.
+- Version badge and feature pills.
+- Accessibility labels and focus states.
+
+</details>
 
 ---
 
@@ -525,6 +594,15 @@ GitHub Pages only serves static files, so it cannot run `worker.js` or keep an A
 
 ## Changelog
 
+### v1.2.5 (November 17, 2026)
+
+- Replaced the model dropdown in settings with a bottom sheet, opened from the model button next to the message field.
+- Sliders change only while the thumb is dragged. A tap on the track is ignored.
+- Replies fade in paragraph by paragraph. Auto-scroll runs only when the user is already at the bottom.
+- The scroll button now says **Scroll Down**. A dot shows when new replies arrived while reading above.
+- Tables in replies scroll sideways inside their own box, so cells stay readable.
+- Rewrote the system prompt in a warmer, more natural style.
+
 ### v1.2.4 (November 15, 2026)
 
 - Added per-provider adapters, with model lists loaded from each provider's API.
@@ -629,6 +707,6 @@ Developed and maintained by Haiere and HajirStudio.
 
 <div align="center">
 <sub>
-Last updated: November 15, 2026 · RAIA v1.2.4
+Last updated: November 17, 2026 · RAIA v1.2.5
 </sub>
 </div>
