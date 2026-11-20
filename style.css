@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════
-   RAIA · Reflecting Tomorrow · v1.2.5
+   RAIA · Reflecting Tomorrow · v1.2.6
    Design: Deep Midnight Navy, Slate Silver, Electric Blue
    Type: Syne (heading), DM Sans (body), JetBrains Mono (code)
    ═══════════════════════════════════════════════════════ */
@@ -258,17 +258,6 @@ button:disabled,
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-}
-
-.version-badge {
-    margin-left: var(--space-1);
-    padding: 2px 8px;
-    border-radius: var(--radius-pill);
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--accent-ink);
-    background: var(--accent-soft);
-    border: 1px solid var(--border);
 }
 
 .nav {
@@ -1267,7 +1256,6 @@ input[type="range"] {
 
 @media (max-width: 639px) {
     .brand-tagline,
-    .version-badge { display: none; }
 
     /* Keyboard hint is desktop-only */
     .hint-keys { display: none; }
@@ -1951,4 +1939,66 @@ input[type="range"].range-input.is-dragging::-moz-range-thumb {
 
 @media (prefers-contrast: more) {
     :root { --border-strong: currentColor; }
+}
+
+/* ═══════════════════════════════════════════════════════
+   RAIA · v1.2.6 · tambahan untuk sesi 3
+   Tempel di akhir style.css. Tidak mengubah aturan yang sudah ada.
+   ═══════════════════════════════════════════════════════ */
+
+/* Kursor saat jawaban masih mengalir (token stream) */
+.msg-body.is-streaming > :last-child::after {
+    content: '';
+    display: inline-block;
+    width: 0.45em;
+    height: 1em;
+    margin-left: 2px;
+    vertical-align: text-bottom;
+    background: var(--accent);
+    animation: blink 1s steps(2, start) infinite;
+}
+
+/* Progress fill pada slider: bagian terisi diwarnai accent */
+input[type="range"].range-input::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, var(--accent) var(--fill, 0%), var(--border-strong) var(--fill, 0%));
+}
+input[type="range"].range-input::-moz-range-track {
+    background: var(--border-strong);
+    border-radius: var(--radius-pill);
+}
+input[type="range"].range-input::-moz-range-progress {
+    background: var(--accent);
+    height: 6px;
+    border-radius: var(--radius-pill);
+}
+
+/* Input angka manual di samping label slider */
+.range-num {
+    width: 5.5em;
+    min-height: 32px;
+    padding: 0 var(--space-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    color: inherit;
+    font: inherit;
+    text-align: right;
+}
+.range-num:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* Mobile dengan keyboard terbuka: sembunyikan pemilih model, tampilkan hitung karakter */
+@media (pointer: coarse) {
+    #charCount { display: none; }
+    .kbd-open #charCount { display: inline; }
+    .kbd-open .model-picker-btn { display: none; }
+}
+
+/* Tombol kembali ke Chat di bagian bawah panel setting */
+.settings-foot {
+    display: flex;
+    justify-content: center;
+    padding: var(--space-6) var(--space-4) var(--space-8);
 }

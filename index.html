@@ -6,6 +6,16 @@
     <meta name="color-scheme" content="dark light" />
 
     <title>Raia AI: Reflecting Tomorrow | Multi-Provider AI Chat</title>
+    <script>
+      /* Fallback GitHub Pages: 404.html mengalihkan /chat ke ?/chat. Path dikembalikan di sini. */
+      (function () {
+        var q = window.location.search;
+        if (q.indexOf('?/') === 0) {
+          var path = q.slice(2).split('&')[0];
+          history.replaceState(null, '', window.location.pathname.replace(/\/$/, '') + '/' + path + window.location.hash);
+        }
+      })();
+    </script>
     <meta name="description" content="Raia AI is a free, browser-based chat client for OpenRouter, OpenAI, Perplexity, Claude, Gemini and Mistral. Bring your own API key. No sign-up." />
     <meta name="keywords" content="AI chat, OpenRouter, OpenAI, Perplexity, Claude, Gemini, Mistral, BYOK, browser AI, Raia AI, KaTeX" />
     <meta name="author" content="Hajir Studio" />
@@ -42,7 +52,7 @@
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "All",
         "browserRequirements": "Requires JavaScript",
-        "softwareVersion": "1.2.5",
+        "softwareVersion": "1.2.6",
         "dateModified": "2026-11-17",
         "inLanguage": ["id", "en"],
         "isAccessibleForFree": true,
@@ -135,7 +145,7 @@
 
     <main class="app-main" id="main" tabindex="-1">
 
-        <!-- ═══ CHAT VIEW (#/chat) ═══ -->
+        <!-- ═══ CHAT VIEW (/chat) ═══ -->
         <section class="view" id="chat" aria-labelledby="welcomeTitle">
             <div class="chat-scroll" id="chatScroll">
                 <div class="chat-inner">
@@ -355,6 +365,7 @@
                                 <div class="range-head">
                                     <label for="tempRange" data-i18n="temp">Kreativitas</label>
                                     <span class="range-value" id="tempValue">0.7</span>
+                                    <input type="number" class="range-num" id="tempNum" min="0" max="2" step="0.1" inputmode="decimal" aria-label="Kreativitas, isi angka" />
                                 </div>
                                 <input type="range" id="tempRange" class="range-input" min="0" max="2" step="0.1" value="0.7" />
                                 <div class="range-scale" aria-hidden="true"><span>0</span><span>2</span></div>
@@ -363,8 +374,9 @@
                                 <div class="range-head">
                                     <label for="tokRange" data-i18n="maxTok">Panjang jawaban maks</label>
                                     <span class="range-value" id="tokValue">1024</span>
+                                    <input type="number" class="range-num" id="tokNum" min="256" max="8192" step="1" inputmode="numeric" aria-label="Panjang jawaban maks, isi angka" />
                                 </div>
-                                <input type="range" id="tokRange" class="range-input" min="256" max="8192" step="128" value="1024" />
+                                <input type="range" id="tokRange" class="range-input" min="256" max="8192" step="1" value="1024" />
                                 <div class="range-scale" aria-hidden="true"><span>256</span><span>8192</span></div>
                             </div>
                         </div>
@@ -397,6 +409,9 @@
                             <span data-i18n="support">Dukung</span>
                         </a>
                     </div>
+                </div>
+                <div class="settings-foot">
+                    <button class="btn btn-secondary" id="backToChat" type="button" data-i18n="backToChat">Kembali ke Chat</button>
                 </div>
             </div>
         </aside>
@@ -449,6 +464,6 @@
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 
     <script src="i18n.js"></script>
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
 </body>
 </html>

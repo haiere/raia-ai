@@ -1,131 +1,41 @@
 /* ═══════════════════════════════════════════════════════
-   RAIA · Reflecting Tomorrow · v1.2.5
-   script.js: settings panel, chat, provider and
-   model catalog, custom API, quota, settings, history,
-   Markdown and LaTeX rendering
+   RAIA · Reflecting Tomorrow · v1.2.6
+   script.js: orkestrasi UI. Logika provider, settings,
+   chat, dan UI ada di js/.
    ═══════════════════════════════════════════════════════ */
+
+import {
+  APP_VERSION, CONTEXT_LIMIT, CUSTOM_COMPAT, CUSTOM_PREFIX, DEFAULT_PROVIDER, KEY_STORE, MAX_SESSIONS, PROVIDERS, REQUEST_TIMEOUT_MS, SETTINGS_KEY, TEST_TIMEOUT_MS, THEME_KEY, findCustom, getProviderInfo, hasKey, loadCatalog, loadCustomProviders, loadSessions, loadSettings, modelsFor, persistCatalog, persistCustomProviders, persistSessions, persistSettings, removeCustomKey, resolveKey, state, storeCustomKey, t, tx, uid, usesFreeProxy
+} from './js/settings.js';
+
+import {
+  ApiError, applyProxy, buildMeta, buildRequest, describeError, listRequest, normalizeModels, parseReply, readError, streamFreeProxy
+} from './js/provider.js';
+
+import {
+  createTokenStream, renderMarkdown
+} from './js/chat.js';
+
+import {
+  bindRangeNumber, createFocusTrap, guardSlider, paintRangeFill, watchKeyboard
+} from './js/ui.js';
+
+import { currentRoute, migrateHashRoute, navigate, onRouteChange } from './js/router.js';
 
 (function () {
     'use strict';
 
-    /* ─── Constants ─── */
-    const APP_VERSION = '1.2.5';
-    const SETTINGS_KEY = 'raia_settings_v122';
-    const SESSIONS_KEY = 'raia_sessions_v122';
-    const CUSTOM_KEY = 'raia_custom_v124';
-    const CUSTOM_KEY_PREFIX = 'raia_custom_key_';
-    const MODELS_CACHE_KEY = 'raia_models_v124';
-    const THEME_KEY = 'raia_theme';
-    const KEY_STORE = 'raia_api_key';
-    const REQUEST_TIMEOUT_MS = 120000;
-    const TEST_TIMEOUT_MS = 20000;
-    const CONTEXT_LIMIT = 20;
-    const MAX_SESSIONS = 30;
-    const MAX_CUSTOM = 20;
-    const DEFAULT_PROVIDER = 'Gemini (Google)';
-    const CUSTOM_PREFIX = 'custom:';
-    const CUSTOM_COMPAT = ['openai', 'gemini', 'anthropic'];
-    const OPENROUTER_REFERER = 'https://hajir.is-a.dev/raia-ai';
-
-    const SYSTEM_PROMPT = [
-        'You are Raia, a friendly, honest, and helpful AI assistant.',
-        'Talk like a smart friend: warm and relaxed, but still clear and to the point.',
-        'Reply in the same language the user writes in. If the user mixes languages, follow their mix.',
-        'Match the length of your answer to the question. Short questions get short answers. Complex questions are explained step by step.',
-        'If you are not sure, say so honestly. Do not make up facts, numbers, or sources.',
-        'Use Markdown only when it helps readability: small headings, lists, or tables when useful.',
-        'For tables, keep the number of columns small and the cell text concise so they are easy to read on small screens.',
-        'Write math with LaTeX: $...$ for inline formulas and $$...$$ for display formulas.',
-        'Put code in fenced code blocks and name the language.'
-    ].join(' ');
-
-    /* compat: which wire format a provider speaks (openai | gemini | anthropic) */
-    const PROVIDERS = {
-        OpenRouter: {
-            label: 'OpenRouter',
-            compat: 'openai',
-            models: ['anthropic/claude-sonnet-5', 'openai/gpt-5.6', 'google/gemini-3.5-flash', 'meta-llama/llama-4-maverick', 'mistralai/mistral-large-3', 'deepseek/deepseek-v4'],
-            baseUrl: 'https://openrouter.ai/api/v1',
-            keyUrl: 'https://openrouter.ai/settings/keys'
-        },
-        OpenAI: {
-            label: 'OpenAI',
-            compat: 'openai',
-            models: ['gpt-5.6', 'gpt-5.6-terra', 'gpt-5.6-luna', 'gpt-4o', 'gpt-4o-mini'],
-            baseUrl: 'https://api.openai.com/v1',
-            keyUrl: 'https://platform.openai.com/api-keys'
-        },
-        Perplexity: {
-            label: 'Perplexity',
-            compat: 'openai',
-            noList: true,
-            models: ['sonar', 'sonar-pro', 'sonar-reasoning-pro', 'sonar-deep-research'],
-            baseUrl: 'https://api.perplexity.ai',
-            keyUrl: 'https://www.perplexity.ai/settings/api'
-        },
-        'Claude (Anthropic)': {
-            label: 'Claude (Anthropic)',
-            compat: 'anthropic',
-            models: ['claude-sonnet-5', 'claude-opus-4-8', 'claude-haiku-4-5-20251001', 'claude-fable-5'],
-            baseUrl: 'https://api.anthropic.com/v1',
-            keyUrl: 'https://console.anthropic.com/settings/keys'
-        },
-        'Gemini (Google)': {
-            label: 'Gemini (Google)',
-            compat: 'gemini',
-            models: ['gemini-2.5-flash-lite', 'gemini-3.5-flash', 'gemini-3.1-pro-preview', 'gemini-3.1-flash-lite', 'gemini-2.5-flash'],
-            baseUrl: 'https://generativelanguage.googleapis.com/v1beta',
-            keyUrl: 'https://aistudio.google.com/app/apikey'
-        },
-        Mistral: {
-            label: 'Mistral',
-            compat: 'openai',
-            models: ['mistral-large-latest', 'mistral-small-latest', 'magistral-medium-latest', 'codestral-latest'],
-            baseUrl: 'https://api.mistral.ai/v1',
-            keyUrl: 'https://console.mistral.ai/api-keys/'
-        }
-    };
-
-    /* Providers that block direct browser calls; they need a CORS proxy when one is set */
-    const CORS_BLOCKED = ['OpenAI', 'Perplexity', 'Mistral'];
-    const BUILTIN_PROXY_URL = 'https://raia-proxy.haiere.workers.dev/';
 
     /* ─── Helpers ─── */
     const $ = (id) => document.getElementById(id);
-    const t = (key, vars) => window.I18N.t(key, vars);
-    const clamp = (n, min, max) => Math.min(max, Math.max(min, n));
-    const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
     const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     /* Translation with a fallback, for strings not yet added to i18n.js */
-    function tx(key, fallback, vars) {
-        const value = t(key, vars);
-        if (value && value !== key) return value;
-        return vars ? fallback.replace(/\{(\w+)\}/g, (_, name) => (name in vars ? String(vars[name]) : '')) : fallback;
-    }
 
     function on(el, event, handler) {
         if (el) el.addEventListener(event, handler);
     }
 
-    function escapeHtml(value) {
-        return String(value).replace(/[&<>\"']/g, (c) => ({
-            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-        }[c]));
-    }
-
-    function readJSON(key, fallback) {
-        try {
-            const value = JSON.parse(localStorage.getItem(key));
-            return value === null || value === undefined ? fallback : value;
-        } catch (_) {
-            return fallback;
-        }
-    }
-
-    function writeJSON(key, value) {
-        try { localStorage.setItem(key, JSON.stringify(value)); } catch (_) { /* storage full or blocked */ }
-    }
 
     function formatDate(ts) {
         const locale = window.I18N.getLang() === 'en' ? 'en-US' : 'id-ID';
@@ -207,6 +117,7 @@
         settingView: $('setting'),
         settingsOverlay: $('settingsOverlay'),
         settingsClose: $('settingsClose'),
+        backToChat: $('backToChat'),
         chatScroll: $('chatScroll'),
         messages: $('messages'),
         welcome: $('welcome'),
@@ -251,6 +162,8 @@
         tempValue: $('tempValue'),
         tokRange: $('tokRange'),
         tokValue: $('tokValue'),
+        tempNum: $('tempNum'),
+        tokNum: $('tokNum'),
         customTitle: $('customTitle'),
         customLabel: $('customLabel'),
         customBaseUrl: $('customBaseUrl'),
@@ -270,315 +183,13 @@
         toasts: $('toasts')
     };
 
-    /* ─── State ─── */
-    const state = {
-        provider: DEFAULT_PROVIDER,
-        model: PROVIDERS[DEFAULT_PROVIDER].models[0],
-        apiKey: '',
-        remember: true,
-        baseUrl: '',
-        proxyUrl: '',
-        temp: 0.7,
-        maxTokens: 1024,
-        messages: [],
-        sessions: [],
-        sessionId: null,
-        loading: false,
-        custom: [],        /* { id, label, baseUrl, compat, model, apiKey } */
-        catalog: {},       /* provider key -> { fetchedAt, models: [{ id, name, provider, capabilities, active }] } */
-        quota: null,       /* { limit, remaining, reset } from X-RateLimit-* headers */
-        editingCustomId: null,
-        unseen: 0
-    };
 
     let controller = null;
+    const settingsTrap = createFocusTrap(els.settingView);
+    const drawerTrap = createFocusTrap(els.drawer);
+    const sheetTrap = createFocusTrap(els.modelSheet);
 
-    class ApiError extends Error {
-        constructor(status, message, code) {
-            super(message);
-            this.name = 'ApiError';
-            this.status = status;
-            this.code = code || '';
-        }
-    }
 
-    /* ═══════════════════════════════════════
-       PROVIDER CATALOG
-       Built-in and custom providers share one lookup, so the rest
-       of the app never branches on whether a provider is custom.
-       ═══════════════════════════════════════ */
-    function findCustom(key) {
-        if (typeof key !== 'string' || !key.startsWith(CUSTOM_PREFIX)) return null;
-        return state.custom.find((c) => CUSTOM_PREFIX + c.id === key) || null;
-    }
-
-    function getProviderInfo(key) {
-        if (PROVIDERS[key]) return PROVIDERS[key];
-        const c = findCustom(key);
-        if (!c) return null;
-        return {
-            label: c.label,
-            compat: c.compat,
-            custom: true,
-            models: [c.model],
-            baseUrl: c.baseUrl,
-            keyUrl: ''
-        };
-    }
-
-    function resolveKey(provider) {
-        const c = findCustom(provider);
-        return c ? c.apiKey : state.apiKey;
-    }
-
-    /* Model metadata is kept separately from provider config:
-       a provider's models come from its own API when fetched, otherwise from the built-in list. */
-    function modelsFor(provider) {
-        const cached = state.catalog[provider];
-        if (cached && Array.isArray(cached.models) && cached.models.length) {
-            return cached.models.filter((m) => m.active !== false);
-        }
-        const info = getProviderInfo(provider);
-        if (!info) return [];
-        return info.models.map((id) => ({ id, name: id, provider, capabilities: ['chat'], active: true }));
-    }
-
-    function normalizeModels(list, provider) {
-        const seen = new Set();
-        return list
-            .filter((m) => m && typeof m.id === 'string' && m.id.trim())
-            .map((m) => ({
-                id: m.id.trim(),
-                name: String(m.name || m.id).slice(0, 120),
-                provider,
-                capabilities: Array.isArray(m.capabilities) ? m.capabilities : ['chat'],
-                active: true
-            }))
-            .filter((m) => {
-                if (seen.has(m.id)) return false;
-                seen.add(m.id);
-                return true;
-            })
-            .sort((a, b) => a.name.localeCompare(b.name));
-    }
-
-    /* ─── Model list adapters: one per wire format ─── */
-    const OPENAI_CHAT_ID = /^(gpt-|o\d|chatgpt-)/i;
-    const OPENAI_NOT_CHAT = /(embed|tts|whisper|dall-e|image|audio|realtime|moderation|transcribe|search)/i;
-
-    function parseOpenAIModels(data, provider) {
-        return (Array.isArray(data.data) ? data.data : []).map((m) => ({
-            id: m.id,
-            name: m.name || m.id,
-            capabilities: ['chat']
-        })).filter((m) => {
-            if (provider !== 'OpenAI') return true;
-            return OPENAI_CHAT_ID.test(m.id) && !OPENAI_NOT_CHAT.test(m.id);
-        });
-    }
-
-    function parseOpenRouterModels(data) {
-        return (Array.isArray(data.data) ? data.data : [])
-            .filter((m) => !m.architecture || (m.architecture.output_modalities || ['text']).includes('text'))
-            .map((m) => {
-                const input = (m.architecture && m.architecture.input_modalities) || ['text'];
-                return {
-                    id: m.id,
-                    name: m.name || m.id,
-                    capabilities: input.includes('image') ? ['chat', 'vision'] : ['chat']
-                };
-            });
-    }
-
-    function parseMistralModels(data) {
-        return (Array.isArray(data.data) ? data.data : [])
-            .filter((m) => m.capabilities && m.capabilities.completion_chat)
-            .map((m) => ({ id: m.id, name: m.name || m.id, capabilities: ['chat'] }));
-    }
-
-    function parseAnthropicModels(data) {
-        return (Array.isArray(data.data) ? data.data : []).map((m) => ({
-            id: m.id,
-            name: m.display_name || m.id,
-            capabilities: ['chat']
-        }));
-    }
-
-    function parseGeminiModels(data) {
-        return (Array.isArray(data.models) ? data.models : [])
-            .filter((m) => (m.supportedGenerationMethods || []).includes('generateContent'))
-            .map((m) => {
-                const id = String(m.name || '').replace(/^models\//, '');
-                return { id, name: m.displayName || id, capabilities: ['chat'] };
-            });
-    }
-
-    /* Returns { url, headers, parse } for listing a provider's models, or null if it cannot list */
-    function listRequest(cfg) {
-        const info = getProviderInfo(cfg.provider);
-        if (!info || info.noList) return null;
-        const base = (cfg.baseUrl || info.baseUrl).replace(/\/+$/, '');
-        const key = cfg.apiKey;
-        if (!key) return null;
-
-        if (info.compat === 'gemini') {
-            return {
-                url: `${base}/models?pageSize=1000`,
-                headers: { 'x-goog-api-key': key },
-                parse: parseGeminiModels
-            };
-        }
-        if (info.compat === 'anthropic') {
-            return {
-                url: `${base}/models?limit=100`,
-                headers: {
-                    'x-api-key': key,
-                    'anthropic-version': '2023-06-01',
-                    'anthropic-dangerous-direct-browser-access': 'true'
-                },
-                parse: parseAnthropicModels
-            };
-        }
-
-        const headers = { Authorization: `Bearer ${key}` };
-        let parse = (data) => parseOpenAIModels(data, cfg.provider);
-        if (cfg.provider === 'OpenRouter') {
-            headers['HTTP-Referer'] = OPENROUTER_REFERER;
-            headers['X-Title'] = 'Raia AI';
-            parse = parseOpenRouterModels;
-        } else if (cfg.provider === 'Mistral') {
-            parse = parseMistralModels;
-        }
-        return { url: `${base}/models`, headers, parse };
-    }
-
-    /* ═══════════════════════════════════════
-       SETTINGS AND STORAGE
-       ═══════════════════════════════════════ */
-    function readKey() {
-        try {
-            return localStorage.getItem(KEY_STORE) || sessionStorage.getItem(KEY_STORE) || '';
-        } catch (_) {
-            return '';
-        }
-    }
-
-    function customKeyFor(id) {
-        try {
-            return localStorage.getItem(CUSTOM_KEY_PREFIX + id) || sessionStorage.getItem(CUSTOM_KEY_PREFIX + id) || '';
-        } catch (_) {
-            return '';
-        }
-    }
-
-    function storeCustomKey(id, key) {
-        try {
-            localStorage.removeItem(CUSTOM_KEY_PREFIX + id);
-            sessionStorage.removeItem(CUSTOM_KEY_PREFIX + id);
-            if (!key) return;
-            (state.remember ? localStorage : sessionStorage).setItem(CUSTOM_KEY_PREFIX + id, key);
-        } catch (_) { /* storage blocked */ }
-    }
-
-    function removeCustomKey(id) {
-        try {
-            localStorage.removeItem(CUSTOM_KEY_PREFIX + id);
-            sessionStorage.removeItem(CUSTOM_KEY_PREFIX + id);
-        } catch (_) { /* storage blocked */ }
-    }
-
-    function isValidCustomRecord(c) {
-        return Boolean(c) &&
-            typeof c.id === 'string' &&
-            typeof c.label === 'string' &&
-            typeof c.baseUrl === 'string' &&
-            typeof c.model === 'string' &&
-            CUSTOM_COMPAT.includes(c.compat);
-    }
-
-    function loadCustomProviders() {
-        const list = readJSON(CUSTOM_KEY, []);
-        state.custom = (Array.isArray(list) ? list : [])
-            .filter(isValidCustomRecord)
-            .slice(0, MAX_CUSTOM)
-            .map((c) => ({
-                id: c.id,
-                label: c.label,
-                baseUrl: c.baseUrl,
-                compat: c.compat,
-                model: c.model,
-                apiKey: customKeyFor(c.id)
-            }));
-    }
-
-    function persistCustomProviders() {
-        writeJSON(CUSTOM_KEY, state.custom.map(({ id, label, baseUrl, compat, model }) => ({
-            id, label, baseUrl, compat, model
-        })));
-    }
-
-    function loadCatalog() {
-        const saved = readJSON(MODELS_CACHE_KEY, {});
-        state.catalog = {};
-        if (!saved || typeof saved !== 'object') return;
-        Object.keys(saved).forEach((key) => {
-            const entry = saved[key];
-            if (entry && Array.isArray(entry.models)) {
-                state.catalog[key] = { fetchedAt: Number(entry.fetchedAt) || 0, models: entry.models };
-            }
-        });
-    }
-
-    function persistCatalog() {
-        writeJSON(MODELS_CACHE_KEY, state.catalog);
-    }
-
-    function loadSettings() {
-        const saved = readJSON(SETTINGS_KEY, {});
-        if (saved && getProviderInfo(saved.provider)) state.provider = saved.provider;
-        state.remember = saved.remember !== false;
-        state.baseUrl = typeof saved.baseUrl === 'string' ? saved.baseUrl : '';
-        state.proxyUrl = typeof saved.proxyUrl === 'string' ? saved.proxyUrl : '';
-        state.temp = typeof saved.temp === 'number' ? clamp(saved.temp, 0, 2) : 0.7;
-        state.maxTokens = typeof saved.maxTokens === 'number' ? clamp(Math.round(saved.maxTokens), 256, 8192) : 1024;
-        state.model = typeof saved.model === 'string' && saved.model.trim()
-            ? saved.model.trim()
-            : getProviderInfo(state.provider).models[0];
-        state.apiKey = readKey();
-    }
-
-    function persistSettings() {
-        writeJSON(SETTINGS_KEY, {
-            provider: state.provider,
-            model: state.model,
-            remember: state.remember,
-            baseUrl: state.baseUrl,
-            proxyUrl: state.proxyUrl,
-            temp: state.temp,
-            maxTokens: state.maxTokens
-        });
-        try {
-            if (state.apiKey && state.remember) {
-                localStorage.setItem(KEY_STORE, state.apiKey);
-                sessionStorage.removeItem(KEY_STORE);
-            } else {
-                localStorage.removeItem(KEY_STORE);
-                if (state.apiKey) sessionStorage.setItem(KEY_STORE, state.apiKey);
-                else sessionStorage.removeItem(KEY_STORE);
-            }
-        } catch (_) { /* storage blocked */ }
-    }
-
-    function loadSessions() {
-        const list = readJSON(SESSIONS_KEY, []);
-        state.sessions = Array.isArray(list)
-            ? list.filter((s) => s && s.id && Array.isArray(s.messages))
-            : [];
-    }
-
-    function persistSessions() {
-        writeJSON(SESSIONS_KEY, state.sessions.slice(0, MAX_SESSIONS));
-    }
 
     function saveCurrentSession() {
         if (!state.messages.length) return;
@@ -627,77 +238,6 @@
     /* ═══════════════════════════════════════
        MARKDOWN, MATH AND CODE RENDERING
        ═══════════════════════════════════════ */
-    function codeBlockHtml(lang, code) {
-        const safeLang = (lang || '').replace(/[^\w+#.-]/g, '').slice(0, 24);
-        return (
-            '<div class="code-block">' +
-            '<div class="code-head">' +
-            `<span>${escapeHtml(safeLang || 'text')}</span>` +
-            `<button class="code-copy" type="button" data-copy-code>${escapeHtml(t('copyCode'))}</button>` +
-            '</div>' +
-            `<pre><code class="language-${escapeHtml(safeLang)}">${escapeHtml(code)}</code></pre>` +
-            '</div>'
-        );
-    }
-
-    function katexHtml(tex, display) {
-        const source = tex.trim();
-        if (window.katex && typeof window.katex.renderToString === 'function') {
-            try {
-                return window.katex.renderToString(source, {
-                    displayMode: display,
-                    throwOnError: false,
-                    strict: 'ignore'
-                });
-            } catch (_) { /* fall back to raw text below */ }
-        }
-        return display
-            ? `<pre class="math-raw">${escapeHtml(source)}</pre>`
-            : `<code>${escapeHtml(source)}</code>`;
-    }
-
-    function renderMarkdown(source) {
-        const raw = String(source).replace(/\r\n?/g, '\n');
-        const stash = [];
-        const hold = (html) => {
-            stash.push(html);
-            return `RAIAHOLD${stash.length - 1}END`;
-        };
-
-        let text = raw;
-
-        /* 1. Protect code first so its contents are never treated as math or Markdown */
-        text = text.replace(/```([^\n`]*)\n([\s\S]*?)\n?```/g, (_, lang, code) => hold(codeBlockHtml(lang.trim(), code)));
-        text = text.replace(/`([^`\n]+)`/g, (_, code) => hold(`<code>${escapeHtml(code)}</code>`));
-
-        /* 2. Protect math: display first, then inline */
-        text = text.replace(/\$\$([\s\S]+?)\$\$/g, (_, tex) => hold(katexHtml(tex, true)));
-        text = text.replace(/\\\[([\s\S]+?)\\\]/g, (_, tex) => hold(katexHtml(tex, true)));
-        text = text.replace(/\\\(([\s\S]+?)\\\)/g, (_, tex) => hold(katexHtml(tex, false)));
-        text = text.replace(/(^|[^\\\w$])\$(?=\S)([^$\n]*?\S)\$(?![\w$])/g, (_, pre, tex) => pre + hold(katexHtml(tex, false)));
-
-        /* 3. Markdown */
-        let html;
-        if (window.marked && typeof window.marked.parse === 'function') {
-            html = window.marked.parse(text, { gfm: true, breaks: true });
-        } else {
-            html = `<p>${escapeHtml(text).replace(/\n/g, '<br>')}</p>`;
-        }
-
-        /* 4. Restore protected blocks */
-        html = html.replace(/<p>\s*RAIAHOLD(\d+)END\s*<\/p>/g, (_, i) => stash[Number(i)]);
-        html = html.replace(/RAIAHOLD(\d+)END/g, (_, i) => stash[Number(i)]);
-
-        /* Tables scroll sideways inside their own box, so cells keep their width */
-        html = html.replace(/<table>/g, '<div class="table-wrap"><table>').replace(/<\/table>/g, '</table></div>');
-
-        /* 5. Sanitize everything that reaches the DOM */
-        if (window.DOMPurify && typeof window.DOMPurify.sanitize === 'function') {
-            return window.DOMPurify.sanitize(html);
-        }
-        return `<p>${escapeHtml(raw).replace(/\n/g, '<br>')}</p>`;
-    }
-
     /* ═══════════════════════════════════════
        MESSAGES
        ═══════════════════════════════════════ */
@@ -842,7 +382,7 @@
         });
 
         els.messages.replaceChildren(fragment);
-        if (state.loading) showTyping();
+        if (state.loading && !state.streamingId) showTyping();
 
         const wasWelcomeHidden = els.welcome.hidden;
         els.welcome.hidden = state.messages.length > 0;
@@ -881,23 +421,7 @@
        QUOTA (free Gemini proxy)
        Read from X-RateLimit-* headers. Never shown when the headers are missing or invalid.
        ═══════════════════════════════════════ */
-    function readQuota(headers) {
-        const rem = headers.get('X-RateLimit-Remaining');
-        if (rem === null || !/^\d+$/.test(rem.trim())) return null;
-        const remaining = Number(rem);
-        if (!Number.isFinite(remaining) || remaining < 0) return null;
-        const limit = Number(headers.get('X-RateLimit-Limit'));
-        const reset = Number(headers.get('X-RateLimit-Reset'));
-        return {
-            limit: Number.isFinite(limit) && limit > 0 ? limit : null,
-            remaining,
-            reset: Number.isFinite(reset) && reset > 0 ? reset : null
-        };
-    }
 
-    function usesFreeProxy(provider, apiKey) {
-        return provider === DEFAULT_PROVIDER && !apiKey;
-    }
 
     function updateQuotaNote() {
         if (!els.quotaNote) return;
@@ -915,212 +439,7 @@
     /* ═══════════════════════════════════════
        PROVIDER REQUESTS
        ═══════════════════════════════════════ */
-    function hasKey() {
-        return Boolean(resolveKey(state.provider)) || usesFreeProxy(state.provider, '');
-    }
 
-    function isReasoningModel(model) {
-        return /gpt-5|^o\d/i.test(model);
-    }
-
-    function clampTemp(provider, temp) {
-        const info = getProviderInfo(provider);
-        const max = info && info.compat === 'anthropic' ? 1 : provider === 'Mistral' ? 1.5 : 2;
-        return clamp(temp, 0, max);
-    }
-
-    /* Routes the request through the CORS proxy for providers that block browsers */
-    function applyProxy(provider, proxyUrl, url, headers) {
-        if (CORS_BLOCKED.includes(provider) && proxyUrl) {
-            headers['X-Target-Url'] = url;
-            return { url: proxyUrl.replace(/\/+$/, ''), headers };
-        }
-        return { url, headers };
-    }
-
-    function buildRequest(cfg, history) {
-        const provider = cfg.provider;
-        const info = getProviderInfo(provider) || PROVIDERS[DEFAULT_PROVIDER];
-        const compat = info.compat;
-        const model = cfg.model;
-        const apiKey = cfg.apiKey;
-        const base = (cfg.baseUrl || info.baseUrl).replace(/\/+$/, '');
-        const temp = clampTemp(provider, cfg.temp);
-        const tokens = cfg.maxTokens;
-        let url;
-        let headers;
-        let body;
-
-        if (compat === 'gemini') {
-            if (usesFreeProxy(provider, apiKey)) {
-                url = BUILTIN_PROXY_URL;
-                headers = { 'Content-Type': 'application/json' };
-            } else {
-                url = `${base}/models/${encodeURIComponent(model)}:generateContent`;
-                headers = { 'Content-Type': 'application/json', 'x-goog-api-key': apiKey };
-            }
-            body = {
-                contents: history.map((m) => ({
-                    role: m.role === 'assistant' ? 'model' : 'user',
-                    parts: [{ text: m.content }]
-                })),
-                systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
-                generationConfig: { temperature: temp, maxOutputTokens: tokens }
-            };
-            if (usesFreeProxy(provider, apiKey)) body.model = model;
-        } else if (compat === 'anthropic') {
-            url = `${base}/messages`;
-            headers = {
-                'Content-Type': 'application/json',
-                'x-api-key': apiKey,
-                'anthropic-version': '2023-06-01',
-                'anthropic-dangerous-direct-browser-access': 'true'
-            };
-            body = {
-                model,
-                system: SYSTEM_PROMPT,
-                max_tokens: tokens,
-                temperature: temp,
-                messages: history
-            };
-        } else {
-            url = `${base}/chat/completions`;
-            headers = {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${apiKey}`
-            };
-            if (provider === 'OpenRouter') {
-                headers['HTTP-Referer'] = OPENROUTER_REFERER;
-                headers['X-Title'] = 'Raia AI';
-            }
-
-            let messages;
-            if (provider === 'Perplexity') {
-                messages = history.map((m, i) =>
-                    i === 0 && m.role === 'user'
-                        ? { role: 'user', content: `${SYSTEM_PROMPT}\n\n${m.content}` }
-                        : m
-                );
-            } else {
-                messages = [{ role: 'system', content: SYSTEM_PROMPT }, ...history];
-            }
-
-            body = { model, messages };
-            const reasoning = isReasoningModel(model);
-            if (!reasoning) body.temperature = temp;
-            if (provider === 'OpenAI' && reasoning) body.max_completion_tokens = tokens;
-            else body.max_tokens = tokens;
-        }
-
-        const routed = applyProxy(provider, cfg.proxyUrl, url, headers);
-        return { url: routed.url, headers: routed.headers, body: JSON.stringify(body) };
-    }
-
-    /* Metadata for the provider line. Free-proxy responses use the Worker's own metadata. */
-    function buildMeta(cfg, data) {
-        const raia = data && data.raia;
-        if (raia && typeof raia === 'object' && usesFreeProxy(cfg.provider, cfg.apiKey)) {
-            return {
-                provider: raia.provider === 'openrouter' ? 'OpenRouter' : 'Gemini',
-                providerType: raia.providerType === 'backup' ? 'backup' : 'primary',
-                model: String(raia.model || cfg.model),
-                requested: cfg.model,
-                fallbackUsed: raia.fallbackUsed === true
-            };
-        }
-        const info = getProviderInfo(cfg.provider);
-        return {
-            provider: info ? info.label : cfg.provider,
-            providerType: 'primary',
-            model: cfg.model,
-            requested: cfg.model,
-            fallbackUsed: false
-        };
-    }
-
-    function parseReply(provider, data) {
-        const info = getProviderInfo(provider);
-        if (info && info.compat === 'gemini') {
-            return ((data && data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts) || [])
-                .map((p) => p.text || '')
-                .join('');
-        }
-        if (info && info.compat === 'anthropic') {
-            return ((data && data.content) || [])
-                .filter((b) => typeof b.text === 'string')
-                .map((b) => b.text)
-                .join('');
-        }
-        const content = data && data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
-        if (typeof content === 'string') return content;
-        if (Array.isArray(content)) return content.map((p) => (p && p.text) || '').join('');
-        return '';
-    }
-
-    /* Reads the error body into a short, safe message and a machine-readable code. Never returns raw HTML or keys. */
-    async function readError(resp) {
-        let message = '';
-        let code = '';
-        try {
-            const text = await resp.text();
-            try {
-                const json = JSON.parse(text);
-                const e = json.error;
-                if (e && typeof e === 'object') {
-                    message = e.message || '';
-                    code = typeof e.code === 'string' ? e.code : '';
-                } else {
-                    message = (typeof e === 'string' ? e : '') || json.message || '';
-                }
-                if (!message) message = text;
-            } catch (_) {
-                message = text;
-            }
-        } catch (_) { /* body unreadable */ }
-        return {
-            message: String(message || resp.statusText || resp.status).slice(0, 240),
-            code
-        };
-    }
-
-    function describeError(err, provider) {
-        const providerName = (getProviderInfo(provider) && getProviderInfo(provider).label) || provider;
-
-        if (err instanceof ApiError) {
-            if (err.code === 'rate_limited') {
-                return {
-                    title: tx('errRateLimitTitle', 'Terlalu cepat'),
-                    body: tx('errRateLimitBody', 'Terlalu banyak permintaan dalam waktu singkat. Tunggu sebentar lalu coba lagi.')
-                };
-            }
-            if (err.status === 429 || err.code === 'quota') {
-                if (usesFreeProxy(provider, state.apiKey)) {
-                    return {
-                        title: t('errRateTitle'),
-                        body: tx('errQuotaBody', 'Kuota API gratis hari ini sudah habis.'),
-                        action: { label: tx('useOwnKey', 'Pakai API key sendiri') }
-                    };
-                }
-                return { title: t('errRateTitle'), body: t('errRateBody') };
-            }
-            if (err.status === 401 || err.status === 403) {
-                return { title: t('errAuthTitle'), body: t('errAuthBody', { provider: providerName }) };
-            }
-            if (err.status === 404 || err.code === 'model_unavailable') {
-                return { title: t('errModelTitle'), body: t('errModelBody', { model: state.model, provider: providerName }) };
-            }
-            return { title: t('errGenericTitle'), body: `${t('errGenericBody')} (${err.status}) ${err.message}` };
-        }
-
-        if (err instanceof TypeError) {
-            if (CORS_BLOCKED.includes(provider) && !state.proxyUrl) {
-                return { title: t('errNetTitle'), body: t('errCorsBody', { provider: providerName }) };
-            }
-            return { title: t('errNetTitle'), body: t('errNetBody') };
-        }
-
-        return { title: t('errGenericTitle'), body: err.message || t('errGenericBody') };
-    }
 
     function currentConfig() {
         return {
@@ -1168,13 +487,23 @@
 
         const ctrl = new AbortController();
         controller = ctrl;
+        setLoading(true);
+        try {
+            if (usesFreeProxy(cfg.provider, cfg.apiKey)) await askStreaming(cfg, history, ctrl);
+            else await askOnce(cfg, history, ctrl);
+        } finally {
+            if (controller === ctrl) controller = null;
+            setLoading(false);
+        }
+    }
+
+    /* Non-stream request, for providers that the browser calls directly */
+    async function askOnce(cfg, history, ctrl) {
         let timedOut = false;
         const timer = setTimeout(() => {
             timedOut = true;
             ctrl.abort();
         }, REQUEST_TIMEOUT_MS);
-
-        setLoading(true);
         try {
             const req = buildRequest(cfg, history);
             const resp = await fetch(req.url, {
@@ -1183,10 +512,6 @@
                 body: req.body,
                 signal: ctrl.signal
             });
-            if (usesFreeProxy(cfg.provider, cfg.apiKey)) {
-                state.quota = readQuota(resp.headers);
-                updateQuotaNote();
-            }
             if (!resp.ok) {
                 const info = await readError(resp);
                 throw new ApiError(resp.status, info.message, info.code);
@@ -1203,8 +528,90 @@
             }
         } finally {
             clearTimeout(timer);
-            if (controller === ctrl) controller = null;
-            setLoading(false);
+        }
+    }
+
+    /* Free proxy: tokens are rendered while they arrive. The timeout is idle-based, reset on every chunk,
+       so a long answer is not cut off just because the whole reply takes more than REQUEST_TIMEOUT_MS. */
+    async function askStreaming(cfg, history, ctrl) {
+        let timedOut = false;
+        let meta = null;
+        let idle = 0;
+        const arm = () => {
+            clearTimeout(idle);
+            idle = setTimeout(() => {
+                timedOut = true;
+                ctrl.abort();
+            }, REQUEST_TIMEOUT_MS);
+        };
+
+        const message = pushMessage('assistant', '', { streaming: true });
+        const isCurrent = () => state.messages.includes(message);
+        state.streamingId = message.id;
+        hideTyping();
+        els.messages.setAttribute('aria-busy', 'true');
+
+        const bodyOf = () => els.messages.querySelector(`[data-id="${message.id}"] .msg-body`);
+        const stream = createTokenStream(message, {
+            getBody: bodyOf,
+            onFrame: (body) => {
+                body.classList.add('is-streaming');
+                if (isNearBottom()) scrollToBottom(false);
+                updateJumpButton();
+            }
+        });
+        arm();
+
+        try {
+            await streamFreeProxy(cfg, history, {
+                signal: ctrl.signal,
+                onQuota: (quota) => {
+                    state.quota = quota;
+                    updateQuotaNote();
+                },
+                onMeta: (raia) => {
+                    meta = buildMeta(cfg, { raia });
+                },
+                onText: (text) => {
+                    arm();
+                    stream.push(text);
+                }
+            });
+            stream.flush();
+            message.content = message.content.trim() || t('emptyReply');
+            delete message.streaming;
+            if (meta) message.meta = meta;
+            if (isCurrent()) {
+                saveCurrentSession();
+                renderAll();
+            }
+        } catch (err) {
+            stream.cancel();
+            const current = isCurrent();
+            const partial = message.content.trim();
+            if (partial) {
+                /* Keep what has already arrived */
+                message.content = partial;
+                delete message.streaming;
+                if (meta) message.meta = meta;
+            } else if (current) {
+                state.messages = state.messages.filter((m) => m !== message);
+            }
+            /* The user may have switched chats meanwhile; then the active session must not be touched */
+            if (current) {
+                saveCurrentSession();
+                renderAll();
+                if (err.name === 'AbortError') {
+                    if (timedOut) pushError({ title: t('errNetTitle'), body: t('errTimeoutBody') });
+                    else toast(t('toastStopped'), 'info');
+                } else {
+                    pushError(describeError(err, cfg.provider));
+                }
+            }
+        } finally {
+            clearTimeout(idle);
+            state.streamingId = null;
+            els.messages.removeAttribute('aria-busy');
         }
     }
 
@@ -1359,11 +766,13 @@
         els.drawer.setAttribute('aria-hidden', 'false');
         els.drawerOverlay.classList.add('open');
         els.historyBtn.setAttribute('aria-expanded', 'true');
+        drawerTrap.activate();
         els.drawerClose.focus();
     }
 
     function closeDrawer() {
         if (!els.drawer.classList.contains('open')) return;
+        drawerTrap.deactivate();
         els.drawer.classList.remove('open');
         els.drawer.setAttribute('aria-hidden', 'true');
         els.drawerOverlay.classList.remove('open');
@@ -1484,6 +893,10 @@
         els.tempValue.textContent = state.temp.toFixed(1);
         els.tokRange.value = String(state.maxTokens);
         els.tokValue.textContent = String(state.maxTokens);
+        els.tempNum.value = state.temp.toFixed(1);
+        els.tokNum.value = String(state.maxTokens);
+        paintRangeFill(els.tempRange);
+        paintRangeFill(els.tokRange);
         syncApiKeyField();
         refreshProviderUi();
         renderCustomList();
@@ -1901,6 +1314,7 @@
     function openModelSheet() {
         if (isModelSheetOpen()) return;
         renderModelSheet();
+        sheetTrap.activate();
         els.modelSheet.classList.add('open');
         els.modelSheet.setAttribute('aria-hidden', 'false');
         els.modelSheetOverlay.classList.add('open');
@@ -1913,6 +1327,7 @@
 
     function closeModelSheet() {
         if (!isModelSheetOpen()) return;
+        sheetTrap.deactivate();
         els.modelSheet.classList.remove('open', 'is-dragging');
         els.modelSheet.setAttribute('aria-hidden', 'true');
         els.modelSheet.style.transform = '';
@@ -1987,7 +1402,7 @@
         els.navSetting.classList.toggle('is-active', open);
     }
 
-    function openSettings() {
+    function openSettings({ route = true } = {}) {
         if (isSettingsOpen()) return;
         closeDrawer();
         syncSettingsForm();
@@ -1995,17 +1410,21 @@
         els.settingView.setAttribute('aria-hidden', 'false');
         els.settingsOverlay.classList.add('open');
         setSettingsButton(true);
+        settingsTrap.activate();
+        if (route) navigate('setting');
         animateSettings();
         setTimeout(() => els.settingsClose.focus(), 60);
     }
 
-    function closeSettings() {
+    function closeSettings({ route = true } = {}) {
         if (!isSettingsOpen()) return;
         const hadFocus = els.settingView.contains(document.activeElement);
         els.settingView.classList.remove('open');
         els.settingView.setAttribute('aria-hidden', 'true');
         els.settingsOverlay.classList.remove('open');
         setSettingsButton(false);
+        settingsTrap.deactivate();
+        if (route) navigate('chat', { replace: true });
         if (hadFocus && els.navSetting) els.navSetting.focus();
         updateJumpButton();
         if (!prefersReducedMotion()) scrollToBottom(false);
@@ -2020,43 +1439,6 @@
        EVENT BINDINGS
        ═══════════════════════════════════════ */
     /* Sliders change only while the thumb is dragged. A tap on the track is ignored. Keyboard arrows still work. */
-    function guardSlider(input) {
-        if (!input) return;
-        const THUMB = 26;
-        const thumbX = () => {
-            const rect = input.getBoundingClientRect();
-            const min = Number(input.min);
-            const max = Number(input.max);
-            const ratio = (Number(input.value) - min) / ((max - min) || 1);
-            return { x: rect.left + THUMB / 2 + ratio * (rect.width - THUMB), reach: THUMB / 2 + 14 };
-        };
-        const begin = (clientX) => {
-            const { x, reach } = thumbX();
-            const onThumb = Math.abs(clientX - x) <= reach;
-            input.dataset.snap = input.value;
-            input.dataset.blocked = onThumb ? '' : '1';
-            input.classList.toggle('is-dragging', onThumb);
-            return onThumb;
-        };
-        const end = () => {
-            input.classList.remove('is-dragging');
-            delete input.dataset.blocked;
-        };
-        input.addEventListener('pointerdown', (e) => {
-            if (!begin(e.clientX)) e.preventDefault();
-        });
-        input.addEventListener('touchstart', (e) => {
-            if (!begin(e.touches[0].clientX)) e.preventDefault();
-        }, { passive: false });
-        ['pointerup', 'pointercancel', 'touchend', 'touchcancel'].forEach((name) => input.addEventListener(name, end));
-        input.addEventListener('input', (e) => {
-            if (input.dataset.blocked === '1' && input.dataset.snap !== undefined) {
-                input.value = input.dataset.snap;
-                e.stopImmediatePropagation();
-            }
-        });
-    }
-
     function bindEvents() {
         /* Composer */
         els.composer.addEventListener('submit', onFormSubmit);
@@ -2151,6 +1533,7 @@
         /* Settings panel */
         on(els.navSetting, 'click', toggleSettings);
         on(els.settingsClose, 'click', closeSettings);
+        on(els.backToChat, 'click', () => closeSettings());
         on(els.settingsOverlay, 'click', closeSettings);
         on($('brandLink'), 'click', (e) => {
             e.preventDefault();
@@ -2200,17 +1583,29 @@
         guardSlider(els.tempRange);
         guardSlider(els.tokRange);
 
-        /* Sliders: a drag updates the value, nothing is triggered by taps */
-        on(els.tempRange, 'input', () => {
-            state.temp = Number(els.tempRange.value);
-            els.tempValue.textContent = state.temp.toFixed(1);
+        /* Sliders: a drag updates the value, nothing is triggered by taps. Typed numbers work too. */
+        const applyTemp = (value) => {
+            state.temp = value;
+            els.tempValue.textContent = value.toFixed(1);
+            els.tempNum.value = value.toFixed(1);
             persistSettings();
+        };
+        const applyTok = (value) => {
+            state.maxTokens = value;
+            els.tokValue.textContent = String(value);
+            els.tokNum.value = String(value);
+            persistSettings();
+        };
+        on(els.tempRange, 'input', () => {
+            paintRangeFill(els.tempRange);
+            applyTemp(Number(els.tempRange.value));
         });
         on(els.tokRange, 'input', () => {
-            state.maxTokens = Number(els.tokRange.value);
-            els.tokValue.textContent = String(state.maxTokens);
-            persistSettings();
+            paintRangeFill(els.tokRange);
+            applyTok(Number(els.tokRange.value));
         });
+        bindRangeNumber(els.tempRange, els.tempNum, 1, applyTemp);
+        bindRangeNumber(els.tokRange, els.tokNum, 0, applyTok);
         on(els.resetBtn, 'click', resetAll);
 
         /* Custom API */
@@ -2297,11 +1692,20 @@
         syncSettingsForm();
 
         bindEvents();
+        watchKeyboard();
+        /* Routing: /chat dan /setting. Hash lama dikonversi, lalu URL dirapikan. */
+        migrateHashRoute();
+        const initialRoute = currentRoute();
+        navigate(initialRoute, { replace: true });
+        onRouteChange((route) => (route === 'setting'
+            ? openSettings({ route: false })
+            : closeSettings({ route: false })));
         renderAll();
         animateWelcome();
         syncSendButton();
         updateCharCount();
         resizePrompt();
+        if (currentRoute() === 'setting') openSettings({ route: false });
     }
 
     if (document.readyState === 'loading') {

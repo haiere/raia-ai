@@ -21,7 +21,7 @@
 
 <br />
 
-<img src="https://img.shields.io/badge/Version-v1.2.5-3B82F6?style=flat-square" alt="Version v1.2.5" />
+<img src="https://img.shields.io/badge/Version-v1.2.6-3B82F6?style=flat-square" alt="Version v1.2.6" />
 <img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" alt="MIT License" />
 <img src="https://img.shields.io/badge/PRs-Welcome-brightgreen?style=flat-square" alt="PRs Welcome" />
 
@@ -47,6 +47,7 @@
 ## Table of Contents
 
 - [Overview](#overview)
+- [What's New in v1.2.6](#whats-new-in-v126)
 - [What's New in v1.2.4](#whats-new-in-v124)
 - [What's New in v1.2.3](#whats-new-in-v123)
 - [What's New in v1.2.2](#whats-new-in-v122)
@@ -109,6 +110,19 @@ RAIA is a client-side AI chat interface that connects to several large language 
 > With your own API key, requests go **directly from your browser** to the provider. The optional built-in Gemini option sends its requests through a small proxy on Cloudflare Workers, which holds the API keys on the server. If the built-in Gemini quota or key fails, the proxy can send the same request to OpenRouter (see [Privacy and Security](#privacy-and-security)). The proxy does not store conversations. Your own API keys stay on your device.
 
 ---
+
+## What's New in v1.2.6
+
+| Area | Change |
+|---|---|
+| **Routing** | Clean URLs with the History API: `/chat` and `/setting`, instead of `#/chat` and `#/setting`. Old hash links are converted automatically. The settings panel has a **Back to Chat** button at the bottom. |
+| **Streaming** | Replies from the built-in Gemini proxy appear token by token. The Worker streams Gemini and OpenRouter responses to the browser. A reply that stops midway keeps the text that has already arrived. |
+| **Mobile** | When the keyboard is open, the model button is hidden and the character count is shown. On desktop both stay visible. |
+| **Sliders** | Creativity and maximum answer length use drag-only sliders with a progress fill. A number field next to each slider accepts exact values. |
+| **Security** | `ALLOWED_ORIGINS` moved to Worker configuration. The OpenRouter fallback can be turned off per request. Optional Cloudflare Turnstile check. |
+| **Code** | `script.js` is split into ES modules under `js/`: `settings.js`, `provider.js`, `chat.js`, `ui.js`, and `router.js`. |
+| **Tests** | Unit tests for the Worker and the client modules, plus integrity checks for element IDs and translation keys. Runs on every push through GitHub Actions. |
+| **Accessibility** | Focus is trapped in the settings panel, the history drawer, and the model sheet. Replies are announced to screen readers when they finish. |
 
 ## What's New in v1.2.4
 
@@ -294,6 +308,15 @@ Place the files on any static web server. Styles, icons, and application logic a
 
 If no API key is saved for a provider other than Gemini, the chat page shows a notice with a link to settings. The typed message stays in the box. With Gemini selected, you can chat without a key until the free daily quota runs out.
 
+### Routes
+
+| Path | Shows |
+|---|---|
+| `/chat` | The chat view. This is the default. |
+| `/setting` | The settings panel, opened over the chat. Closing it returns to `/chat`. |
+
+Older links with a hash (`#/chat`, `#/setting`) are converted to these paths automatically.
+
 ### Screens
 
 | Screen | Opened by |
@@ -303,7 +326,7 @@ If no API key is saved for a provider other than Gemini, the chat page shows a n
 
 ### Built-in Gemini (Free Quota)
 
-Gemini (Google) is the default provider. It uses the app owner's API keys through the proxy, so you can try it without your own key. Each IP address gets a limited number of requests per day, and the message field shows how many are left. When the limit is reached, the chat shows a **Use your own API key** button that opens settings.
+Gemini (Google) is the default provider. It uses the app owner's API keys through the proxy, so you can try it without your own key. Each IP address gets 10 requests per day, and the message field shows how many are left. When the limit is reached, the chat shows a **Use your own API key** button that opens settings.
 
 If the Gemini request fails because of its quota or key, the proxy can retry with OpenRouter using the same model where available. Each reply shows its provider, for example `Provider: Gemini`, or `Provider: OpenRouter — Backup` when the backup answered. The other providers always require your own key.
 
@@ -541,6 +564,33 @@ Then open `http://localhost:8080` in your browser.
 
 ---
 
+## Tests
+
+The test suite uses Node's built-in test runner and needs no install step.
+
+```bash
+npm test
+```
+
+| File | Covers |
+|---|---|
+| `tests/worker.test.mjs` | Request validation, body building, reply parsing, error classification, origin checks, quota, fallback, and Turnstile in `raia-proxy/worker.js`. |
+| `tests/client.test.mjs` | Provider request shapes, the streaming client, settings persistence, slider helpers, and the token stream. |
+| `tests/integrity.test.mjs` | Every element ID used in JavaScript exists in `index.html`. Every translation key used with `t()` or `data-i18n` exists in both Indonesian and English. |
+
+GitHub Actions runs `npm test` on every push and pull request (`.github/workflows/test.yml`).
+
+## System Prompt Rules
+
+The system prompt is sent with every request, so a change affects every answer. Treat it like code:
+
+- Edit it in one place only: `SYSTEM_PROMPT` in `js/settings.js`.
+- Change it in its own pull request, with a short note on why. Reviewers should check it against the tone rules in this section.
+- Keep it in English, and keep the instruction to reply in the user's language.
+- Keep it short. The built-in proxy cuts the system instruction at 4,000 characters, so a longer prompt loses its end without warning there. Other providers receive the full text.
+- Do not put user data, keys, or dates in the prompt. It is shared by all users and by every provider.
+- Test the change by hand with at least one Indonesian and one English question, and check the answer length for a short question.
+
 ## Tech Stack
 
 | Layer | Used |
@@ -566,7 +616,7 @@ RAIA has two parts, and they are deployed to different places.
 
 | Part | Files | Where |
 |---|---|---|
-| Frontend | `index.html`, `style.css`, `script.js`, `i18n.js`, and this README | Any static host, such as GitHub Pages |
+| Frontend | `index.html`, `style.css`, `script.js`, `i18n.js`, `js/`, `404.html`, and this README | Any static host, such as GitHub Pages |
 | Gemini proxy (optional) | `worker.js` and `wrangler.jsonc` | Cloudflare Workers, not GitHub Pages |
 
 **1. Deploy the Worker**
@@ -580,19 +630,45 @@ npx wrangler deploy
 The Worker needs:
 - A KV namespace bound as `RAIA_QUOTA`.
 - A Rate Limiting binding named `RATE_LIMITER`, declared in `wrangler.jsonc` under `ratelimits`.
-- The site's origin in `ALLOWED_ORIGINS` at the top of `worker.js`.
+- The site's origin in `ALLOWED_ORIGINS`, set under `vars` in `wrangler.jsonc`. For local development, put `ALLOWED_ORIGINS` (with your `localhost` origin) in `.dev.vars` instead.
+- Optional: a Turnstile secret, `TURNSTILE_SECRET`. When it is set, every request must send a valid `X-Turnstile-Token` header.
 
 The Worker's URL must match `BUILTIN_PROXY_URL` in `script.js`.
 
 **2. Deploy the frontend**
 
-Push `index.html`, `style.css`, `script.js`, and `i18n.js` to the published branch. Then check that the settings button opens and closes the settings panel.
+Push `index.html`, `style.css`, `script.js`, `i18n.js`, the `js/` folder, and `404.html` to the published branch. Then check three things: the settings button opens `/setting`, **Back to Chat** returns to `/chat`, and opening `/setting` directly loads the settings panel.
+
+`404.html` is needed on GitHub Pages. Without it, a direct visit to `/chat` or `/setting` shows a 404 page. Set `pathSegmentsToKeep` in that file to `1` for a project site (`/raia-ai/`) and to `0` for a site on the root domain. If you move to a host with a rewrite rule for single-page apps, you can remove the file.
 
 GitHub Pages only serves static files, so it cannot run `worker.js` or keep an API key.
+
+### Deployment Status
+
+| Component | Version | Status | Notes |
+|---|---|---|---|
+| Frontend (`index.html`, `script.js`, `js/`, `style.css`, `i18n.js`) | 1.2.6 | Ready | Needs `404.html` on GitHub Pages for `/chat` and `/setting`. |
+| Gemini proxy (`raia-proxy/worker.js`) | 1.2.6 | Ready to deploy | Redeploy after changing `ALLOWED_ORIGINS` or secrets. |
+| Built-in model | `gemini-2.5-flash-lite` | Active | Fallback to OpenRouter uses `google/gemini-2.5-flash-lite`. |
+| Free quota | 10 requests per IP per day | Active | Burst limit: 10 requests per 60 seconds through Cloudflare Rate Limiting. |
+| Gemini quota guard | Budget limit in Google Cloud Console | Manual | Set in the console. It is not part of the code. |
+| Cloudflare Turnstile | Optional | Not enabled | Enable it by setting `TURNSTILE_SECRET` and sending the token from the frontend. |
 
 ---
 
 ## Changelog
+
+### v1.2.6 (November 20, 2026)
+
+- Clean routes `/chat` and `/setting` with the History API. Added `404.html` as a fallback for GitHub Pages and a **Back to Chat** button in settings.
+- Token streaming for the built-in Gemini proxy, with an idle timeout instead of a fixed total timeout.
+- Drag-only sliders with progress fill and exact-value inputs.
+- Hidden model button and visible character count while the mobile keyboard is open.
+- Split `script.js` into `js/settings.js`, `js/provider.js`, `js/chat.js`, `js/ui.js`, and `js/router.js`.
+- Worker: `ALLOWED_ORIGINS` moved to `wrangler.jsonc`, optional Turnstile, per-request fallback switch (`X-Raia-Fallback: off`), and streaming.
+- Focus trap for settings, drawer, and model sheet.
+- Removed the unused `.version-badge` styles.
+- Added unit and integrity tests with GitHub Actions.
 
 ### v1.2.5 (November 17, 2026)
 
@@ -707,6 +783,6 @@ Developed and maintained by Haiere and HajirStudio.
 
 <div align="center">
 <sub>
-Last updated: November 17, 2026 · RAIA v1.2.5
+Last updated: November 20, 2026 · RAIA v1.2.6
 </sub>
 </div>

@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════
-   RAIA · Reflecting Tomorrow · v1.2.5
+   RAIA · Reflecting Tomorrow · v1.2.6
    i18n.js: Bahasa Indonesia (id) dan English (en)
    ═══════════════════════════════════════════════════════ */
 
@@ -18,6 +18,7 @@
 
             navChat: 'Chat',
             navSetting: 'Pengaturan',
+            backToChat: 'Kembali ke Chat',
             navHistory: 'Riwayat',
             newChat: 'Chat baru',
             newChatTitle: 'Mulai chat baru (Ctrl+N)',
@@ -177,6 +178,7 @@
 
             navChat: 'Chat',
             navSetting: 'Settings',
+            backToChat: 'Back to Chat',
             navHistory: 'History',
             newChat: 'New chat',
             newChatTitle: 'Start a new chat (Ctrl+N)',
